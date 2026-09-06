@@ -5439,225 +5439,6 @@ a{color:inherit;text-decoration:none}
 
 
 /* =========================================================
-   MENU MOBILE — ABRIR E FECHAR SIDEBAR
-========================================================= */
-.mobile-sidebar-close{
-  display:none;
-}
-
-@media(max-width:768px){
-
-  .mobile-menu-btn{
-    display:flex !important;
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
-    position:fixed !important;
-    top:12px !important;
-    left:12px !important;
-    z-index:2002 !important;
-  }
-
-  .mobile-sidebar-overlay{
-    display:block !important;
-    position:fixed !important;
-    inset:0 !important;
-    z-index:1998 !important;
-    background:rgba(2,6,23,.68) !important;
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:opacity .2s ease, visibility .2s ease;
-  }
-
-  .sidebar{
-    position:fixed !important;
-    top:0 !important;
-    left:0 !important;
-    bottom:0 !important;
-    width:min(86vw,300px) !important;
-    height:100dvh !important;
-    z-index:2000 !important;
-    transform:translate3d(-105%,0,0) !important;
-    transition:transform .24s ease !important;
-    will-change:transform;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-  }
-
-  .mobile-sidebar-close{
-    display:flex !important;
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:38px;
-    height:38px;
-    border-radius:10px;
-    border:1px solid var(--border);
-    background:rgba(17,24,39,.92);
-    color:#fff;
-    align-items:center;
-    justify-content:center;
-    z-index:2003;
-    cursor:pointer;
-  }
-
-  .mobile-sidebar-close svg{
-    width:18px;
-    height:18px;
-  }
-
-  body.mobile-menu-open{
-    overflow:hidden !important;
-    touch-action:none;
-  }
-
-  body.mobile-menu-open .sidebar{
-    transform:translate3d(0,0,0) !important;
-  }
-
-  body.mobile-menu-open .mobile-sidebar-overlay{
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
-  }
-
-  body.mobile-menu-open .mobile-menu-btn{
-    opacity:0 !important;
-    visibility:hidden !important;
-    pointer-events:none !important;
-  }
-
-  .sidebar .brand.brand-logo{
-    padding-top:44px !important;
-  }
-}
-
-@media(max-width:480px) and (orientation:portrait){
-  .mobile-menu-btn{
-    top:10px !important;
-    left:10px !important;
-    width:42px !important;
-    height:42px !important;
-  }
-
-  .sidebar{
-    width:min(88vw,300px) !important;
-  }
-}
-
-
-/* =========================================================
-   CORREÇÃO DEFINITIVA — NAVEGAÇÃO MOBILE RETRATO
-========================================================= */
-.mobile-bottom-menu-btn{display:none;}
-
-@media(max-width:768px){
-  .mobile-bottom-menu-btn{
-    display:flex !important;
-    position:fixed !important;
-    left:50% !important;
-    bottom:calc(14px + env(safe-area-inset-bottom)) !important;
-    transform:translateX(-50%) !important;
-    z-index:99999 !important;
-    height:46px !important;
-    min-width:118px !important;
-    padding:0 18px !important;
-    border-radius:999px !important;
-    border:1px solid rgba(255,255,255,.12) !important;
-    background:#111827 !important;
-    color:#fff !important;
-    box-shadow:0 12px 35px rgba(0,0,0,.45) !important;
-    align-items:center !important;
-    justify-content:center !important;
-    gap:8px !important;
-    font-size:12px !important;
-    font-weight:700 !important;
-    cursor:pointer !important;
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
-  }
-
-  .mobile-bottom-menu-btn svg{
-    width:18px !important;
-    height:18px !important;
-  }
-
-  body.mobile-menu-open .mobile-bottom-menu-btn{display:none !important;}
-
-  #mobile-menu-btn{
-    display:flex !important;
-    position:fixed !important;
-    top:12px !important;
-    left:12px !important;
-    z-index:99999 !important;
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
-  }
-
-  body.mobile-menu-open #mobile-menu-btn{display:none !important;}
-
-  .sidebar{
-    display:block !important;
-    position:fixed !important;
-    top:0 !important;
-    left:0 !important;
-    bottom:0 !important;
-    width:min(88vw,310px) !important;
-    height:100dvh !important;
-    z-index:100001 !important;
-    transform:translateX(-110%) !important;
-    transition:transform .22s ease !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    background:var(--bg-elevated) !important;
-  }
-
-  body.mobile-menu-open .sidebar{transform:translateX(0) !important;}
-
-  #mobile-sidebar-overlay{
-    display:block !important;
-    position:fixed !important;
-    inset:0 !important;
-    z-index:100000 !important;
-    background:rgba(2,6,23,.72) !important;
-    opacity:0 !important;
-    visibility:hidden !important;
-    pointer-events:none !important;
-  }
-
-  body.mobile-menu-open #mobile-sidebar-overlay{
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
-  }
-
-  .mobile-sidebar-close{
-    display:flex !important;
-    position:absolute !important;
-    top:12px !important;
-    right:12px !important;
-    z-index:100002 !important;
-  }
-
-  .sidebar .nav-item{
-    position:relative !important;
-    z-index:100003 !important;
-    pointer-events:auto !important;
-    cursor:pointer !important;
-  }
-
-  .main{padding-bottom:90px !important;}
-}
-
-@media(max-width:480px) and (orientation:portrait){
-  .mobile-bottom-menu-btn{display:flex !important;}
-}
-
-
-/* =========================================================
    CORREÇÃO REAL PARA RETRATO — CELULAR E TABLET
    Ativa menu mobile em portrait mesmo em telas > 768px
 ========================================================= */
@@ -6550,6 +6331,144 @@ a{color:inherit;text-decoration:none}
   }
 }
 
+
+/* =========================================================
+   AGENDA — AÇÕES / EDIÇÃO
+========================================================= */
+.agenda-item{
+  grid-template-columns:76px minmax(0,1fr) auto auto !important;
+}
+.appointment-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.appointment-action{
+  height:30px;
+  padding:0 9px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:#111827;
+  color:#AEBAC9;
+  font-size:9.5px;
+  font-weight:700;
+  cursor:pointer;
+}
+.appointment-action:hover{border-color:#334155;color:#fff}
+.appointment-action.finish{color:#7DD3A7;border-color:rgba(34,197,94,.18)}
+.appointment-action.cancel{color:#E8A0A0;border-color:rgba(239,100,100,.18)}
+.btn-danger-soft{
+  min-height:38px;
+  padding:0 13px;
+  border-radius:9px;
+  border:1px solid rgba(239,100,100,.24);
+  background:rgba(239,100,100,.06);
+  color:#F2A0A0;
+  font-size:10.5px;
+  font-weight:700;
+  cursor:pointer;
+}
+.modal-footer-spacer{flex:1}
+
+@media(max-width:768px){
+  .agenda-item{
+    grid-template-columns:58px minmax(0,1fr) !important;
+  }
+  .agenda-status{
+    grid-column:2 !important;
+    width:max-content;
+  }
+  .appointment-actions{
+    grid-column:1/-1 !important;
+    justify-content:flex-start;
+  }
+}
+
+/* =========================================================
+   FINANCEIRO — MODAL DE LANÇAMENTO
+========================================================= */
+.finance-entry-type-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.finance-entry-type{
+  min-height:42px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#111827;
+  color:#94A3B8;
+  cursor:pointer;
+  font-size:10.5px;
+  font-weight:700;
+}
+.finance-entry-type.active{
+  border-color:#3B82F6;
+  color:#D8E9FA;
+  background:rgba(59,130,246,.08);
+}
+
+/* =========================================================
+   RECUPERAÇÃO DE SENHA
+========================================================= */
+.password-reset-gate{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(59,130,246,.10),transparent 32%),
+    #0B0F17;
+}
+.password-reset-gate.open{display:flex}
+.password-reset-card{
+  width:min(100%,410px);
+  padding:28px;
+  border:1px solid #243041;
+  border-radius:18px;
+  background:#111827;
+  box-shadow:0 25px 70px rgba(0,0,0,.38);
+}
+.password-reset-card h2{
+  margin:0 0 7px;
+  font-family:'Sora',sans-serif;
+  font-size:22px;
+}
+.password-reset-card p{
+  margin:0 0 21px;
+  color:#94A3B8;
+  font-size:11px;
+  line-height:1.55;
+}
+.password-reset-card .auth-field{margin-bottom:14px}
+.password-reset-card .auth-submit{margin-top:6px}
+
+
+/* =========================================================
+   SIDEBAR — AJUSTE FINAL DO RODAPÉ
+========================================================= */
+.sidebar{
+  padding-bottom:28px !important;
+}
+
+.sidebar-bottom,
+.sidebar-footer,
+.sidebar-logout,
+.logout-wrap{
+  margin-bottom:10px !important;
+}
+
+@media (orientation:portrait) and (max-width:1100px){
+  .sidebar{
+    padding-bottom:34px !important;
+  }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -6609,7 +6528,7 @@ a{color:inherit;text-decoration:none}
                 <path d="M4 4h16v16H4z"></path>
                 <path d="m4 7 8 6 8-6"></path>
               </svg>
-              <input id="login-email" type="email" autocomplete="email" placeholder="seu@email.com" required>
+              <input id="login-email" type="email" inputmode="email" autocomplete="email" placeholder="seu@email.com" required>
             </div>
           </div>
 
@@ -6655,6 +6574,28 @@ a{color:inherit;text-decoration:none}
         © 2026 Barbearia Vintage
       </div>
     </div>
+  </div>
+</div>
+
+
+<div id="password-reset-gate" class="password-reset-gate">
+  <div class="password-reset-card">
+    <div class="auth-status-pill"><span class="auth-status-dot"></span> Recuperação de acesso</div>
+    <h2>Crie sua nova senha</h2>
+    <p>Digite a nova senha que você deseja usar para acessar o painel.</p>
+
+    <div class="auth-field">
+      <label for="new-password">Nova senha</label>
+      <input id="new-password" type="password" autocomplete="new-password" placeholder="Mínimo de 8 caracteres">
+    </div>
+    <div class="auth-field">
+      <label for="confirm-new-password">Confirmar nova senha</label>
+      <input id="confirm-new-password" type="password" autocomplete="new-password" placeholder="Digite novamente">
+    </div>
+    <div id="password-reset-error" class="auth-error"></div>
+    <button id="password-reset-submit" class="auth-submit" type="button" onclick="submitNewPassword()">
+      Salvar nova senha
+    </button>
   </div>
 </div>
 
@@ -6752,8 +6693,8 @@ a{color:inherit;text-decoration:none}
 </svg>
 </div>
 </div>
-<div class="value">R$ 890</div>
-<div class="delta up">↑ 12% vs. ontem</div>
+<div class="value" id="home-realized-revenue">—</div>
+<div class="delta" id="home-revenue-delta">dados reais do mês</div>
 <div class="submetric">Previsão de fechamento: <b id="home-forecast-close">—</b></div>
 </div>
 <div class="kpi-card">
@@ -6782,8 +6723,8 @@ a{color:inherit;text-decoration:none}
 </svg>
 </div>
 </div>
-<div class="value">R$ 6.240</div>
-<div class="delta">após comissões</div>
+<div class="value" id="home-net-profit">—</div>
+<div class="delta" id="home-net-profit-meta">após saídas registradas</div>
 </div>
 <div class="kpi-card">
 <div class="kpi-top">
@@ -6798,7 +6739,7 @@ a{color:inherit;text-decoration:none}
 </div>
 <div class="value" id="home-ticket-average">—</div>
 <div class="delta" id="home-ticket-meta">média por atendimento hoje</div>
-<div class="submetric">Radar de retenção: 9 clientes</div>
+<div class="submetric" id="home-radar-count">Radar de retenção: —</div>
 </div>
 </div>
 <div class="home-secondary-grid">
@@ -6849,58 +6790,7 @@ a{color:inherit;text-decoration:none}
 <div class="sub">25+ dias sem agendar</div>
 </div>
 </div>
-<div class="mini-list compact" id="overview-retention-list">
-<div class="mini-row">
-<div>
-<div class="who">Renato Alves</div>
-<div class="meta">31 dias sem vir · ticket médio R$ 75</div>
-</div>
-<button class="mini-wa" onclick="showToast('Mensagem pronta para Renato Alves.')"><svg class="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true">
-  <path fill="currentColor" d="M19.11 17.43c-.28-.14-1.64-.81-1.89-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.21-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.47.07-.72.35-.25.28-.95.93-.95 2.27 0 1.34.98 2.63 1.12 2.81.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
-  <path fill="currentColor" d="M16.03 3C8.84 3 3 8.76 3 15.86c0 2.53.75 5 2.17 7.1L3 29l6.26-2.04a13.07 13.07 0 0 0 6.77 1.89H16c7.19 0 13.03-5.76 13.03-12.86S23.19 3 16.03 3zm0 23.68h-.01a10.92 10.92 0 0 1-5.56-1.52l-.4-.24-3.72 1.21 1.22-3.59-.26-.42a10.63 10.63 0 0 1-1.68-5.75c0-5.91 4.87-10.72 10.86-10.72 2.9 0 5.62 1.11 7.67 3.13a10.55 10.55 0 0 1 3.18 7.59c0 5.91-4.87 10.72-10.85 10.72z"/>
-</svg></button>
-</div>
-<div class="mini-row">
-<div>
-<div class="who">Bruno Matos</div>
-<div class="meta">29 dias sem vir · ticket médio R$ 68</div>
-</div>
-<button class="mini-wa" onclick="showToast('Mensagem pronta para Bruno Matos.')"><svg class="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true">
-  <path fill="currentColor" d="M19.11 17.43c-.28-.14-1.64-.81-1.89-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.21-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.47.07-.72.35-.25.28-.95.93-.95 2.27 0 1.34.98 2.63 1.12 2.81.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
-  <path fill="currentColor" d="M16.03 3C8.84 3 3 8.76 3 15.86c0 2.53.75 5 2.17 7.1L3 29l6.26-2.04a13.07 13.07 0 0 0 6.77 1.89H16c7.19 0 13.03-5.76 13.03-12.86S23.19 3 16.03 3zm0 23.68h-.01a10.92 10.92 0 0 1-5.56-1.52l-.4-.24-3.72 1.21 1.22-3.59-.26-.42a10.63 10.63 0 0 1-1.68-5.75c0-5.91 4.87-10.72 10.86-10.72 2.9 0 5.62 1.11 7.67 3.13a10.55 10.55 0 0 1 3.18 7.59c0 5.91-4.87 10.72-10.85 10.72z"/>
-</svg></button>
-</div>
-<div class="mini-row">
-<div>
-<div class="who">Daniel Costa</div>
-<div class="meta">27 dias sem vir · ticket médio R$ 82</div>
-</div>
-<button class="mini-wa" onclick="showToast('Mensagem pronta para Daniel Costa.')"><svg class="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true">
-  <path fill="currentColor" d="M19.11 17.43c-.28-.14-1.64-.81-1.89-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.21-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.47.07-.72.35-.25.28-.95.93-.95 2.27 0 1.34.98 2.63 1.12 2.81.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
-  <path fill="currentColor" d="M16.03 3C8.84 3 3 8.76 3 15.86c0 2.53.75 5 2.17 7.1L3 29l6.26-2.04a13.07 13.07 0 0 0 6.77 1.89H16c7.19 0 13.03-5.76 13.03-12.86S23.19 3 16.03 3zm0 23.68h-.01a10.92 10.92 0 0 1-5.56-1.52l-.4-.24-3.72 1.21 1.22-3.59-.26-.42a10.63 10.63 0 0 1-1.68-5.75c0-5.91 4.87-10.72 10.86-10.72 2.9 0 5.62 1.11 7.67 3.13a10.55 10.55 0 0 1 3.18 7.59c0 5.91-4.87 10.72-10.85 10.72z"/>
-</svg></button>
-</div>
-<div class="mini-row">
-<div>
-<div class="who">Carlos Souza</div>
-<div class="meta">26 dias sem vir · último serviço Corte + Barba</div>
-</div>
-<button class="mini-wa" onclick="showToast('Mensagem pronta para Carlos Souza.')"><svg class="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true">
-  <path fill="currentColor" d="M19.11 17.43c-.28-.14-1.64-.81-1.89-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.21-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.47.07-.72.35-.25.28-.95.93-.95 2.27 0 1.34.98 2.63 1.12 2.81.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
-  <path fill="currentColor" d="M16.03 3C8.84 3 3 8.76 3 15.86c0 2.53.75 5 2.17 7.1L3 29l6.26-2.04a13.07 13.07 0 0 0 6.77 1.89H16c7.19 0 13.03-5.76 13.03-12.86S23.19 3 16.03 3zm0 23.68h-.01a10.92 10.92 0 0 1-5.56-1.52l-.4-.24-3.72 1.21 1.22-3.59-.26-.42a10.63 10.63 0 0 1-1.68-5.75c0-5.91 4.87-10.72 10.86-10.72 2.9 0 5.62 1.11 7.67 3.13a10.55 10.55 0 0 1 3.18 7.59c0 5.91-4.87 10.72-10.85 10.72z"/>
-</svg></button>
-</div>
-<div class="mini-row">
-<div>
-<div class="who">Paulo Henrique</div>
-<div class="meta">25 dias sem vir · costuma agendar às sextas</div>
-</div>
-<button class="mini-wa" onclick="showToast('Mensagem pronta para Paulo Henrique.')"><svg class="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true">
-  <path fill="currentColor" d="M19.11 17.43c-.28-.14-1.64-.81-1.89-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.21-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.47.07-.72.35-.25.28-.95.93-.95 2.27 0 1.34.98 2.63 1.12 2.81.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
-  <path fill="currentColor" d="M16.03 3C8.84 3 3 8.76 3 15.86c0 2.53.75 5 2.17 7.1L3 29l6.26-2.04a13.07 13.07 0 0 0 6.77 1.89H16c7.19 0 13.03-5.76 13.03-12.86S23.19 3 16.03 3zm0 23.68h-.01a10.92 10.92 0 0 1-5.56-1.52l-.4-.24-3.72 1.21 1.22-3.59-.26-.42a10.63 10.63 0 0 1-1.68-5.75c0-5.91 4.87-10.72 10.86-10.72 2.9 0 5.62 1.11 7.67 3.13a10.55 10.55 0 0 1 3.18 7.59c0 5.91-4.87 10.72-10.85 10.72z"/>
-</svg></button>
-</div>
-</div>
+<div class="mini-list compact" id="overview-retention-list"></div></div>
 <div class="overview-radar-footer">
 <div class="overview-radar-stat">
 <span class="label">Em risco</span>
@@ -7420,7 +7310,7 @@ a{color:inherit;text-decoration:none}
 <p>Recorrência, recompensas e impacto real do programa no faturamento.</p>
 </div>
 <div class="topbar-actions">
-<button class="btn-outline" onclick="showToast('Configurações do programa serão abertas em uma tela própria.')">
+<button class="btn-outline" onclick="openLoyaltyConfigModal()">
               Configurar fidelidade
             </button>
 <button class="btn-primary-action" onclick="exportLoyaltyCSV()">
@@ -7570,7 +7460,7 @@ a{color:inherit;text-decoration:none}
 </div>
 <div class="topbar-actions">
 <button class="btn-outline" onclick="exportFinanceCSV()">⬇ Exportar movimentações</button>
-<button class="btn-primary-action" onclick="showToast('Novo lançamento financeiro em desenvolvimento.')">Novo lançamento</button>
+<button class="btn-primary-action" onclick="openFinanceEntryModal()">Novo lançamento</button>
 </div>
 </div>
 <div class="finance-kpi-grid">
@@ -7593,7 +7483,7 @@ a{color:inherit;text-decoration:none}
 <div class="card finance-summary-card">
 <h3>Meta e previsão</h3>
 <div class="finance-goal-block">
-<div class="finance-goal-top"><div class="current" id="finance-goal-current">—</div><div class="target">meta R$ 20.000</div></div>
+<div class="finance-goal-top"><div class="current" id="finance-goal-current">—</div><div class="target" id="finance-goal-target">meta —</div></div>
 <div class="finance-goal-bar"><div class="finance-goal-fill" id="finance-goal-fill" style="width:0%"></div></div>
 </div>
 <div class="finance-summary-list">
@@ -7956,7 +7846,7 @@ a{color:inherit;text-decoration:none}
 <div class="modal-overlay" id="appointment-modal">
 <div class="modal">
 <div class="modal-header">
-<h2>Novo Agendamento</h2>
+<h2 id="appointment-modal-title">Novo Agendamento</h2>
 <button class="modal-close" onclick="closeAppointmentModal()">×</button>
 </div>
 <div class="modal-body">
@@ -7993,12 +7883,152 @@ a{color:inherit;text-decoration:none}
 </div>
 </div>
 </div>
-<div class="modal-footer">
-<button class="btn-outline" onclick="closeAppointmentModal()">Cancelar</button>
-<button class="btn-primary-action" onclick="saveAppointment()">Salvar agendamento</button>
+<div class="modal-footer appointment-modal-footer">
+<button class="btn-danger-soft" id="appointment-delete-btn" style="display:none" onclick="deleteEditingAppointment()">Excluir</button>
+<div class="modal-footer-spacer"></div>
+<button class="btn-outline" onclick="closeAppointmentModal()">Fechar</button>
+<button class="btn-primary-action" id="appointment-save-btn" onclick="saveAppointment()">Salvar agendamento</button>
 </div>
 </div>
 </div>
+
+
+
+<!-- MODAL CONFIGURAÇÃO DE FIDELIDADE -->
+<div class="modal-overlay" id="loyalty-config-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Configurar fidelidade</h2>
+      <button class="modal-close" onclick="closeLoyaltyConfigModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Status do programa</label>
+          <select id="loyalty-config-enabled">
+            <option value="true">Ativo</option>
+            <option value="false">Desativado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Visitas para recompensa</label>
+          <input id="loyalty-config-goal" type="number" min="1" step="1">
+        </div>
+        <div class="form-group full">
+          <label>Recompensa</label>
+          <input id="loyalty-config-reward" type="text" placeholder="Ex: Corte gratuito">
+        </div>
+        <div class="form-group full">
+          <label>Meta mensal de faturamento</label>
+          <input id="business-monthly-goal" type="number" min="0" step="100">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeLoyaltyConfigModal()">Cancelar</button>
+      <button class="btn-primary-action" id="loyalty-config-save" onclick="saveLoyaltyConfig()">Salvar configuração</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DADOS DO CLIENTE -->
+<div class="modal-overlay" id="client-data-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Dados do cliente</h2>
+      <button class="modal-close" onclick="closeClientDataModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input id="client-data-id" type="hidden">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Nome</label>
+          <input id="client-data-name" type="text" disabled>
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input id="client-data-phone" type="tel" placeholder="(85) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label>Aniversário</label>
+          <input id="client-data-birthday" type="date">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeClientDataModal()">Cancelar</button>
+      <button class="btn-primary-action" id="client-data-save" onclick="saveClientData()">Salvar dados</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVO LANÇAMENTO FINANCEIRO -->
+<div class="modal-overlay" id="finance-entry-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Novo lançamento</h2>
+      <button class="modal-close" onclick="closeFinanceEntryModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Tipo</label>
+          <div class="finance-entry-type-grid">
+            <button type="button" class="finance-entry-type active" data-entry-type="entrada" onclick="setFinanceEntryType('entrada')">Entrada</button>
+            <button type="button" class="finance-entry-type" data-entry-type="saida" onclick="setFinanceEntryType('saida')">Saída</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Data</label>
+          <input id="finance-entry-date" type="date">
+        </div>
+        <div class="form-group">
+          <label>Valor</label>
+          <input id="finance-entry-value" type="number" min="0" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group full">
+          <label>Descrição</label>
+          <input id="finance-entry-description" type="text" placeholder="Ex: Venda de produto, aluguel...">
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <select id="finance-entry-category">
+            <option>Serviços</option>
+            <option>Produtos</option>
+            <option>Comissões</option>
+            <option>Despesas fixas</option>
+            <option>Despesas variáveis</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pagamento</label>
+          <select id="finance-entry-payment">
+            <option>Pix</option>
+            <option>Cartão</option>
+            <option>Dinheiro</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Profissional</label>
+          <select id="finance-entry-professional">
+            <option value="">Nenhum</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cliente (opcional)</label>
+          <input id="finance-entry-client" type="text" placeholder="Nome do cliente">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeFinanceEntryModal()">Cancelar</button>
+      <button class="btn-primary-action" id="finance-entry-save" onclick="saveFinanceEntry()">Salvar lançamento</button>
+    </div>
+  </div>
+</div>
+
 <!-- GERADOR DE MENSAGEM IA -->
 <div class="modal-overlay" id="ai-campaign-modal">
 <div class="modal ai-campaign-modal">
@@ -8174,8 +8204,8 @@ function loadCatalog(key, defaults){
   }
 }
 
-let SERVICE_CATALOG = loadCatalog(SERVICES_STORAGE_KEY, DEFAULT_SERVICE_CATALOG);
-let TEAM_CATALOG = loadCatalog(TEAM_STORAGE_KEY, DEFAULT_TEAM_CATALOG);
+let SERVICE_CATALOG = DEFAULT_SERVICE_CATALOG.map(item=>({...item}));
+let TEAM_CATALOG = DEFAULT_TEAM_CATALOG.map(item=>({...item}));
 let SERVICE_PRICES = {};
 let PROFESSIONALS = [];
 
@@ -8191,13 +8221,31 @@ const SLOT_MINUTES = 60;
 
 
 
-function persistServiceCatalog(){
-  localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(SERVICE_CATALOG));
+async function persistServiceCatalog(){
+  const payload=SERVICE_CATALOG.map(item=>({
+    id:item.id,
+    name:item.name,
+    price:Number(item.price)||0,
+    duration:Number(item.duration)||0,
+    active:item.active!==false,
+    updated_at:new Date().toISOString()
+  }));
+  const {error}=await sb.from('services').upsert(payload,{onConflict:'id'});
+  if(error) throw error;
   syncCatalogDerived();
   syncCatalogAcrossApp();
 }
-function persistTeamCatalog(){
-  localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(TEAM_CATALOG));
+
+async function persistTeamCatalog(){
+  const payload=TEAM_CATALOG.map(item=>({
+    id:item.id,
+    name:item.name,
+    commission:Number(item.commission)||0,
+    active:item.active!==false,
+    updated_at:new Date().toISOString()
+  }));
+  const {error}=await sb.from('team_members').upsert(payload,{onConflict:'id'});
+  if(error) throw error;
   syncCatalogDerived();
   syncCatalogAcrossApp();
 }
@@ -8246,7 +8294,7 @@ function syncCatalogAcrossApp(){
     renderTeamRanking();
   }
 }
-function saveService(event){
+async function saveService(event){
   event.preventDefault();
   const id=document.getElementById('service-edit-id').value;
   const name=document.getElementById('service-name').value.trim();
@@ -8269,12 +8317,12 @@ function saveService(event){
       const oldName=item.name;
       Object.assign(item,{name,price,duration,active});
       appointments.forEach(a=>{if(a.service===oldName)a.service=name});
-      persistAppointments();
+      await persistAppointments();
     }
   }else{
     SERVICE_CATALOG.push({id:catalogId('svc'),name,price,duration,active});
   }
-  persistServiceCatalog();
+  await persistServiceCatalog();
   resetServiceForm();
   renderAppointments();
   renderHomeManagement();
@@ -8301,16 +8349,24 @@ function resetServiceForm(){
   const active=document.getElementById('service-active');
   if(active)active.value='true';
 }
-function deleteService(id){
+async function deleteService(id){
   const item=SERVICE_CATALOG.find(s=>s.id===id);
   if(!item)return;
   if(appointments.some(a=>a.service===item.name)){
     showToast('Este serviço já possui agendamentos. Deixe-o inativo em vez de excluir.');
     return;
   }
-  SERVICE_CATALOG=SERVICE_CATALOG.filter(s=>s.id!==id);
-  persistServiceCatalog();
-  showToast('Serviço removido.');
+  try{
+    const {error}=await sb.from('services').delete().eq('id',id);
+    if(error) throw error;
+    SERVICE_CATALOG=SERVICE_CATALOG.filter(s=>s.id!==id);
+    syncCatalogDerived();
+    syncCatalogAcrossApp();
+    showToast('Serviço removido.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível remover o serviço.');
+  }
 }
 function renderServicesAdmin(){
   const list=document.getElementById('service-list');
@@ -8338,7 +8394,7 @@ function renderServicesAdmin(){
     </div>
   `).join('');
 }
-function saveTeamMember(event){
+async function saveTeamMember(event){
   event.preventDefault();
   const id=document.getElementById('team-edit-id').value;
   const name=document.getElementById('team-name').value.trim();
@@ -8364,12 +8420,12 @@ function saveTeamMember(event){
         collection.forEach(c=>{if(c.professional===oldName)c.professional=name});
       });
       FINANCE_MOVEMENTS.forEach(m=>{if(m.professional===oldName)m.professional=name});
-      persistAppointments();
+      await persistAppointments();
     }
   }else{
     TEAM_CATALOG.push({id:catalogId('team'),name,commission,active});
   }
-  persistTeamCatalog();
+  await persistTeamCatalog();
   resetTeamForm();
   renderAppointments();
   renderRadar();
@@ -8397,16 +8453,24 @@ function resetTeamForm(){
   const active=document.getElementById('team-active');
   if(active)active.value='true';
 }
-function deleteTeamMember(id){
+async function deleteTeamMember(id){
   const item=TEAM_CATALOG.find(p=>p.id===id);
   if(!item)return;
   if(appointments.some(a=>a.professional===item.name)){
     showToast('Este profissional já possui agendamentos. Deixe-o inativo em vez de excluir.');
     return;
   }
-  TEAM_CATALOG=TEAM_CATALOG.filter(p=>p.id!==id);
-  persistTeamCatalog();
-  showToast('Profissional removido.');
+  try{
+    const {error}=await sb.from('team_members').delete().eq('id',id);
+    if(error) throw error;
+    TEAM_CATALOG=TEAM_CATALOG.filter(p=>p.id!==id);
+    syncCatalogDerived();
+    syncCatalogAcrossApp();
+    showToast('Profissional removido.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível remover o profissional.');
+  }
 }
 function renderTeamAdmin(){
   const list=document.getElementById('team-list');
@@ -8449,23 +8513,173 @@ const defaultAppointments = [
   {id:10,date:'2026-09-04',time:'11:30',client:'Henrique Lima',service:'Corte',professional:'Diego',status:'no-show'}
 ];
 
-let appointments = loadAppointments();
+let appointments = defaultAppointments.map(item=>({...item}));
 
 const appToday = new Date(2026, 8, 5);
 let selectedDate = new Date(appToday);
 let calendarDate = new Date(appToday);
 
 function loadAppointments(){
-  try{
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [...defaultAppointments];
-  }catch{
-    return [...defaultAppointments];
-  }
+  return defaultAppointments.map(item=>({...item}));
 }
 
-function persistAppointments(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(appointments));
+async function persistAppointments(){
+  if(!appointments.length) return;
+  const payload=appointments.map(item=>{
+    const service=SERVICE_CATALOG.find(s=>s.name===item.service);
+    const professional=TEAM_CATALOG.find(p=>p.name===item.professional);
+    return {
+      id:Number(item.id),
+      appointment_date:item.date,
+      appointment_time:item.time,
+      client_name:item.client,
+      service_id:service?.id || null,
+      service_name:item.service,
+      professional_id:professional?.id || null,
+      professional_name:item.professional,
+      status:item.status,
+      updated_at:new Date().toISOString()
+    };
+  });
+  const {error}=await sb.from('appointments').upsert(payload,{onConflict:'id'});
+  if(error) throw error;
+}
+
+
+
+let CLIENTS=[];
+let BUSINESS_SETTINGS={
+  monthly_goal:0,
+  loyalty_enabled:true,
+  loyalty_visit_goal:10,
+  loyalty_reward_name:'Corte gratuito'
+};
+let LOYALTY_REDEMPTIONS=[];
+
+let coreDataHydrated=false;
+let coreDataHydrating=null;
+
+async function hydrateCoreDataFromSupabase(force=false){
+  if(coreDataHydrated && !force) return;
+  if(coreDataHydrating && !force) return coreDataHydrating;
+
+  coreDataHydrating=(async()=>{
+    const [servicesRes,teamRes,appointmentsRes,financeRes,clientsRes,settingsRes,redemptionsRes]=await Promise.all([
+      sb.from('services').select('id,name,price,duration,active').order('created_at',{ascending:true}),
+      sb.from('team_members').select('id,name,commission,active').order('created_at',{ascending:true}),
+      sb.from('appointments')
+        .select('id,appointment_date,appointment_time,client_name,service_id,service_name,professional_id,professional_name,status')
+        .order('appointment_date',{ascending:true})
+        .order('appointment_time',{ascending:true}),
+      sb.from('financial_entries')
+        .select('id,entry_date,description,client_name,professional_id,professional_name,category,type,payment_method,amount')
+        .order('entry_date',{ascending:false})
+        .order('id',{ascending:false}),
+      sb.from('clients')
+        .select('id,name,phone,birthday,radar_contacted,birthday_status,created_at,updated_at')
+        .order('name',{ascending:true}),
+      sb.from('business_settings')
+        .select('monthly_goal,loyalty_enabled,loyalty_visit_goal,loyalty_reward_name')
+        .eq('id',1)
+        .single(),
+      sb.from('loyalty_redemptions')
+        .select('id,client_id,client_name,reward_name,redeemed_at,amount_after')
+        .order('redeemed_at',{ascending:false})
+        .order('id',{ascending:false})
+    ]);
+
+    if(servicesRes.error) throw servicesRes.error;
+    if(teamRes.error) throw teamRes.error;
+    if(appointmentsRes.error) throw appointmentsRes.error;
+    if(financeRes.error) throw financeRes.error;
+    if(clientsRes.error) throw clientsRes.error;
+    if(settingsRes.error) throw settingsRes.error;
+    if(redemptionsRes.error) throw redemptionsRes.error;
+
+    SERVICE_CATALOG=(servicesRes.data||[]).map(item=>({
+      id:item.id,
+      name:item.name,
+      price:Number(item.price)||0,
+      duration:Number(item.duration)||0,
+      active:item.active!==false
+    }));
+
+    TEAM_CATALOG=(teamRes.data||[]).map(item=>({
+      id:item.id,
+      name:item.name,
+      commission:Number(item.commission)||0,
+      active:item.active!==false
+    }));
+
+    appointments=(appointmentsRes.data||[]).map(item=>({
+      id:Number(item.id),
+      date:item.appointment_date,
+      time:String(item.appointment_time||'').slice(0,5),
+      client:item.client_name,
+      service:item.service_name,
+      professional:item.professional_name,
+      status:item.status
+    }));
+
+
+    FINANCE_MOVEMENTS=(financeRes.data||[]).map(item=>({
+      id:Number(item.id),
+      date:item.entry_date,
+      description:item.description,
+      client:item.client_name || '—',
+      professional:item.professional_name || '—',
+      professionalId:item.professional_id || '',
+      category:item.category,
+      type:item.type,
+      payment:item.payment_method,
+      value:Number(item.amount)||0
+    }));
+
+
+    CLIENTS=(clientsRes.data||[]).map(item=>({
+      id:Number(item.id),
+      name:item.name,
+      phone:item.phone||'',
+      birthday:item.birthday||'',
+      radarContacted:item.radar_contacted===true,
+      birthdayStatus:item.birthday_status||'pendente'
+    }));
+
+    BUSINESS_SETTINGS={
+      monthly_goal:Number(settingsRes.data?.monthly_goal)||0,
+      loyalty_enabled:settingsRes.data?.loyalty_enabled!==false,
+      loyalty_visit_goal:Math.max(1,Number(settingsRes.data?.loyalty_visit_goal)||10),
+      loyalty_reward_name:settingsRes.data?.loyalty_reward_name||'Corte gratuito'
+    };
+
+    LOYALTY_REDEMPTIONS=(redemptionsRes.data||[]).map(item=>({
+      id:Number(item.id),
+      clientId:item.client_id ? Number(item.client_id) : null,
+      client:item.client_name,
+      reward:item.reward_name,
+      date:item.redeemed_at,
+      spentAfter:Number(item.amount_after)||0
+    }));
+
+    rebuildDerivedClientModules();
+    syncCatalogDerived();
+    syncCatalogAcrossApp();
+
+    renderCalendar();
+    renderAppointments();
+    renderCancellationReport();
+    renderAgendaIntelligence();
+    renderOverviewWidgets();
+    renderHomeManagement();
+
+    coreDataHydrated=true;
+  })();
+
+  try{
+    await coreDataHydrating;
+  }finally{
+    coreDataHydrating=null;
+  }
 }
 
 function formatDateKey(date){
@@ -8676,27 +8890,64 @@ function renderAppointments(){
       <div class="agenda-hour">${item.time}</div>
       <div>
         <div class="agenda-client">${escapeHTML(item.client)}</div>
-        <div class="agenda-service">${escapeHTML(item.service)}</div>
+        <div class="agenda-service">${escapeHTML(item.service)} · ${getServiceDuration(item.service)} min</div>
         <div class="agenda-professional">com ${escapeHTML(item.professional)}</div>
       </div>
       <div class="agenda-status status-${item.status}">
         ${statusLabel[item.status] || item.status}
       </div>
+      <div class="appointment-actions">
+        <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
+        ${item.status!=='finalizado' ? `<button class="appointment-action finish" onclick="changeAppointmentStatus(${item.id},'finalizado')">Finalizar</button>` : ''}
+        ${!['desmarcado','no-show'].includes(item.status) ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>` : ''}
+      </div>
     </div>
   `).join('');
 }
 
-function openAppointmentModal(){
-  document.getElementById('appointment-modal').classList.add('open');
-  document.getElementById('appt-date').value=formatDateKey(selectedDate);
+let appointmentEditId=null;
+
+function openAppointmentModal(id=null){
+  appointmentEditId=id===null?null:Number(id);
+  const modal=document.getElementById('appointment-modal');
+  const title=document.getElementById('appointment-modal-title');
+  const deleteBtn=document.getElementById('appointment-delete-btn');
+  const saveBtn=document.getElementById('appointment-save-btn');
+
+  clearAppointmentForm();
+
+  if(appointmentEditId!==null){
+    const item=appointments.find(a=>Number(a.id)===appointmentEditId);
+    if(!item){
+      showToast('Agendamento não encontrado.');
+      return;
+    }
+    title.textContent='Editar agendamento';
+    deleteBtn.style.display='';
+    saveBtn.textContent='Salvar alterações';
+    document.getElementById('appt-client').value=item.client;
+    document.getElementById('appt-date').value=item.date;
+    document.getElementById('appt-time').value=item.time;
+    document.getElementById('appt-service').value=item.service;
+    document.getElementById('appt-professional').value=item.professional;
+    document.getElementById('appt-status').value=item.status;
+  }else{
+    title.textContent='Novo Agendamento';
+    deleteBtn.style.display='none';
+    saveBtn.textContent='Salvar agendamento';
+    document.getElementById('appt-date').value=formatDateKey(selectedDate);
+  }
+
+  modal.classList.add('open');
   setTimeout(()=>document.getElementById('appt-client').focus(),100);
 }
 
 function closeAppointmentModal(){
   document.getElementById('appointment-modal').classList.remove('open');
+  appointmentEditId=null;
 }
 
-function saveAppointment(){
+async function saveAppointment(){
   const client=document.getElementById('appt-client').value.trim();
   const date=document.getElementById('appt-date').value;
   const time=document.getElementById('appt-time').value;
@@ -8709,30 +8960,167 @@ function saveAppointment(){
     return;
   }
 
-  appointments.push({
-    id:Date.now(),
-    date,
-    time,
-    client,
-    service,
-    professional,
-    status
-  });
+  const activeStatus=!['desmarcado','no-show'].includes(status);
+  const localConflict=activeStatus && appointments.some(item=>
+    Number(item.id)!==Number(appointmentEditId) &&
+    item.date===date &&
+    item.time===time &&
+    item.professional===professional &&
+    !['desmarcado','no-show'].includes(item.status)
+  );
 
-  persistAppointments();
+  if(localConflict){
+    showToast('Este profissional já possui um agendamento neste horário.');
+    return;
+  }
 
-  selectedDate=parseDateKey(date);
-  calendarDate=new Date(selectedDate);
+  const serviceItem=SERVICE_CATALOG.find(s=>s.name===service);
+  const professionalItem=TEAM_CATALOG.find(p=>p.name===professional);
 
-  closeAppointmentModal();
-  clearAppointmentForm();
-  renderCalendar();
-  renderAppointments();
-  renderCancellationReport();
-  renderAgendaIntelligence();
-  renderOverviewWidgets();
-  renderHomeManagement();
-  showToast('Agendamento salvo com sucesso.');
+  if(!serviceItem || !professionalItem){
+    showToast('Serviço ou profissional inválido.');
+    return;
+  }
+
+  const saveButton=document.getElementById('appointment-save-btn');
+  saveButton.disabled=true;
+  const originalText=saveButton.textContent;
+  saveButton.textContent='Salvando...';
+
+  const payload={
+    appointment_date:date,
+    appointment_time:time,
+    client_name:client,
+    service_id:serviceItem.id,
+    service_name:serviceItem.name,
+    professional_id:professionalItem.id,
+    professional_name:professionalItem.name,
+    status,
+    updated_at:new Date().toISOString()
+  };
+
+  try{
+    let result;
+    if(appointmentEditId!==null){
+      result=await sb.from('appointments')
+        .update(payload)
+        .eq('id',appointmentEditId)
+        .select('id,appointment_date,appointment_time,client_name,service_name,professional_name,status')
+        .single();
+    }else{
+      result=await sb.from('appointments')
+        .insert(payload)
+        .select('id,appointment_date,appointment_time,client_name,service_name,professional_name,status')
+        .single();
+    }
+
+    const {data,error}=result;
+    if(error){
+      if(error.code==='23505'){
+        showToast('Este horário já foi ocupado por outro agendamento.');
+        await hydrateCoreDataFromSupabase(true);
+        return;
+      }
+      throw error;
+    }
+
+    await ensureClientExists(client);
+
+    const mapped={
+      id:Number(data.id),
+      date:data.appointment_date,
+      time:String(data.appointment_time).slice(0,5),
+      client:data.client_name,
+      service:data.service_name,
+      professional:data.professional_name,
+      status:data.status
+    };
+
+    if(appointmentEditId!==null){
+      const index=appointments.findIndex(a=>Number(a.id)===Number(data.id));
+      if(index>=0) appointments[index]=mapped;
+    }else{
+      appointments.push(mapped);
+    }
+
+    const wasEditing=appointmentEditId!==null;
+    selectedDate=parseDateKey(date);
+    calendarDate=new Date(selectedDate);
+    closeAppointmentModal();
+    renderCalendar();
+    renderAppointments();
+    renderCancellationReport();
+    renderAgendaIntelligence();
+    renderOverviewWidgets();
+    renderHomeManagement();
+    rebuildDerivedClientModules();
+    renderRadar();
+    renderBirthdays();
+    renderLoyalty();
+    renderOverviewRetention();
+    renderFinance();
+    showToast(wasEditing?'Agendamento atualizado.':'Agendamento salvo com sucesso.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível salvar o agendamento.');
+  }finally{
+    saveButton.disabled=false;
+    saveButton.textContent=originalText;
+  }
+}
+
+async function changeAppointmentStatus(id,status){
+  const item=appointments.find(a=>Number(a.id)===Number(id));
+  if(!item) return;
+
+  try{
+    const {error}=await sb.from('appointments')
+      .update({status,updated_at:new Date().toISOString()})
+      .eq('id',id);
+    if(error) throw error;
+
+    item.status=status;
+    rebuildDerivedClientModules();
+    renderAppointments();
+    renderRadar();
+    renderBirthdays();
+    renderLoyalty();
+    renderOverviewRetention();
+    renderCancellationReport();
+    renderAgendaIntelligence();
+    renderOverviewWidgets();
+    renderHomeManagement();
+    renderFinance();
+    showToast(status==='finalizado'?'Atendimento finalizado.':'Agendamento cancelado.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível alterar o status.');
+  }
+}
+
+async function deleteEditingAppointment(){
+  if(appointmentEditId===null) return;
+  if(!confirm('Excluir este agendamento definitivamente?')) return;
+
+  try{
+    const {error}=await sb.from('appointments').delete().eq('id',appointmentEditId);
+    if(error) throw error;
+
+    appointments=appointments.filter(a=>Number(a.id)!==Number(appointmentEditId));
+    rebuildDerivedClientModules();
+    closeAppointmentModal();
+    renderCalendar();
+    renderAppointments();
+    renderCancellationReport();
+    renderAgendaIntelligence();
+    renderOverviewWidgets();
+    renderHomeManagement();
+    renderFinance();
+    showToast('Agendamento excluído.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível excluir o agendamento.');
+  }
 }
 
 function clearAppointmentForm(){
@@ -8746,6 +9134,17 @@ function clearAppointmentForm(){
 document.getElementById('appointment-modal').addEventListener('click',function(event){
   if(event.target===this) closeAppointmentModal();
 });
+document.getElementById('finance-entry-modal')?.addEventListener('click',function(event){
+  if(event.target===this) closeFinanceEntryModal();
+});
+
+document.getElementById('client-data-modal')?.addEventListener('click',function(event){
+  if(event.target===this) closeClientDataModal();
+});
+document.getElementById('loyalty-config-modal')?.addEventListener('click',function(event){
+  if(event.target===this) closeLoyaltyConfigModal();
+});
+
 
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape') closeAppointmentModal();
@@ -8775,6 +9174,24 @@ function getAppointmentsForMonth(year,month){
   });
 }
 
+
+function getServiceDuration(serviceName){
+  const service=SERVICE_CATALOG.find(item=>item.name===serviceName);
+  return Math.max(0,Number(service?.duration)||0);
+}
+
+function getDailyCapacityMinutes(){
+  const activeProfessionals=TEAM_CATALOG.filter(item=>item.active!==false).length;
+  const minutesPerProfessional=(CLOSING_HOUR-OPENING_HOUR)*60;
+  return activeProfessionals*minutesPerProfessional;
+}
+
+function getOccupiedMinutesForDate(date){
+  return getAppointmentsForDate(date)
+    .filter(item=>!['desmarcado','no-show'].includes(item.status))
+    .reduce((sum,item)=>sum+getServiceDuration(item.service),0);
+}
+
 function getDailyCapacity(){
   const hours = CLOSING_HOUR-OPENING_HOUR;
   const slotsPerProfessional = Math.floor((hours*60)/SLOT_MINUTES);
@@ -8784,8 +9201,9 @@ function getDailyCapacity(){
 function renderAgendaKPIs(){
   const dayAppointments = getAppointmentsForDate(selectedDate);
   const active = dayAppointments.filter(item=>!['desmarcado','no-show'].includes(item.status));
-  const totalCapacity = getDailyCapacity();
-  const occupancy = totalCapacity ? (active.length/totalCapacity)*100 : 0;
+  const totalCapacityMinutes = getDailyCapacityMinutes();
+  const occupiedMinutes = active.reduce((sum,item)=>sum+getServiceDuration(item.service),0);
+  const occupancy = totalCapacityMinutes ? (occupiedMinutes/totalCapacityMinutes)*100 : 0;
 
   const forecast = active.reduce((sum,item)=>sum+getServicePrice(item.service),0);
 
@@ -8805,13 +9223,13 @@ function renderAgendaKPIs(){
 
   if(occupancy >= 70){
     occMeta.classList.add('good');
-    occMeta.textContent='Boa ocupação para o dia selecionado';
+    occMeta.textContent=`${occupiedMinutes} min ocupados de ${totalCapacityMinutes} min disponíveis`;
   }else if(occupancy >= 40){
     occMeta.classList.add('warn');
-    occMeta.textContent='Ainda há espaço para preencher horários';
+    occMeta.textContent=`${occupiedMinutes} min ocupados de ${totalCapacityMinutes} min disponíveis`;
   }else{
     occMeta.classList.add('bad');
-    occMeta.textContent='Agenda com bastante capacidade ociosa';
+    occMeta.textContent=`${occupiedMinutes} min ocupados de ${totalCapacityMinutes} min disponíveis`;
   }
 
   document.getElementById('agenda-forecast-revenue').textContent=money(forecast);
@@ -9000,125 +9418,210 @@ function renderCancellationReport(){
 
 
 
-const RADAR_CLIENTS = [
-  {
-    id:1,
-    name:'Renato Alves',
-    lastVisit:'2026-08-05',
-    daysAway:31,
-    frequency:21,
-    ticket:92,
-    professional:'Lucas',
-    service:'Corte + Barba',
-    risk:'alto',
-    reason:'Frequência atrasada',
-    contacted:false
-  },
-  {
-    id:2,
-    name:'Bruno Matos',
-    lastVisit:'2026-08-07',
-    daysAway:29,
-    frequency:20,
-    ticket:78,
-    professional:'Rafael',
-    service:'Corte',
-    risk:'moderado',
-    reason:'Frequência atrasada',
-    contacted:true
-  },
-  {
-    id:3,
-    name:'Daniel Costa',
-    lastVisit:'2026-08-09',
-    daysAway:27,
-    frequency:18,
-    ticket:105,
-    professional:'Lucas',
-    service:'Corte + Barba',
-    risk:'alto',
-    reason:'Queda de frequência',
-    contacted:false
-  },
-  {
-    id:4,
-    name:'Mateus Rocha',
-    lastVisit:'2026-07-19',
-    daysAway:48,
-    frequency:25,
-    ticket:88,
-    professional:'Diego',
-    service:'Corte + Barba',
-    risk:'alto',
-    reason:'Cancelou e não voltou',
-    contacted:false
-  },
-  {
-    id:5,
-    name:'Gustavo Lima',
-    lastVisit:'2026-06-28',
-    daysAway:69,
-    frequency:24,
-    ticket:96,
-    professional:'Rafael',
-    service:'Corte + Barba',
-    risk:'critico',
-    reason:'No-show',
-    contacted:true
-  },
-  {
-    id:6,
-    name:'Leandro Souza',
-    lastVisit:'2026-06-21',
-    daysAway:76,
-    frequency:30,
-    ticket:64,
-    professional:'Diego',
-    service:'Corte',
-    risk:'critico',
-    reason:'Frequência atrasada',
-    contacted:false
-  },
-  {
-    id:7,
-    name:'Victor Mendes',
-    lastVisit:'2026-07-28',
-    daysAway:39,
-    frequency:22,
-    ticket:120,
-    professional:'Lucas',
-    service:'Corte + Barba',
-    risk:'alto',
-    reason:'Queda de frequência',
-    contacted:false
-  },
-  {
-    id:8,
-    name:'Pedro Henrique',
-    lastVisit:'2026-08-11',
-    daysAway:25,
-    frequency:20,
-    ticket:58,
-    professional:'Rafael',
-    service:'Corte',
-    risk:'moderado',
-    reason:'Frequência atrasada',
-    contacted:false
-  },
-  {
-    id:9,
-    name:'Rômulo Freitas',
-    lastVisit:'2026-06-30',
-    daysAway:67,
-    frequency:28,
-    ticket:82,
-    professional:'Diego',
-    service:'Barba',
-    risk:'critico',
-    reason:'Cancelou e não voltou',
-    contacted:true
+
+function normalizeClientName(name){
+  return String(name||'').trim().replace(/\s+/g,' ').toLowerCase();
+}
+
+function getClientRecordByName(name){
+  const key=normalizeClientName(name);
+  return CLIENTS.find(c=>normalizeClientName(c.name)===key) || null;
+}
+
+async function ensureClientExists(name){
+  const clean=String(name||'').trim().replace(/\s+/g,' ');
+  if(!clean) return null;
+  const existing=getClientRecordByName(clean);
+  if(existing) return existing;
+
+  const {data,error}=await sb.from('clients')
+    .insert({name:clean})
+    .select('id,name,phone,birthday,radar_contacted,birthday_status')
+    .single();
+
+  if(error){
+    if(error.code==='23505'){
+      const {data:found}=await sb.from('clients')
+        .select('id,name,phone,birthday,radar_contacted,birthday_status')
+        .ilike('name',clean)
+        .maybeSingle();
+      if(found){
+        const mapped={id:Number(found.id),name:found.name,phone:found.phone||'',birthday:found.birthday||'',radarContacted:found.radar_contacted===true,birthdayStatus:found.birthday_status||'pendente'};
+        CLIENTS.push(mapped);
+        return mapped;
+      }
+    }
+    throw error;
   }
-];
+
+  const mapped={id:Number(data.id),name:data.name,phone:data.phone||'',birthday:data.birthday||'',radarContacted:data.radar_contacted===true,birthdayStatus:data.birthday_status||'pendente'};
+  CLIENTS.push(mapped);
+  return mapped;
+}
+
+function getValidClientAppointments(name){
+  const key=normalizeClientName(name);
+  return appointments
+    .filter(a=>normalizeClientName(a.client)===key && !['desmarcado','no-show'].includes(a.status))
+    .slice()
+    .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+}
+
+function average(values){
+  return values.length ? values.reduce((s,v)=>s+v,0)/values.length : 0;
+}
+
+function diffDays(dateA,dateB){
+  const a=parseDateKey(dateA), b=parseDateKey(dateB);
+  return Math.round((b-a)/86400000);
+}
+
+function getClientAnalytics(client){
+  const visits=getValidClientAppointments(client.name);
+  const historical=visits.filter(v=>parseDateKey(v.date)<=appToday);
+  const last=historical[historical.length-1] || visits[visits.length-1] || null;
+  const prices=historical.map(v=>getServicePrice(v.service)).filter(v=>v>0);
+  const gaps=[];
+  for(let i=1;i<historical.length;i++){
+    const gap=diffDays(historical[i-1].date,historical[i].date);
+    if(gap>0) gaps.push(gap);
+  }
+  const frequency=Math.max(1,Math.round(average(gaps) || 30));
+  const daysAway=last ? Math.max(0,diffDays(last.date,formatDateKey(appToday))) : 0;
+  const ticket=prices.length ? average(prices) : 0;
+  return {visits,historical,last,frequency,daysAway,ticket};
+}
+
+let RADAR_CLIENTS=[];
+let BIRTHDAY_CLIENTS=[];
+let LOYALTY_CLIENTS=[];
+
+function rebuildDerivedClientModules(){
+  RADAR_CLIENTS=CLIENTS.map(client=>{
+    const data=getClientAnalytics(client);
+    if(!data.last) return null;
+
+    const ratio=data.frequency ? data.daysAway/data.frequency : 0;
+    let risk='moderado';
+    if(data.daysAway>=60 || ratio>=2.3) risk='critico';
+    else if(data.daysAway>=35 || ratio>=1.55) risk='alto';
+
+    return {
+      id:client.id,
+      name:client.name,
+      phone:client.phone,
+      birthday:client.birthday,
+      lastVisit:data.last.date,
+      daysAway:data.daysAway,
+      frequency:data.frequency,
+      ticket:data.ticket,
+      professional:data.last.professional,
+      service:data.last.service,
+      risk,
+      reason:data.daysAway>=60?'Longo período sem retorno':data.daysAway>data.frequency?'Frequência atrasada':'Acompanhar recorrência',
+      contacted:client.radarContacted
+    };
+  }).filter(Boolean);
+
+  BIRTHDAY_CLIENTS=CLIENTS.filter(c=>c.birthday).map(client=>{
+    const data=getClientAnalytics(client);
+    const last=data.last;
+    return {
+      id:client.id,
+      name:client.name,
+      phone:client.phone,
+      birthday:client.birthday,
+      lastVisit:last?.date || '',
+      ticket:data.ticket,
+      professional:last?.professional || '—',
+      service:last?.service || '—',
+      status:client.birthdayStatus || 'pendente',
+      recurring:data.historical.length>=2,
+      risk:data.daysAway>=35
+    };
+  });
+
+  const goal=Math.max(1,Number(BUSINESS_SETTINGS.loyalty_visit_goal)||10);
+  const reward=BUSINESS_SETTINGS.loyalty_reward_name||'Recompensa';
+  LOYALTY_CLIENTS=CLIENTS.map(client=>{
+    const data=getClientAnalytics(client);
+    const visits=data.historical.length;
+    if(!visits) return null;
+    const redemptions=LOYALTY_REDEMPTIONS.filter(r=>r.clientId===client.id).length;
+    const earned=Math.floor(visits/goal);
+    const available=Math.max(0,earned-redemptions);
+    let progress=visits%goal;
+    if(available>0 && progress===0) progress=goal;
+    const remaining=available>0?0:Math.max(0,goal-progress);
+    const status=available>0?'available':remaining<=2?'near':'active';
+
+    return {
+      id:client.id,
+      name:client.name,
+      visits:progress,
+      totalVisits:visits,
+      goal,
+      ticket:data.ticket,
+      frequency:data.frequency,
+      professional:data.last?.professional || '—',
+      reward,
+      availableRewards:available,
+      status
+    };
+  }).filter(Boolean);
+}
+
+function openWhatsAppForClient(id,messageType='retention'){
+  const client=CLIENTS.find(c=>c.id===Number(id));
+  if(!client) return;
+  const phone=String(client.phone||'').replace(/\D/g,'');
+  if(!phone){
+    showToast(`Cadastre o WhatsApp de ${client.name} antes de enviar mensagem.`);
+    openClientDataModal(client.id);
+    return;
+  }
+  const prefix=phone.startsWith('55')?phone:`55${phone}`;
+  const msg=messageType==='birthday'
+    ? `Olá, ${client.name.split(' ')[0]}! Passando para desejar feliz aniversário em nome da Barbearia Vintage.`
+    : `Olá, ${client.name.split(' ')[0]}! Sentimos sua falta na Barbearia Vintage. Quer ver os horários disponíveis para seu próximo atendimento?`;
+  window.open(`https://wa.me/${prefix}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function renderOverviewRetention(){
+  const container=document.getElementById('overview-retention-list');
+  if(!container) return;
+  const rows=RADAR_CLIENTS
+    .filter(c=>c.daysAway>=25)
+    .sort((a,b)=>b.daysAway-a.daysAway)
+    .slice(0,5);
+
+  if(!rows.length){
+    container.innerHTML='<div style="padding:14px 0;color:var(--text-muted);font-size:12px">Nenhum cliente em risco no momento.</div>';
+  }else{
+    container.innerHTML=rows.map(client=>`
+      <div class="mini-row">
+        <div>
+          <div class="who">${escapeHTML(client.name)}</div>
+          <div class="meta">${client.daysAway} dias sem vir · ticket médio ${money(client.ticket)}</div>
+        </div>
+        <button class="mini-wa" onclick="openWhatsAppForClient(${client.id})" aria-label="Abrir WhatsApp">
+          <svg class="whatsapp-svg" viewBox="0 0 32 32" aria-hidden="true">
+            <path fill="currentColor" d="M19.11 17.43c-.28-.14-1.64-.81-1.89-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.21-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.47.07-.72.35-.25.28-.95.93-.95 2.27 0 1.34.98 2.63 1.12 2.81.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
+            <path fill="currentColor" d="M16.03 3C8.84 3 3 8.76 3 15.86c0 2.53.75 5 2.17 7.1L3 29l6.26-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/>
+          </svg>
+        </button>
+      </div>`).join('');
+  }
+
+  const footer=container.closest('.radar-expanded-card')?.querySelector('.overview-radar-footer');
+  if(footer){
+    const risk=RADAR_CLIENTS.filter(c=>c.daysAway>=25);
+    const potential=risk.reduce((s,c)=>s+c.ticket,0);
+    const stats=footer.querySelectorAll('.overview-radar-stat strong');
+    if(stats[0]) stats[0].textContent=`${risk.length} clientes`;
+    if(stats[1]) stats[1].textContent=money(potential);
+  }
+}
 
 function radarRiskLabel(risk){
   return {
@@ -9216,6 +9719,7 @@ function renderRadarTable(){
           <button class="radar-quick-btn" onclick="toggleRadarContact(${client.id})">
             ${client.contacted?'Contatado':'Marcar'}
           </button>
+          <button class="radar-quick-btn" onclick="openClientDataModal(${client.id})">Dados</button>
         </div>
       </div>
     </div>
@@ -9231,7 +9735,10 @@ function renderRadarKPIs(){
   document.getElementById('radar-risk-count').textContent = atRisk;
   document.getElementById('radar-lost-count').textContent = lost;
   document.getElementById('radar-potential-revenue').textContent = money(potential);
-  document.getElementById('radar-recovery-rate').textContent = '38,9%';
+  const contactedClients=RADAR_CLIENTS.filter(c=>c.contacted);
+  const returned=contactedClients.filter(c=>c.daysAway<25).length;
+  document.getElementById('radar-recovery-rate').textContent =
+    `${(contactedClients.length ? (returned/contactedClients.length)*100 : 0).toFixed(1).replace('.',',')}%`;
 
   document.getElementById('radar-highlight-value').textContent = money(potential);
   document.getElementById('radar-highlight-text').textContent =
@@ -9266,18 +9773,28 @@ function renderRadarPriorities(){
   `).join('');
 }
 
-function toggleRadarContact(id){
-  const client = RADAR_CLIENTS.find(c=>c.id===id);
+async function toggleRadarContact(id){
+  const client=RADAR_CLIENTS.find(c=>c.id===Number(id));
   if(!client) return;
 
-  client.contacted = !client.contacted;
-  renderRadarTable();
-  renderRadarPriorities();
-  renderRadarKPIs();
+  const next=!client.contacted;
+  try{
+    const {error}=await sb.from('clients').update({
+      radar_contacted:next,
+      updated_at:new Date().toISOString()
+    }).eq('id',id);
+    if(error) throw error;
 
-  showToast(client.contacted
-    ? `${client.name} marcado como contatado.`
-    : `Contato de ${client.name} reaberto.`);
+    const base=CLIENTS.find(c=>c.id===Number(id));
+    if(base) base.radarContacted=next;
+    rebuildDerivedClientModules();
+    renderRadar();
+    renderOverviewRetention();
+    showToast(next?`${client.name} marcado como contatado.`:`Contato de ${client.name} reaberto.`);
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível atualizar o contato.');
+  }
 }
 
 function contactRadarClient(id){
@@ -9494,23 +10011,50 @@ function exportRadarCSV(){
 
 
 
-const TEAM_RANKING_DATA = {
-  month:[
-    {name:'Lucas',revenue:3320,appointments:18,ticket:184.44,occupancy:82,retention:76,commission:996},
-    {name:'Rafael',revenue:2860,appointments:16,ticket:178.75,occupancy:74,retention:81,commission:858},
-    {name:'Diego',revenue:2580,appointments:14,ticket:184.29,occupancy:69,retention:84,commission:774}
-  ],
-  week:[
-    {name:'Lucas',revenue:1180,appointments:7,ticket:168.57,occupancy:78,retention:75,commission:354},
-    {name:'Rafael',revenue:1040,appointments:6,ticket:173.33,occupancy:72,retention:80,commission:312},
-    {name:'Diego',revenue:920,appointments:5,ticket:184,occupancy:66,retention:82,commission:276}
-  ],
-  today:[
-    {name:'Lucas',revenue:360,appointments:4,ticket:90,occupancy:80,retention:76,commission:108},
-    {name:'Rafael',revenue:240,appointments:3,ticket:80,occupancy:70,retention:81,commission:72},
-    {name:'Diego',revenue:180,appointments:2,ticket:90,occupancy:60,retention:84,commission:54}
-  ]
-};
+
+
+
+function appointmentInRankingPeriod(a,period){
+  const d=parseDateKey(a.date);
+  if(period==='today') return a.date===formatDateKey(appToday);
+  if(period==='week'){
+    const start=new Date(appToday);
+    start.setDate(start.getDate()-6);
+    return d>=new Date(start.getFullYear(),start.getMonth(),start.getDate()) && d<=appToday;
+  }
+  return d.getFullYear()===appToday.getFullYear() && d.getMonth()===appToday.getMonth();
+}
+
+function professionalRetention(name){
+  const related=appointments
+    .filter(a=>a.professional===name && a.status==='finalizado')
+    .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const counts=new Map();
+  related.forEach(a=>{
+    const key=normalizeClientName(a.client);
+    counts.set(key,(counts.get(key)||0)+1);
+  });
+  const unique=counts.size;
+  const repeat=[...counts.values()].filter(v=>v>=2).length;
+  return unique ? (repeat/unique)*100 : 0;
+}
+
+function professionalOccupancy(name,period){
+  const member=TEAM_CATALOG.find(p=>p.name===name);
+  if(!member) return 0;
+  const related=appointments.filter(a=>
+    a.professional===name &&
+    appointmentInRankingPeriod(a,period) &&
+    !['desmarcado','no-show'].includes(a.status)
+  );
+  const occupied=related.reduce((s,a)=>s+getServiceDuration(a.service),0);
+
+  let days=1;
+  if(period==='week') days=7;
+  if(period==='month') days=appToday.getDate();
+  const capacity=(CLOSING_HOUR-OPENING_HOUR)*60*days;
+  return capacity ? Math.min(100,(occupied/capacity)*100) : 0;
+}
 
 function rankingCriterionLabel(key){
   return {
@@ -9533,6 +10077,7 @@ function renderTeamRankingKPIs(data){
   const byTicket=[...data].sort((a,b)=>b.ticket-a.ticket)[0];
   const byRetention=[...data].sort((a,b)=>b.retention-a.retention)[0];
 
+  if(!data.length) return;
   document.getElementById('ranking-top-revenue').textContent=byRevenue.name;
   document.getElementById('ranking-top-revenue-meta').textContent=money(byRevenue.revenue);
 
@@ -9546,115 +10091,98 @@ function renderTeamRankingKPIs(data){
 function renderTeamRanking(){
   const criterion=document.getElementById('ranking-criterion')?.value || 'revenue';
   const period=document.getElementById('ranking-period')?.value || 'month';
-  const seed=TEAM_RANKING_DATA[period] || [];
-  const data=activeTeam().map((member,index)=>{
-    const existing=seed.find(item=>item.name===member.name);
-    if(existing) return {...existing};
-    const related=appointments.filter(a=>a.professional===member.name && a.status!=='desmarcado' && a.status!=='no-show');
+
+  const data=activeTeam().map(member=>{
+    const related=appointments.filter(a=>
+      a.professional===member.name &&
+      appointmentInRankingPeriod(a,period) &&
+      a.status==='finalizado'
+    );
     const revenue=related.reduce((s,a)=>s+getServicePrice(a.service),0);
     const appointmentsCount=related.length;
-    const fallbackRevenue=Math.max(0,2200-(index*280));
-    const fallbackAppointments=Math.max(1,12-index);
-    const finalRevenue=revenue || fallbackRevenue;
-    const finalAppointments=appointmentsCount || fallbackAppointments;
     return {
       name:member.name,
-      revenue:finalRevenue,
-      appointments:finalAppointments,
-      ticket:finalRevenue/finalAppointments,
-      occupancy:Math.max(45,72-index*4),
-      retention:Math.max(55,78-index*2),
-      commission:finalRevenue*((Number(member.commission)||0)/100)
+      revenue,
+      appointments:appointmentsCount,
+      ticket:appointmentsCount?revenue/appointmentsCount:0,
+      occupancy:professionalOccupancy(member.name,period),
+      retention:professionalRetention(member.name),
+      commission:revenue*((Number(member.commission)||0)/100)
     };
   });
 
   const sorted=[...data].sort((a,b)=>b[criterion]-a[criterion]);
-
-  document.getElementById('ranking-subtitle').textContent =
-    `Ordenado por ${rankingCriterionLabel(criterion)}.`;
+  document.getElementById('ranking-subtitle').textContent=`Ordenado por ${rankingCriterionLabel(criterion)}.`;
 
   const body=document.getElementById('ranking-team-body');
   if(!body) return;
 
+  if(!sorted.length){
+    body.innerHTML='<div style="padding:24px;color:var(--text-muted)">Nenhum profissional ativo.</div>';
+    return;
+  }
+
   body.innerHTML=sorted.map((member,index)=>`
     <div class="rank-team-row">
       <div class="rank-team-position ${index===0?'first':''}">${index+1}º</div>
-
-      <div>
-        <div class="rank-team-name">${escapeHTML(member.name)}</div>
-        <div class="rank-team-role">Barbeiro</div>
-      </div>
-
-      <div class="rank-team-metric">
-        <div class="label">Faturamento</div>
-        <div class="value ${criterion==='revenue'?'rank-team-highlight':''}">${money(member.revenue)}</div>
-      </div>
-
-      <div class="rank-team-metric">
-        <div class="label">Atendimentos</div>
-        <div class="value ${criterion==='appointments'?'rank-team-highlight':''}">${member.appointments}</div>
-      </div>
-
-      <div class="rank-team-metric">
-        <div class="label">Ticket médio</div>
-        <div class="value ${criterion==='ticket'?'rank-team-highlight':''}">${money(member.ticket)}</div>
-      </div>
-
-      <div class="rank-team-metric">
-        <div class="label">Ocupação</div>
-        <div class="value ${criterion==='occupancy'?'rank-team-highlight':''}">${member.occupancy}%</div>
-      </div>
-
-      <div class="rank-team-metric">
-        <div class="label">Retenção</div>
-        <div class="value ${criterion==='retention'?'rank-team-highlight':''}">${member.retention}%</div>
-      </div>
-    </div>
-  `).join('');
+      <div><div class="rank-team-name">${escapeHTML(member.name)}</div><div class="rank-team-role">Barbeiro</div></div>
+      <div class="rank-team-metric"><div class="label">Faturamento</div><div class="value ${criterion==='revenue'?'rank-team-highlight':''}">${money(member.revenue)}</div></div>
+      <div class="rank-team-metric"><div class="label">Atendimentos</div><div class="value ${criterion==='appointments'?'rank-team-highlight':''}">${member.appointments}</div></div>
+      <div class="rank-team-metric"><div class="label">Ticket médio</div><div class="value ${criterion==='ticket'?'rank-team-highlight':''}">${money(member.ticket)}</div></div>
+      <div class="rank-team-metric"><div class="label">Ocupação</div><div class="value ${criterion==='occupancy'?'rank-team-highlight':''}">${member.occupancy.toFixed(0)}%</div></div>
+      <div class="rank-team-metric"><div class="label">Retenção</div><div class="value ${criterion==='retention'?'rank-team-highlight':''}">${member.retention.toFixed(0)}%</div></div>
+    </div>`).join('');
 
   renderTeamRankingKPIs(data);
 
-  const avgRevenue=data.reduce((s,m)=>s+m.revenue,0)/data.length;
+  const avgRevenue=average(data.map(m=>m.revenue));
   const topRevenue=[...data].sort((a,b)=>b.revenue-a.revenue)[0];
-  const revenueDiff=((topRevenue.revenue-avgRevenue)/avgRevenue)*100;
-
+  const revenueDiff=avgRevenue?((topRevenue.revenue-avgRevenue)/avgRevenue)*100:0;
   const topTicket=[...data].sort((a,b)=>b.ticket-a.ticket)[0];
   const topRetention=[...data].sort((a,b)=>b.retention-a.retention)[0];
 
-  document.getElementById('ranking-insight-revenue').textContent =
-    `${topRevenue.name} está ${revenueDiff.toFixed(0)}% acima da média`;
-
-  document.getElementById('ranking-insight-ticket').textContent =
+  document.getElementById('ranking-insight-revenue').textContent=
+    avgRevenue?`${topRevenue.name} está ${revenueDiff.toFixed(0)}% acima da média`:`Ainda sem faturamento finalizado no período`;
+  document.getElementById('ranking-insight-ticket').textContent=
     `${topTicket.name} tem o maior ticket: ${money(topTicket.ticket)}`;
-
-  document.getElementById('ranking-insight-retention').textContent =
-    `${topRetention.name} lidera com ${topRetention.retention}%`;
+  document.getElementById('ranking-insight-retention').textContent=
+    `${topRetention.name} lidera com ${topRetention.retention.toFixed(0)}%`;
 }
 
 
-const FINANCE_MOVEMENTS=[
-  {date:'2026-09-05',description:'Corte + Barba',client:'João Pedro',professional:'Lucas',category:'Serviços',type:'entrada',payment:'Pix',value:90},
-  {date:'2026-09-05',description:'Corte',client:'Carlos Eduardo',professional:'Rafael',category:'Serviços',type:'entrada',payment:'Cartão',value:60},
-  {date:'2026-09-05',description:'Barba',client:'Marcos Vinícius',professional:'Diego',category:'Serviços',type:'entrada',payment:'Dinheiro',value:45},
-  {date:'2026-09-05',description:'Corte + Barba',client:'André Lima',professional:'Lucas',category:'Serviços',type:'entrada',payment:'Pix',value:90},
-  {date:'2026-09-04',description:'Corte',client:'Henrique Lima',professional:'Diego',category:'Serviços',type:'entrada',payment:'Pix',value:60},
-  {date:'2026-09-04',description:'Comissão Lucas',client:'—',professional:'Lucas',category:'Comissões',type:'saida',payment:'Outro',value:267},
-  {date:'2026-09-03',description:'Produtos de limpeza',client:'—',professional:'—',category:'Despesas variáveis',type:'saida',payment:'Cartão',value:180},
-  {date:'2026-09-02',description:'Aluguel',client:'—',professional:'—',category:'Despesas fixas',type:'saida',payment:'Pix',value:1800},
-  {date:'2026-09-01',description:'Energia',client:'—',professional:'—',category:'Despesas fixas',type:'saida',payment:'Pix',value:420},
-  {date:'2026-09-01',description:'Venda de pomada',client:'Felipe Souza',professional:'Rafael',category:'Produtos',type:'entrada',payment:'Cartão',value:55}
-];
+let FINANCE_MOVEMENTS=[];
 
-const FINANCE_SERIES={
-  week:[{label:'30 ago',value:620},{label:'31 ago',value:730},{label:'1 set',value:540},{label:'2 set',value:780},{label:'3 set',value:660},{label:'4 set',value:790},{label:'5 set',value:890}],
-  month:[{label:'1 set',value:540},{label:'2 set',value:780},{label:'3 set',value:660},{label:'4 set',value:790},{label:'5 set',value:890},{label:'6 set',value:760},{label:'7 set',value:910},{label:'8 set',value:820},{label:'9 set',value:970},{label:'10 set',value:1040}]
-};
 
-const FINANCE_PROFESSIONALS=[
-  {name:'Lucas',appointments:18,revenue:3320,commission:996},
-  {name:'Rafael',appointments:16,revenue:2860,commission:858},
-  {name:'Diego',appointments:14,revenue:2580,commission:774}
-];
+
+
+function getDateRangeForFinance(range){
+  if(range==='month'){
+    const start=new Date(appToday.getFullYear(),appToday.getMonth(),1);
+    return {start,end:new Date(appToday)};
+  }
+  const end=new Date(appToday);
+  const start=new Date(appToday);
+  start.setDate(start.getDate()-6);
+  return {start,end};
+}
+
+function buildRevenueSeries(range='week'){
+  const {start,end}=getDateRangeForFinance(range);
+  const days=[];
+  const cursor=new Date(start);
+  while(cursor<=end){
+    const key=formatDateKey(cursor);
+    const value=FINANCE_MOVEMENTS
+      .filter(m=>m.type==='entrada' && m.date===key)
+      .reduce((s,m)=>s+m.value,0);
+    days.push({
+      label:cursor.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.',''),
+      value
+    });
+    cursor.setDate(cursor.getDate()+1);
+  }
+  return days;
+}
 
 function setFinanceRange(range){
   document.querySelectorAll('.finance-period-pill').forEach(el=>el.classList.remove('active'));
@@ -9663,7 +10191,7 @@ function setFinanceRange(range){
   renderFinanceChart(range);
 }
 function renderFinanceChart(range='week'){
-  const data=FINANCE_SERIES[range],svg=document.getElementById('finance-chart');
+  const data=buildRevenueSeries(range),svg=document.getElementById('finance-chart');
   if(!svg)return;
   const width=720,height=270,left=52,right=18,top=18,bottom=38,plotW=width-left-right,plotH=height-top-bottom;
   const max=Math.max(...data.map(d=>d.value),1000),yMax=Math.ceil(max/200)*200;
@@ -9677,102 +10205,105 @@ function renderFinanceChart(range='week'){
   svg.innerHTML=out;
 }
 function renderFinanceKPIs(){
-  const gross=8760,commissions=2628,expenses=1892,net=gross-commissions-expenses,margin=gross?(net/gross)*100:0,ticket=gross/48;
+  const entries=FINANCE_MOVEMENTS.filter(i=>i.type==='entrada');
+  const outputs=FINANCE_MOVEMENTS.filter(i=>i.type==='saida');
+  const gross=entries.reduce((s,i)=>s+i.value,0);
+  const commissions=outputs.filter(i=>i.category==='Comissões').reduce((s,i)=>s+i.value,0);
+  const otherExpenses=outputs.filter(i=>i.category!=='Comissões').reduce((s,i)=>s+i.value,0);
+  const net=gross-commissions-otherExpenses;
+  const margin=gross?(net/gross)*100:0;
+  const ticket=entries.length?gross/entries.length:0;
+
   document.getElementById('finance-gross').textContent=money(gross);
   document.getElementById('finance-net').textContent=money(net);
   document.getElementById('finance-commissions').textContent=money(commissions);
   document.getElementById('finance-ticket').textContent=money(ticket);
   document.getElementById('finance-margin-meta').textContent=`Margem líquida ${margin.toFixed(1).replace('.',',')}%`;
-  document.getElementById('finance-commission-meta').textContent=`${((commissions/gross)*100).toFixed(1).replace('.',',')}% do faturamento`;
+  document.getElementById('finance-commission-meta').textContent=
+    gross?`${((commissions/gross)*100).toFixed(1).replace('.',',')}% do faturamento`:'0% do faturamento';
 }
 function renderFinanceSummary(){
-  const current=8760,goal=20000,pct=Math.min(100,(current/goal)*100);
+  const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
+  const monthEntries=FINANCE_MOVEMENTS.filter(m=>m.date.startsWith(monthPrefix));
+  const current=monthEntries.filter(m=>m.type==='entrada').reduce((s,m)=>s+m.value,0);
+  const goal=Math.max(0,Number(BUSINESS_SETTINGS.monthly_goal)||0);
+  const pct=goal?Math.min(100,(current/goal)*100):0;
+
+  const daysInMonth=new Date(appToday.getFullYear(),appToday.getMonth()+1,0).getDate();
+  const forecast=appToday.getDate()?current/appToday.getDate()*daysInMonth:current;
+  const gap=Math.max(0,goal-current);
+
+  const cancelled=getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth())
+    .filter(a=>['desmarcado','no-show'].includes(a.status));
+  const lostRevenue=cancelled.reduce((s,a)=>s+getServicePrice(a.service),0);
+  const comboPrice=SERVICE_PRICES['Corte + Barba']||0;
+  const idlePotential=buildIdleSlots().length*comboPrice;
+
   document.getElementById('finance-goal-current').textContent=money(current);
+  document.getElementById('finance-goal-target').textContent=`meta ${money(goal)}`;
   document.getElementById('finance-goal-fill').style.width=`${pct}%`;
-  document.getElementById('finance-forecast').textContent=money(24600);
-  document.getElementById('finance-gap').textContent=money(goal-current);
-  document.getElementById('finance-lost-revenue').textContent=money(540);
-  document.getElementById('finance-idle-potential').textContent=money(1260);
+  document.getElementById('finance-forecast').textContent=money(forecast);
+  document.getElementById('finance-gap').textContent=money(gap);
+  document.getElementById('finance-lost-revenue').textContent=money(lostRevenue);
+  document.getElementById('finance-idle-potential').textContent=money(idlePotential);
 }
 function fillFinanceBreakdown(id,data){
   const c=document.getElementById(id);if(!c)return;const max=Math.max(...data.map(d=>d.value),1);
   c.innerHTML=data.map(item=>`<div class="finance-breakdown-row"><div class="name">${escapeHTML(item.name)}</div><div class="finance-bar"><div class="finance-bar-fill" style="width:${(item.value/max)*100}%"></div></div><div class="value">${money(item.value)}</div></div>`).join('');
 }
 function renderFinanceBreakdowns(){
-  fillFinanceBreakdown('finance-inout-list',[{name:'Serviços',value:7800},{name:'Produtos',value:960},{name:'Comissões',value:2628},{name:'Despesas fixas',value:2220},{name:'Despesas variáveis',value:740}]);
-  fillFinanceBreakdown('finance-payments-list',[{name:'Pix',value:4200},{name:'Cartão',value:3160},{name:'Dinheiro',value:1080},{name:'Outros',value:320}]);
-  const serviceRevenue=activeServices().map(service=>{
-    const fromAppointments=appointments
-      .filter(a=>a.service===service.name && a.status!=='desmarcado' && a.status!=='no-show')
-      .reduce((sum,a)=>sum+getServicePrice(a.service),0);
-    return {name:service.name,value:fromAppointments || Math.max(service.price*4,service.price)};
-  }).sort((a,b)=>b.value-a.value);
-  fillFinanceBreakdown('finance-services-list',serviceRevenue);
-  fillFinanceBreakdown('finance-expenses-list',[{name:'Comissões',value:2628},{name:'Aluguel',value:1800},{name:'Energia',value:420},{name:'Materiais',value:320}]);
+  const grouped=(items,keyFn)=>{
+    const map=new Map();
+    items.forEach(item=>{
+      const key=keyFn(item);
+      map.set(key,(map.get(key)||0)+item.value);
+    });
+    return [...map.entries()].map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value);
+  };
+
+  const entrances=FINANCE_MOVEMENTS.filter(i=>i.type==='entrada');
+  const outputs=FINANCE_MOVEMENTS.filter(i=>i.type==='saida');
+
+  fillFinanceBreakdown('finance-inout-list',[
+    ...grouped(entrances,i=>i.category),
+    ...grouped(outputs,i=>i.category)
+  ]);
+  fillFinanceBreakdown('finance-payments-list',grouped(entrances,i=>i.payment));
+  fillFinanceBreakdown('finance-services-list',grouped(entrances.filter(i=>i.category==='Serviços'),i=>i.description));
+  fillFinanceBreakdown('finance-expenses-list',grouped(outputs,i=>i.category));
 }
 function renderFinanceProfessionals(){
   const body=document.getElementById('finance-prof-body');if(!body)return;
+  const monthAppointments=getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth())
+    .filter(a=>a.status==='finalizado');
 
-  const data=TEAM_CATALOG.filter(p=>p.active!==false).map((member,index)=>{
-    const related=appointments.filter(a=>a.professional===member.name && a.status!=='desmarcado' && a.status!=='no-show');
-    const appointmentsCount=related.length;
+  const data=TEAM_CATALOG.filter(p=>p.active!==false).map(member=>{
+    const related=monthAppointments.filter(a=>a.professional===member.name);
     const revenue=related.reduce((s,a)=>s+getServicePrice(a.service),0);
-    const demoRevenue=revenue || Math.max(0,3320-(index*480));
-    const demoAppointments=appointmentsCount || Math.max(1,18-(index*2));
-
     return {
       name:member.name,
-      appointments:demoAppointments,
-      revenue:demoRevenue,
-      commission:demoRevenue*((Number(member.commission)||0)/100)
+      appointments:related.length,
+      revenue,
+      commission:revenue*((Number(member.commission)||0)/100)
     };
   });
 
-  const total=data.reduce((s,p)=>s+p.revenue,0)||1;
+  const total=data.reduce((s,m)=>s+m.revenue,0);
 
-  body.innerHTML=data.map(p=>{
-    const share=(p.revenue/total)*100;
-    const ticket=p.revenue/p.appointments;
-
-    return `
-      <div class="finance-prof-row">
-        <div>
-          <div class="finance-prof-name">${escapeHTML(p.name)}</div>
-          <div class="finance-prof-sub">Desempenho no período atual</div>
-        </div>
-
-        <div class="finance-prof-metric">
-          <div class="label">Atendimentos</div>
-          <div class="value">${p.appointments}</div>
-        </div>
-
-        <div class="finance-prof-metric">
-          <div class="label">Faturamento</div>
-          <div class="value">${money(p.revenue)}</div>
-        </div>
-
-        <div class="finance-prof-metric finance-commission-metric">
-          <div class="label">Comissão</div>
-          <div class="value">${money(p.commission)}</div>
-        </div>
-
-        <div class="finance-prof-metric">
-          <div class="label">Ticket médio</div>
-          <div class="value">${money(ticket)}</div>
-        </div>
-
-        <div class="finance-share">
-          <div class="finance-share-top">
-            <span>Participação</span>
-            <strong>${share.toFixed(1).replace('.',',')}%</strong>
-          </div>
-          <div class="finance-share-track">
-            <div class="finance-share-fill" style="width:${share}%"></div>
-          </div>
-        </div>
+  body.innerHTML=data.map(item=>`
+    <div class="finance-prof-row">
+      <div class="finance-prof-main">
+        <div class="finance-prof-name">${escapeHTML(item.name)}</div>
+        <div class="finance-prof-sub">${item.appointments} atendimentos finalizados</div>
       </div>
-    `;
-  }).join('');
+      <div class="finance-prof-metric"><span>Faturamento</span><strong>${money(item.revenue)}</strong></div>
+      <div class="finance-prof-metric"><span>Comissão</span><strong>${money(item.commission)}</strong></div>
+      <div class="finance-prof-metric"><span>Ticket médio</span><strong>${money(item.appointments?item.revenue/item.appointments:0)}</strong></div>
+      <div class="finance-prof-share">
+        <span>${total?((item.revenue/total)*100).toFixed(0):0}%</span>
+        <div class="finance-share-track"><div class="finance-share-fill" style="width:${total?(item.revenue/total)*100:0}%"></div></div>
+      </div>
+    </div>`).join('');
 }
 function renderFinanceMovements(){
   const search=(document.getElementById('finance-search')?.value||'').toLowerCase();
@@ -9832,6 +10363,192 @@ function renderFinanceMovements(){
     </div>
   `).join('');
 }
+
+let financeEntryType='entrada';
+
+function setFinanceEntryType(type){
+  financeEntryType=type;
+  document.querySelectorAll('.finance-entry-type').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.entryType===type);
+  });
+}
+
+
+
+function openLoyaltyConfigModal(){
+  document.getElementById('loyalty-config-enabled').value=String(BUSINESS_SETTINGS.loyalty_enabled);
+  document.getElementById('loyalty-config-goal').value=BUSINESS_SETTINGS.loyalty_visit_goal;
+  document.getElementById('loyalty-config-reward').value=BUSINESS_SETTINGS.loyalty_reward_name;
+  document.getElementById('business-monthly-goal').value=BUSINESS_SETTINGS.monthly_goal;
+  document.getElementById('loyalty-config-modal').classList.add('open');
+}
+function closeLoyaltyConfigModal(){
+  document.getElementById('loyalty-config-modal').classList.remove('open');
+}
+async function saveLoyaltyConfig(){
+  const enabled=document.getElementById('loyalty-config-enabled').value==='true';
+  const goal=Math.max(1,Number(document.getElementById('loyalty-config-goal').value)||1);
+  const reward=document.getElementById('loyalty-config-reward').value.trim();
+  const monthlyGoal=Math.max(0,Number(document.getElementById('business-monthly-goal').value)||0);
+  const btn=document.getElementById('loyalty-config-save');
+
+  if(!reward){
+    showToast('Digite o nome da recompensa.');
+    return;
+  }
+
+  btn.disabled=true; btn.textContent='Salvando...';
+  try{
+    const {error}=await sb.from('business_settings').update({
+      loyalty_enabled:enabled,
+      loyalty_visit_goal:goal,
+      loyalty_reward_name:reward,
+      monthly_goal:monthlyGoal,
+      updated_at:new Date().toISOString()
+    }).eq('id',1);
+    if(error) throw error;
+
+    BUSINESS_SETTINGS={
+      monthly_goal:monthlyGoal,
+      loyalty_enabled:enabled,
+      loyalty_visit_goal:goal,
+      loyalty_reward_name:reward
+    };
+    rebuildDerivedClientModules();
+    closeLoyaltyConfigModal();
+    renderLoyalty();
+    renderFinance();
+    renderHomeManagement();
+    showToast('Configuração atualizada.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível salvar a configuração.');
+  }finally{
+    btn.disabled=false; btn.textContent='Salvar configuração';
+  }
+}
+
+function openClientDataModal(id){
+  const client=CLIENTS.find(c=>c.id===Number(id));
+  if(!client) return;
+  document.getElementById('client-data-id').value=client.id;
+  document.getElementById('client-data-name').value=client.name;
+  document.getElementById('client-data-phone').value=client.phone||'';
+  document.getElementById('client-data-birthday').value=client.birthday||'';
+  document.getElementById('client-data-modal').classList.add('open');
+}
+function closeClientDataModal(){
+  document.getElementById('client-data-modal').classList.remove('open');
+}
+async function saveClientData(){
+  const id=Number(document.getElementById('client-data-id').value);
+  const phone=document.getElementById('client-data-phone').value.trim();
+  const birthday=document.getElementById('client-data-birthday').value || null;
+  const btn=document.getElementById('client-data-save');
+  btn.disabled=true; btn.textContent='Salvando...';
+  try{
+    const {error}=await sb.from('clients').update({
+      phone:phone||null,
+      birthday,
+      updated_at:new Date().toISOString()
+    }).eq('id',id);
+    if(error) throw error;
+    const client=CLIENTS.find(c=>c.id===id);
+    if(client){ client.phone=phone; client.birthday=birthday||''; }
+    rebuildDerivedClientModules();
+    closeClientDataModal();
+    renderRadar();
+    renderBirthdays();
+    renderLoyalty();
+    renderOverviewRetention();
+    showToast('Dados do cliente atualizados.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível atualizar o cliente.');
+  }finally{
+    btn.disabled=false; btn.textContent='Salvar dados';
+  }
+}
+
+function openFinanceEntryModal(){
+  setFinanceEntryType('entrada');
+  document.getElementById('finance-entry-date').value=formatDateKey(appToday);
+  document.getElementById('finance-entry-value').value='';
+  document.getElementById('finance-entry-description').value='';
+  document.getElementById('finance-entry-client').value='';
+
+  const prof=document.getElementById('finance-entry-professional');
+  prof.innerHTML='<option value="">Nenhum</option>'+
+    TEAM_CATALOG.filter(p=>p.active!==false)
+      .map(p=>`<option value="${escapeHTML(p.id)}">${escapeHTML(p.name)}</option>`).join('');
+
+  document.getElementById('finance-entry-modal').classList.add('open');
+}
+
+function closeFinanceEntryModal(){
+  document.getElementById('finance-entry-modal').classList.remove('open');
+}
+
+async function saveFinanceEntry(){
+  const date=document.getElementById('finance-entry-date').value;
+  const description=document.getElementById('finance-entry-description').value.trim();
+  const amount=Number(document.getElementById('finance-entry-value').value);
+  const category=document.getElementById('finance-entry-category').value;
+  const payment=document.getElementById('finance-entry-payment').value;
+  const professionalId=document.getElementById('finance-entry-professional').value;
+  const client=document.getElementById('finance-entry-client').value.trim();
+  const professional=TEAM_CATALOG.find(p=>p.id===professionalId);
+  const btn=document.getElementById('finance-entry-save');
+
+  if(!date||!description||!Number.isFinite(amount)||amount<=0){
+    showToast('Preencha data, descrição e um valor válido.');
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='Salvando...';
+
+  try{
+    const {data,error}=await sb.from('financial_entries').insert({
+      entry_date:date,
+      description,
+      client_name:client||null,
+      professional_id:professional?.id||null,
+      professional_name:professional?.name||null,
+      category,
+      type:financeEntryType,
+      payment_method:payment,
+      amount
+    }).select('id,entry_date,description,client_name,professional_id,professional_name,category,type,payment_method,amount').single();
+
+    if(error) throw error;
+
+    FINANCE_MOVEMENTS.unshift({
+      id:Number(data.id),
+      date:data.entry_date,
+      description:data.description,
+      client:data.client_name||'—',
+      professional:data.professional_name||'—',
+      professionalId:data.professional_id||'',
+      category:data.category,
+      type:data.type,
+      payment:data.payment_method,
+      value:Number(data.amount)||0
+    });
+
+    closeFinanceEntryModal();
+    renderFinance();
+    renderHomeManagement();
+    showToast('Lançamento financeiro salvo.');
+  }catch(error){
+    console.error(error);
+    showToast('Não foi possível salvar o lançamento.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Salvar lançamento';
+  }
+}
+
 function renderFinance(){renderFinanceKPIs();renderFinanceSummary();renderFinanceBreakdowns();renderFinanceProfessionals();renderFinanceMovements();renderFinanceChart('week')}
 function exportFinanceCSV(){
   const rows=[['Data','Descrição','Cliente','Profissional','Categoria','Tipo','Pagamento','Valor'],...FINANCE_MOVEMENTS.map(i=>[i.date,i.description,i.client,i.professional,i.category,i.type,i.payment,i.value])];
@@ -9840,109 +10557,7 @@ function exportFinanceCSV(){
   a.href=url;a.download='financeiro-barbearia-vintage.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
 
-const LOYALTY_CLIENTS = [
-  {
-    id:1,
-    name:'Lucas Ferreira',
-    visits:9,
-    goal:10,
-    ticket:88,
-    frequency:21,
-    professional:'Lucas',
-    reward:'Corte gratuito',
-    status:'near'
-  },
-  {
-    id:2,
-    name:'Bruno Almeida',
-    visits:8,
-    goal:10,
-    ticket:74,
-    frequency:24,
-    professional:'Rafael',
-    reward:'Corte gratuito',
-    status:'near'
-  },
-  {
-    id:3,
-    name:'Rafael Souza',
-    visits:10,
-    goal:10,
-    ticket:96,
-    frequency:19,
-    professional:'Diego',
-    reward:'Corte gratuito',
-    status:'available'
-  },
-  {
-    id:4,
-    name:'André Martins',
-    visits:6,
-    goal:10,
-    ticket:82,
-    frequency:28,
-    professional:'Lucas',
-    reward:'Corte gratuito',
-    status:'active'
-  },
-  {
-    id:5,
-    name:'Carlos Eduardo',
-    visits:9,
-    goal:10,
-    ticket:63,
-    frequency:23,
-    professional:'Rafael',
-    reward:'Barba grátis',
-    status:'near'
-  },
-  {
-    id:6,
-    name:'Henrique Costa',
-    visits:10,
-    goal:10,
-    ticket:91,
-    frequency:20,
-    professional:'Diego',
-    reward:'Upgrade de serviço',
-    status:'available'
-  },
-  {
-    id:7,
-    name:'Marcos Lima',
-    visits:7,
-    goal:10,
-    ticket:58,
-    frequency:30,
-    professional:'Lucas',
-    reward:'Barba grátis',
-    status:'active'
-  },
-  {
-    id:8,
-    name:'Pedro Nunes',
-    visits:5,
-    goal:10,
-    ticket:69,
-    frequency:26,
-    professional:'Rafael',
-    reward:'Corte gratuito',
-    status:'active'
-  }
-];
 
-const LOYALTY_REWARDS = [
-  {name:'Corte gratuito',rule:'A cada 10 visitas',available:2,redeemed:6},
-  {name:'Barba grátis',rule:'A cada 10 visitas',available:1,redeemed:4},
-  {name:'Upgrade de serviço',rule:'Benefício especial de recorrência',available:1,redeemed:2}
-];
-
-const LOYALTY_REDEMPTIONS = [
-  {client:'Mateus Rocha',reward:'Corte gratuito',date:'02/09/2026',spentAfter:90},
-  {client:'Fábio Costa',reward:'Barba grátis',date:'30/08/2026',spentAfter:60},
-  {client:'João Mendes',reward:'Corte gratuito',date:'27/08/2026',spentAfter:110},
-  {client:'Renato Alves',reward:'Upgrade de serviço',date:'22/08/2026',spentAfter:95}
-];
 
 function loyaltyStatusLabel(status){
   return {
@@ -10041,10 +10656,15 @@ function renderLoyaltyTable(){
 }
 
 function renderLoyaltyKPIs(){
-  const active=LOYALTY_CLIENTS.length;
-  const available=LOYALTY_CLIENTS.filter(c=>c.status==='available').length;
-  const generatedVisits=24;
-  const revenue=1870;
+  const active=BUSINESS_SETTINGS.loyalty_enabled ? LOYALTY_CLIENTS.length : 0;
+  const available=BUSINESS_SETTINGS.loyalty_enabled
+    ? LOYALTY_CLIENTS.reduce((s,c)=>s+(c.availableRewards||0),0)
+    : 0;
+
+  const recurring=CLIENTS.map(c=>getClientAnalytics(c)).filter(a=>a.historical.length>=2);
+  const generatedVisits=recurring.reduce((s,a)=>s+Math.max(0,a.historical.length-1),0);
+  const revenue=recurring.reduce((sum,a)=>
+    sum+a.historical.slice(1).reduce((s,v)=>s+getServicePrice(v.service),0),0);
 
   document.getElementById('loyalty-active-count').textContent=active;
   document.getElementById('loyalty-reward-count').textContent=available;
@@ -10076,49 +10696,50 @@ function renderLoyaltyNear(){
 }
 
 function renderLoyaltyAlerts(){
-  const alerts=[
-    'Lucas Ferreira está a 1 visita da recompensa.',
-    'Rafael Souza já pode resgatar Corte gratuito.',
-    'Henrique Costa tem benefício disponível.',
-    'Carlos Eduardo está a 1 visita de liberar Barba grátis.'
-  ];
+  const alerts=LOYALTY_CLIENTS
+    .filter(c=>c.status==='available' || c.status==='near')
+    .sort((a,b)=>(b.availableRewards||0)-(a.availableRewards||0))
+    .slice(0,4)
+    .map(c=>c.status==='available'
+      ? `${c.name} tem ${c.availableRewards} recompensa${c.availableRewards===1?'':'s'} disponível${c.availableRewards===1?'':'is'}.`
+      : `${c.name} está a ${Math.max(0,c.goal-c.visits)} visita${Math.max(0,c.goal-c.visits)===1?'':'s'} da recompensa.`);
 
   const container=document.getElementById('loyalty-alert-list');
   if(!container) return;
-
-  container.innerHTML=alerts.map((text,i)=>`
-    <div class="loyalty-near-row">
-      <div class="loyalty-near-top">
-        <div class="loyalty-near-name">${i+1}. ${text}</div>
-      </div>
-    </div>
-  `).join('');
+  container.innerHTML=alerts.length
+    ? alerts.map((text,i)=>`<div class="loyalty-near-row"><div class="loyalty-near-top"><div class="loyalty-near-name">${i+1}. ${escapeHTML(text)}</div></div></div>`).join('')
+    : '<div style="padding:12px 0;color:var(--text-muted);font-size:11px">Nenhum alerta de fidelidade no momento.</div>';
 }
 
 function renderLoyaltyRewards(){
   const container=document.getElementById('loyalty-reward-list');
   if(!container) return;
-
-  container.innerHTML=LOYALTY_REWARDS.map(reward=>`
+  const available=LOYALTY_CLIENTS.reduce((s,c)=>s+(c.availableRewards||0),0);
+  const redeemed=LOYALTY_REDEMPTIONS.length;
+  container.innerHTML=`
     <div class="reward-row">
       <div class="left">
-        <strong>${escapeHTML(reward.name)}</strong>
-        <span>${escapeHTML(reward.rule)} · ${reward.redeemed} resgates realizados</span>
+        <strong>${escapeHTML(BUSINESS_SETTINGS.loyalty_reward_name)}</strong>
+        <span>A cada ${BUSINESS_SETTINGS.loyalty_visit_goal} visitas · ${redeemed} resgates realizados</span>
       </div>
-      <div class="right">${reward.available} disponíveis</div>
-    </div>
-  `).join('');
+      <div class="right">${available} disponíveis</div>
+    </div>`;
 }
 
 function renderLoyaltyRedemptions(){
   const container=document.getElementById('loyalty-redemption-list');
   if(!container) return;
 
-  container.innerHTML=LOYALTY_REDEMPTIONS.map(item=>`
+  if(!LOYALTY_REDEMPTIONS.length){
+    container.innerHTML='<div style="padding:12px 0;color:var(--text-muted);font-size:11px">Nenhum resgate registrado.</div>';
+    return;
+  }
+
+  container.innerHTML=LOYALTY_REDEMPTIONS.slice(0,8).map(item=>`
     <div class="redemption-row">
       <div class="left">
         <strong>${escapeHTML(item.client)}</strong>
-        <span>${escapeHTML(item.reward)} · ${item.date}</span>
+        <span>${escapeHTML(item.reward)} · ${formatShortDate(item.date)}</span>
       </div>
       <div class="right">${money(item.spentAfter)} depois</div>
     </div>
@@ -10130,17 +10751,35 @@ function renderLoyaltyOpportunity(){
     const remaining=Math.max(0,c.goal-c.visits);
     return remaining>0 && remaining<=2;
   });
-
   const potential=near.reduce((sum,c)=>sum+c.ticket,0);
 
   document.getElementById('loyalty-opportunity-value').textContent=money(potential);
   document.getElementById('loyalty-opportunity-text').textContent =
-    `${near.length} clientes estão a até 2 visitas de desbloquear uma recompensa. Se todos retornarem, existe potencial de ${money(potential)} em faturamento antes dos resgates.`;
+    `${near.length} clientes estão a até 2 visitas de desbloquear uma recompensa. Potencial de retorno antes dos resgates: ${money(potential)}.`;
 
-  document.getElementById('loyalty-return-rate').textContent='72%';
-  document.getElementById('loyalty-before-frequency').textContent='28 dias';
-  document.getElementById('loyalty-after-frequency').textContent='22 dias';
-  document.getElementById('loyalty-month-redemptions').textContent='4';
+  const allWithVisits=LOYALTY_CLIENTS.length;
+  const recurring=LOYALTY_CLIENTS.filter(c=>c.totalVisits>=2).length;
+  const returnRate=allWithVisits?(recurring/allWithVisits)*100:0;
+
+  const gapsBefore=[],gapsAfter=[];
+  CLIENTS.forEach(client=>{
+    const hist=getClientAnalytics(client).historical;
+    const gaps=[];
+    for(let i=1;i<hist.length;i++) gaps.push(diffDays(hist[i-1].date,hist[i].date));
+    if(gaps.length){
+      const mid=Math.ceil(gaps.length/2);
+      gapsBefore.push(...gaps.slice(0,mid));
+      gapsAfter.push(...gaps.slice(mid));
+    }
+  });
+
+  document.getElementById('loyalty-return-rate').textContent=`${returnRate.toFixed(0)}%`;
+  document.getElementById('loyalty-before-frequency').textContent=
+    gapsBefore.length?`${Math.round(average(gapsBefore))} dias`:'—';
+  document.getElementById('loyalty-after-frequency').textContent=
+    gapsAfter.length?`${Math.round(average(gapsAfter))} dias`:'—';
+  document.getElementById('loyalty-month-redemptions').textContent=
+    LOYALTY_REDEMPTIONS.filter(r=>parseDateKey(r.date).getMonth()===appToday.getMonth() && parseDateKey(r.date).getFullYear()===appToday.getFullYear()).length;
 }
 
 function renderLoyalty(){
@@ -10184,117 +10823,6 @@ function exportLoyaltyCSV(){
   URL.revokeObjectURL(url);
 }
 
-
-const BIRTHDAY_CLIENTS = [
-  {
-    id:1,
-    name:'André Carvalho',
-    birthday:'2026-09-05',
-    lastVisit:'2026-08-20',
-    ticket:96,
-    professional:'Lucas',
-    service:'Corte + Barba',
-    status:'pendente',
-    recurring:true,
-    risk:false
-  },
-  {
-    id:2,
-    name:'Fábio Mendes',
-    birthday:'2026-09-06',
-    lastVisit:'2026-08-02',
-    ticket:82,
-    professional:'Rafael',
-    service:'Corte + Barba',
-    status:'gerada',
-    recurring:true,
-    risk:true
-  },
-  {
-    id:3,
-    name:'Caio Rocha',
-    birthday:'2026-09-08',
-    lastVisit:'2026-08-18',
-    ticket:58,
-    professional:'Diego',
-    service:'Corte',
-    status:'contatado',
-    recurring:true,
-    risk:false
-  },
-  {
-    id:4,
-    name:'Rafael Freitas',
-    birthday:'2026-09-10',
-    lastVisit:'2026-07-21',
-    ticket:108,
-    professional:'Lucas',
-    service:'Corte + Barba',
-    status:'pendente',
-    recurring:true,
-    risk:true
-  },
-  {
-    id:5,
-    name:'Marcelo Nunes',
-    birthday:'2026-09-12',
-    lastVisit:'2026-08-30',
-    ticket:72,
-    professional:'Rafael',
-    service:'Corte',
-    status:'agendou',
-    recurring:false,
-    risk:false
-  },
-  {
-    id:6,
-    name:'Igor Martins',
-    birthday:'2026-09-16',
-    lastVisit:'2026-08-01',
-    ticket:89,
-    professional:'Diego',
-    service:'Barba',
-    status:'pendente',
-    recurring:true,
-    risk:true
-  },
-  {
-    id:7,
-    name:'Paulo Henrique',
-    birthday:'2026-09-19',
-    lastVisit:'2026-08-26',
-    ticket:62,
-    professional:'Lucas',
-    service:'Corte',
-    status:'contatado',
-    recurring:true,
-    risk:false
-  },
-  {
-    id:8,
-    name:'Rodrigo Alves',
-    birthday:'2026-09-23',
-    lastVisit:'2026-07-15',
-    ticket:118,
-    professional:'Rafael',
-    service:'Corte + Barba',
-    status:'pendente',
-    recurring:true,
-    risk:true
-  },
-  {
-    id:9,
-    name:'Samuel Costa',
-    birthday:'2026-09-28',
-    lastVisit:'2026-08-11',
-    ticket:55,
-    professional:'Diego',
-    service:'Corte',
-    status:'pendente',
-    recurring:false,
-    risk:false
-  }
-];
 
 function birthdayStatusLabel(status){
   return {
@@ -10409,7 +10937,7 @@ function renderBirthdayTable(){
 }
 
 function renderBirthdayKPIs(){
-  const monthCount = BIRTHDAY_CLIENTS.length;
+  const monthCount = BIRTHDAY_CLIENTS.filter(c=>parseDateKey(c.birthday).getMonth()===appToday.getMonth()).length;
   const weekClients = BIRTHDAY_CLIENTS.filter(c=>daysUntilBirthday(c.birthday)<=7);
   const contacted = BIRTHDAY_CLIENTS.filter(c=>['contatado','agendou'].includes(c.status)).length;
   const booked = BIRTHDAY_CLIENTS.filter(c=>c.status==='agendou');
@@ -10699,6 +11227,7 @@ function exportBirthdayCSV(){
 
 
 function renderHomeManagement(){
+  rebuildDerivedClientModules();
   const todayKey = formatDateKey(appToday);
   const todayAppointments = appointments
     .filter(item=>item.date===todayKey)
@@ -10707,8 +11236,9 @@ function renderHomeManagement(){
   const active = todayAppointments.filter(item=>!['desmarcado','no-show'].includes(item.status));
   const forecastRevenue = active.reduce((sum,item)=>sum+getServicePrice(item.service),0);
 
-  const capacity = getDailyCapacity();
-  const occupancy = capacity ? (active.length/capacity)*100 : 0;
+  const capacityMinutes = getDailyCapacityMinutes();
+  const occupiedMinutes = active.reduce((sum,item)=>sum+getServiceDuration(item.service),0);
+  const occupancy = capacityMinutes ? (occupiedMinutes/capacityMinutes)*100 : 0;
   const ticket = active.length ? forecastRevenue/active.length : 0;
 
   const idleSlots = buildIdleSlots().length;
@@ -10717,8 +11247,12 @@ function renderHomeManagement(){
   const bad = monthAppointments.filter(item=>['desmarcado','no-show'].includes(item.status)).length;
   const lossRate = monthAppointments.length ? (bad/monthAppointments.length)*100 : 0;
 
-  const currentRevenue = 8760;
-  const monthlyGoal = 20000;
+  const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
+  const monthFinance=FINANCE_MOVEMENTS.filter(m=>m.date.startsWith(monthPrefix));
+  const currentRevenue=monthFinance.filter(m=>m.type==='entrada').reduce((s,m)=>s+m.value,0);
+  const monthOut=monthFinance.filter(m=>m.type==='saida').reduce((s,m)=>s+m.value,0);
+  const netProfit=currentRevenue-monthOut;
+  const monthlyGoal=Math.max(0,Number(BUSINESS_SETTINGS.monthly_goal)||0);
   const daysInMonth = new Date(appToday.getFullYear(),appToday.getMonth()+1,0).getDate();
   const expectedByToday = monthlyGoal * (appToday.getDate()/daysInMonth);
   const paceDiff = currentRevenue - expectedByToday;
@@ -10743,11 +11277,27 @@ function renderHomeManagement(){
   document.getElementById('home-loss-meta').textContent =
     `${bad} ${bad===1?'ocorrência':'ocorrências'} no mês`;
 
-  const newClients = Math.min(3,active.length);
-  const recurring = Math.max(0,active.length-newClients);
+  const todayNames=[...new Set(active.map(a=>normalizeClientName(a.client)))];
+  const newClients=todayNames.filter(name=>{
+    const all=appointments.filter(a=>normalizeClientName(a.client)===name && !['desmarcado','no-show'].includes(a.status));
+    return all.length<=1;
+  }).length;
+  const recurring=Math.max(0,todayNames.length-newClients);
   document.getElementById('home-client-mix').textContent = `${newClients} / ${recurring}`;
   document.getElementById('home-client-mix').nextElementSibling.textContent =
     `${newClients} novos · ${recurring} recorrentes`;
+
+
+  const realizedEl=document.getElementById('home-realized-revenue');
+  if(realizedEl) realizedEl.textContent=money(currentRevenue);
+  const netEl=document.getElementById('home-net-profit');
+  if(netEl) netEl.textContent=money(netProfit);
+  const netMeta=document.getElementById('home-net-profit-meta');
+  if(netMeta) netMeta.textContent=`${money(monthOut)} em saídas registradas`;
+  const radarCount=document.getElementById('home-radar-count');
+  if(radarCount) radarCount.textContent=`Radar de retenção: ${RADAR_CLIENTS.filter(c=>c.daysAway>=25).length} clientes`;
+
+  renderOverviewRetention();
 
   const comparison = document.getElementById('home-goal-comparison');
   if(comparison){
@@ -10826,29 +11376,30 @@ function renderOverviewWidgets(){
   }
 }
 
-const revenueData={
-  '7d':[
-    {label:'30 ago',value:620},
-    {label:'31 ago',value:730},
-    {label:'1 set',value:540},
-    {label:'2 set',value:780},
-    {label:'3 set',value:660},
-    {label:'4 set',value:790},
-    {label:'5 set',value:890}
-  ],
-  'month':[
-    {label:'1 set',value:540},
-    {label:'2 set',value:780},
-    {label:'3 set',value:660},
-    {label:'4 set',value:790},
-    {label:'5 set',value:890},
-    {label:'6 set',value:0},
-    {label:'7 set',value:0},
-    {label:'8 set',value:0},
-    {label:'9 set',value:0},
-    {label:'10 set',value:0}
-  ]
-};
+function buildOverviewRevenueData(range){
+  const days=range==='month'
+    ? new Date(appToday.getFullYear(),appToday.getMonth()+1,0).getDate()
+    : 7;
+  const start=range==='month'
+    ? new Date(appToday.getFullYear(),appToday.getMonth(),1)
+    : new Date(appToday.getFullYear(),appToday.getMonth(),appToday.getDate()-6);
+  const end=range==='month'
+    ? new Date(appToday)
+    : new Date(appToday);
+
+  const data=[];
+  const cursor=new Date(start);
+  while(cursor<=end && data.length<days){
+    const key=formatDateKey(cursor);
+    const value=FINANCE_MOVEMENTS.filter(m=>m.type==='entrada' && m.date===key).reduce((s,m)=>s+m.value,0);
+    data.push({
+      label:cursor.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.',''),
+      value
+    });
+    cursor.setDate(cursor.getDate()+1);
+  }
+  return data;
+}
 
 function setRange(range){
   document.querySelectorAll('.period-pill').forEach(p=>p.classList.remove('active'));
@@ -10858,7 +11409,7 @@ function setRange(range){
 }
 
 function renderRevenueChart(range='7d'){
-  const data=revenueData[range] || revenueData['7d'];
+  const data=buildOverviewRevenueData(range);
   const svg=document.getElementById('revenue-chart');
 
   if(!svg || !data || !data.length) return;
@@ -10985,7 +11536,9 @@ function initialize(){
   renderHomeManagement();
   renderRevenueChart('7d');
 
+  rebuildDerivedClientModules();
   renderRadar();
+  renderOverviewRetention();
   populateAIClientSelect();
   renderBirthdays();
   renderLoyalty();
@@ -11012,214 +11565,23 @@ requestAnimationFrame(()=>{
 });
 </script>
 
-<script>
-function toggleMobileMenu(force){
-  const shouldOpen = typeof force === 'boolean'
-    ? force
-    : !document.body.classList.contains('mobile-menu-open');
 
-  document.body.classList.toggle('mobile-menu-open', shouldOpen);
-
-  const btn = document.getElementById('mobile-menu-btn');
-  if(btn){
-    btn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-  }
-}
-
-document.addEventListener('click', function(event){
-  if(window.innerWidth > 768) return;
-  const nav = event.target.closest('.sidebar .nav-item');
-  if(nav){
-    setTimeout(()=>toggleMobileMenu(false), 50);
-  }
-});
-
-window.addEventListener('resize', function(){
-  if(window.innerWidth > 768){
-    document.body.classList.remove('mobile-menu-open');
-  }
-});
-
-document.addEventListener('keydown', function(event){
-  if(event.key === 'Escape'){
-    document.body.classList.remove('mobile-menu-open');
-  }
-});
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  const btn = document.getElementById('mobile-menu-btn');
-  const overlay = document.getElementById('mobile-sidebar-overlay');
-  const sidebar = document.querySelector('.sidebar');
-
-  if(btn){
-    btn.setAttribute('aria-expanded','false');
-  }
-
-  if(overlay){
-    overlay.addEventListener('click', function(){
-      toggleMobileMenu(false);
-    });
-  }
-
-  if(sidebar){
-    sidebar.addEventListener('click', function(event){
-      const nav = event.target.closest('.nav-item');
-      if(nav && window.innerWidth <= 768){
-        setTimeout(()=>toggleMobileMenu(false), 80);
-      }
-    });
-  }
-});
-
-document.addEventListener('keydown', function(event){
-  if(event.key === 'Escape'){
-    toggleMobileMenu(false);
-  }
-});
-
-window.addEventListener('resize', function(){
-  if(window.innerWidth > 768){
-    document.body.classList.remove('mobile-menu-open');
-    const btn = document.getElementById('mobile-menu-btn');
-    if(btn) btn.setAttribute('aria-expanded','false');
-  }
-});
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  const topBtn = document.getElementById('mobile-menu-btn');
-  const bottomBtn = document.getElementById('mobile-bottom-menu-btn');
-  const overlay = document.getElementById('mobile-sidebar-overlay');
-  const closeBtn = document.querySelector('.mobile-sidebar-close');
-  const sidebar = document.querySelector('.sidebar');
-
-  const openMenu = function(e){
-    if(e) e.preventDefault();
-    document.body.classList.add('mobile-menu-open');
-  };
-
-  const closeMenu = function(e){
-    if(e) e.preventDefault();
-    document.body.classList.remove('mobile-menu-open');
-  };
-
-  if(topBtn){
-    topBtn.onclick = openMenu;
-    topBtn.addEventListener('touchend', openMenu, {passive:false});
-  }
-
-  if(bottomBtn){
-    bottomBtn.onclick = openMenu;
-    bottomBtn.addEventListener('touchend', openMenu, {passive:false});
-  }
-
-  if(overlay){
-    overlay.onclick = closeMenu;
-    overlay.addEventListener('touchend', closeMenu, {passive:false});
-  }
-
-  if(closeBtn){
-    closeBtn.onclick = closeMenu;
-    closeBtn.addEventListener('touchend', closeMenu, {passive:false});
-  }
-
-  if(sidebar){
-    sidebar.querySelectorAll('.nav-item').forEach(function(item){
-      item.addEventListener('click', function(){
-        if(window.innerWidth <= 768){
-          setTimeout(closeMenu, 120);
-        }
-      });
-    });
-  }
-});
-</script>
-
-
-<script>
-(function(){
-  function isPortraitMobile(){
-    return window.matchMedia('(orientation: portrait) and (max-width: 1100px)').matches;
-  }
-
-  function forceOpen(){
-    if(isPortraitMobile()){
-      document.body.classList.add('mobile-menu-open');
-    }
-  }
-
-  function forceClose(){
-    document.body.classList.remove('mobile-menu-open');
-  }
-
-  window.toggleMobileMenu = function(force){
-    const shouldOpen = typeof force === 'boolean'
-      ? force
-      : !document.body.classList.contains('mobile-menu-open');
-
-    if(shouldOpen) forceOpen();
-    else forceClose();
-  };
-
-  document.addEventListener('DOMContentLoaded', function(){
-    const topBtn = document.getElementById('mobile-menu-btn');
-    const bottomBtn = document.getElementById('mobile-bottom-menu-btn');
-    const overlay = document.getElementById('mobile-sidebar-overlay');
-    const closeBtn = document.querySelector('.mobile-sidebar-close');
-    const sidebar = document.querySelector('.sidebar');
-
-    [topBtn, bottomBtn].forEach(function(btn){
-      if(!btn) return;
-      btn.onclick = function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        forceOpen();
-      };
-    });
-
-    if(overlay){
-      overlay.onclick = function(e){
-        e.preventDefault();
-        forceClose();
-      };
-    }
-
-    if(closeBtn){
-      closeBtn.onclick = function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        forceClose();
-      };
-    }
-
-    if(sidebar){
-      sidebar.querySelectorAll('.nav-item').forEach(function(item){
-        item.addEventListener('click', function(){
-          if(isPortraitMobile()){
-            setTimeout(forceClose, 100);
-          }
-        });
-      });
-    }
-  });
-
-  window.addEventListener('orientationchange', forceClose);
-  window.addEventListener('resize', function(){
-    if(!isPortraitMobile()) forceClose();
-  });
-})();
-</script>
 
 
 <script>
 const SUPABASE_URL = 'https://gfdtnjhqamtmxvlaaeoz.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7jBvCxY-xK4BTTAvEY0N9A_d7RqcEnu';
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth:{
+      persistSession:false,
+      autoRefreshToken:false,
+      detectSessionInUrl:true
+    }
+  }
+);
 
 const authGate = document.getElementById('auth-gate');
 const dashboardApp = document.getElementById('dashboard-app');
@@ -11230,6 +11592,67 @@ const loginError = document.getElementById('login-error');
 const loginSubmit = document.getElementById('login-submit');
 const togglePasswordBtn = document.getElementById('toggle-password');
 const forgotPasswordBtn = document.getElementById('forgot-password');
+const passwordResetGate = document.getElementById('password-reset-gate');
+const passwordResetError = document.getElementById('password-reset-error');
+let passwordRecoveryMode=false;
+
+
+function showPasswordReset(){
+  passwordRecoveryMode=true;
+  if(authGate) authGate.classList.add('is-hidden');
+  if(dashboardApp) dashboardApp.style.display='none';
+  if(passwordResetGate) passwordResetGate.classList.add('open');
+  document.body.classList.remove('authenticated');
+  setTimeout(()=>document.getElementById('new-password')?.focus(),100);
+}
+
+function setPasswordResetError(message){
+  if(!passwordResetError) return;
+  passwordResetError.textContent=message||'';
+  passwordResetError.classList.toggle('is-visible',!!message);
+}
+
+async function submitNewPassword(){
+  const password=document.getElementById('new-password').value;
+  const confirmPassword=document.getElementById('confirm-new-password').value;
+  const btn=document.getElementById('password-reset-submit');
+
+  setPasswordResetError('');
+
+  if(password.length<8){
+    setPasswordResetError('A nova senha precisa ter pelo menos 8 caracteres.');
+    return;
+  }
+  if(password!==confirmPassword){
+    setPasswordResetError('As senhas não coincidem.');
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='Salvando...';
+
+  try{
+    const {error}=await sb.auth.updateUser({password});
+    if(error) throw error;
+
+    await sb.auth.signOut();
+    passwordRecoveryMode=false;
+    passwordResetGate.classList.remove('open');
+    history.replaceState({},document.title,window.location.pathname);
+    document.getElementById('new-password').value='';
+    document.getElementById('confirm-new-password').value='';
+    showLogin();
+    setLoginError('');
+    alert('Senha alterada com sucesso. Entre com sua nova senha.');
+  }catch(error){
+    console.error(error);
+    setPasswordResetError('Não foi possível alterar a senha. Solicite um novo link de recuperação.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Salvar nova senha';
+  }
+}
+window.submitNewPassword=submitNewPassword;
 
 function setLoginError(message){
   if(!loginError) return;
@@ -11246,13 +11669,33 @@ function showDashboard(){
   if(authGate) authGate.classList.add('is-hidden');
   if(dashboardApp) dashboardApp.style.display = '';
   document.body.classList.add('authenticated');
+
+  hydrateCoreDataFromSupabase()
+    .catch(error=>{
+      console.error('Erro ao carregar dados do Supabase:',error);
+      showToast('Não foi possível sincronizar agenda, serviços e equipe.');
+    });
 }
 
 function showLogin(){
+  if(passwordRecoveryMode) return;
+  if(passwordResetGate) passwordResetGate.classList.remove('open');
   if(dashboardApp) dashboardApp.style.display = 'none';
-  if(authGate) authGate.classList.remove('is-hidden');
+  if(authGate){
+    authGate.classList.remove('is-hidden');
+    authGate.style.pointerEvents='auto';
+  }
   document.body.classList.remove('authenticated');
   document.body.classList.remove('mobile-menu-open');
+
+  if(loginEmail){
+    loginEmail.removeAttribute('readonly');
+    loginEmail.disabled=false;
+  }
+  if(loginPassword){
+    loginPassword.removeAttribute('readonly');
+    loginPassword.disabled=false;
+  }
 }
 
 async function isAuthorizedUser(user){
@@ -11366,7 +11809,7 @@ if(forgotPasswordBtn){
 
     try{
       const { error } = await sb.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin
+        redirectTo: window.location.origin + window.location.pathname
       });
 
       if(error){
@@ -11396,15 +11839,95 @@ async function logoutDashboard(){
 window.logoutDashboard = logoutDashboard;
 
 sb.auth.onAuthStateChange((event, session)=>{
-  if(event === 'SIGNED_OUT'){
+  if(event === 'PASSWORD_RECOVERY'){
+    showPasswordReset();
+    return;
+  }
+  if(event === 'SIGNED_OUT' && !passwordRecoveryMode){
     showLogin();
   }
+  // O acesso ao painel só acontece após envio explícito do formulário de login.
 });
 
-validateCurrentSession();
+if(!window.location.hash.includes('type=recovery')){
+  showLogin();
+}
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(!passwordRecoveryMode && !window.location.hash.includes('type=recovery')){
+      showLogin();
+      if(loginEmail && !loginEmail.value) loginEmail.focus();
+    }
+  },180);
+});
+</script>
+
+
+<script>
+(function(){
+  const MOBILE_QUERY='(orientation: portrait) and (max-width: 1100px)';
+
+  function isMobileNav(){
+    return window.matchMedia(MOBILE_QUERY).matches;
+  }
+
+  function setMobileMenu(open){
+    const shouldOpen=Boolean(open) && isMobileNav();
+    document.body.classList.toggle('mobile-menu-open',shouldOpen);
+    const btn=document.getElementById('mobile-menu-btn');
+    if(btn) btn.setAttribute('aria-expanded',shouldOpen?'true':'false');
+  }
+
+  window.toggleMobileMenu=function(force){
+    const next=typeof force==='boolean'
+      ? force
+      : !document.body.classList.contains('mobile-menu-open');
+    setMobileMenu(next);
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){
+    const topBtn=document.getElementById('mobile-menu-btn');
+    const bottomBtn=document.getElementById('mobile-bottom-menu-btn');
+    const overlay=document.getElementById('mobile-sidebar-overlay');
+    const closeBtn=document.querySelector('.mobile-sidebar-close');
+    const sidebar=document.querySelector('.sidebar');
+
+    [topBtn,bottomBtn].forEach(btn=>{
+      if(!btn) return;
+      btn.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        setMobileMenu(true);
+      });
+    });
+
+    overlay?.addEventListener('click',()=>setMobileMenu(false));
+    closeBtn?.addEventListener('click',e=>{
+      e.preventDefault();
+      setMobileMenu(false);
+    });
+
+    sidebar?.addEventListener('click',e=>{
+      if(e.target.closest('.nav-item') && isMobileNav()){
+        setTimeout(()=>setMobileMenu(false),80);
+      }
+    });
+  });
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape') setMobileMenu(false);
+  });
+
+  window.addEventListener('resize',()=>{
+    if(!isMobileNav()) setMobileMenu(false);
+  });
+  window.addEventListener('orientationchange',()=>setMobileMenu(false));
+})();
 </script>
 
 </body>
-
-<!-- deploy refresh 2026-09-06T20:37:48.482298Z -->
 </html>
