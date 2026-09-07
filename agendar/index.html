@@ -1088,6 +1088,7 @@ const SUPABASE_URL='https://gfdtnjhqamtmxvlaaeoz.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_7jBvCxY-xK4BTTAvEY0N9A_d7RqcEnu';
 
 const availabilityCache=new Map();
+const AVAILABILITY_CACHE_TTL=15000;
 let catalogPromise=null;
 
 async function rpc(name,payload={}){
@@ -1256,10 +1257,14 @@ async function loadAvailability(force=false){
   const cacheKey=`${state.day}|${state.serviceId}|${professionalKey}`;
 
   if(!force && availabilityCache.has(cacheKey)){
-    availabilityRows=availabilityCache.get(cacheKey);
-    availabilityLoading=false;
-    renderTimeSlots();
-    return;
+    const cached=availabilityCache.get(cacheKey);
+    if(cached && (Date.now()-cached.ts)<AVAILABILITY_CACHE_TTL){
+      availabilityRows=cached.rows;
+      availabilityLoading=false;
+      renderTimeSlots();
+      return;
+    }
+    availabilityCache.delete(cacheKey);
   }
 
   availabilityLoading=true;
@@ -1275,7 +1280,7 @@ async function loadAvailability(force=false){
     if(token!==availabilityRequestToken) return;
 
     availabilityRows=Array.isArray(data)?data:[];
-    availabilityCache.set(cacheKey,availabilityRows);
+    availabilityCache.set(cacheKey,{rows:availabilityRows,ts:Date.now()});
   }finally{
     if(token===availabilityRequestToken){
       availabilityLoading=false;
@@ -1722,6 +1727,12 @@ function resetFlow(){
   renderQuickSuggest();
   goTo('step-service');
 }
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible' && state.serviceId && state.barberId && state.day){
+    loadAvailability().catch(()=>{});
+  }
+});
 
 (async function initPublicBooking(){
   const shell=document.querySelector('.booking-shell');
