@@ -6469,6 +6469,214 @@ a{color:inherit;text-decoration:none}
   }
 }
 
+
+/* =========================================================
+   SIDEBAR — CORREÇÃO DO PLACEHOLDER / X GIGANTE
+========================================================= */
+.sidebar > img:not(.sidebar-logo):not(.brand-logo),
+.sidebar .sidebar-header > img:not(.sidebar-logo):not(.brand-logo){
+  display:none !important;
+}
+
+.sidebar img[src=""],
+.sidebar img:not([src]){
+  display:none !important;
+}
+
+/* garante que somente a identidade real ocupe o topo */
+.sidebar-brand,
+.sidebar-logo-wrap,
+.brand-block{
+  position:relative;
+  z-index:2;
+}
+
+
+/* =========================================================
+   CORREÇÃO DEFINITIVA — SIDEBAR / RESPONSIVIDADE
+========================================================= */
+
+/* O botão X só existe quando a sidebar está em modo drawer */
+.mobile-sidebar-close{
+  display:none !important;
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  padding:0 !important;
+  margin:0 !important;
+}
+
+.mobile-sidebar-close svg{
+  width:20px !important;
+  height:20px !important;
+  display:block !important;
+}
+
+/* Desktop e tablet em landscape permanecem com layout estável */
+@media (orientation:landscape) and (min-width:769px){
+  .sidebar{
+    display:flex !important;
+    position:sticky !important;
+    top:0 !important;
+    left:auto !important;
+    bottom:auto !important;
+    width:230px !important;
+    min-width:230px !important;
+    height:100vh !important;
+    transform:none !important;
+    overflow-y:auto !important;
+    box-shadow:none !important;
+  }
+
+  .main{
+    flex:1 1 auto !important;
+    width:auto !important;
+    max-width:none !important;
+    margin-left:0 !important;
+    padding:26px 24px 60px !important;
+    min-width:0 !important;
+  }
+
+  .content-shell{
+    width:100% !important;
+    max-width:1180px !important;
+    margin:0 auto !important;
+  }
+
+  #mobile-menu-btn,
+  #mobile-bottom-menu-btn,
+  #mobile-sidebar-overlay,
+  .mobile-sidebar-close{
+    display:none !important;
+  }
+}
+
+/* Drawer apenas em retrato */
+@media (orientation:portrait) and (max-width:1100px){
+  .mobile-sidebar-close{
+    display:flex !important;
+    position:absolute !important;
+    top:12px !important;
+    right:12px !important;
+    width:40px !important;
+    height:40px !important;
+    align-items:center !important;
+    justify-content:center !important;
+    border-radius:10px !important;
+    border:1px solid var(--border) !important;
+    background:#111827 !important;
+    color:#fff !important;
+    z-index:2147483003 !important;
+  }
+}
+
+/* Corrige a grade da Visão Geral em larguras intermediárias */
+@media (min-width:769px) and (max-width:1250px){
+  .overview-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+
+  .overview-below-chart{
+    grid-template-columns:minmax(0,1fr) minmax(280px,.78fr) !important;
+  }
+
+  .widget-stack{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:16px !important;
+  }
+}
+
+@media (min-width:769px) and (max-width:980px){
+  .overview-below-chart,
+  .widget-stack{
+    grid-template-columns:1fr !important;
+  }
+}
+
+/* Garante que o card Radar mantenha rodapé dentro dele */
+.radar-expanded-card{
+  display:flex !important;
+  flex-direction:column !important;
+}
+
+.radar-expanded-card .overview-radar-footer{
+  margin-top:auto !important;
+  width:100% !important;
+}
+
+
+/* =========================================================
+   SIDEBAR — ROLAGEM COMPLETA ATÉ O SUPORTE
+========================================================= */
+
+/* cria espaço real dentro da área rolável para o último item */
+.sidebar{
+  overflow-y:auto !important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  padding-bottom:96px !important;
+}
+
+/* garante que o conteúdo interno possa crescer além da viewport */
+.sidebar-inner,
+.sidebar-content,
+.sidebar-nav{
+  min-height:max-content !important;
+}
+
+/* mantém o suporte dentro do fluxo rolável */
+.sidebar-support,
+.support-card,
+.sidebar .whatsapp-support,
+.sidebar a[href*="wa.me"]{
+  flex-shrink:0 !important;
+  margin-top:18px !important;
+  margin-bottom:18px !important;
+}
+
+/* evita que rodapé/ações sejam cortados */
+.sidebar-bottom,
+.sidebar-footer,
+.sidebar-logout,
+.logout-wrap{
+  flex-shrink:0 !important;
+}
+
+@media (orientation:landscape) and (min-width:769px){
+  .sidebar{
+    height:100dvh !important;
+    max-height:100dvh !important;
+    padding-bottom:110px !important;
+  }
+}
+
+@media (orientation:portrait) and (max-width:1100px){
+  .sidebar{
+    height:100dvh !important;
+    max-height:100dvh !important;
+    padding-bottom:120px !important;
+  }
+}
+
+
+/* =========================================================
+   ESTABILIDADE FINAL — SIDEBAR E CONTEÚDO
+========================================================= */
+.sidebar{
+  -webkit-overflow-scrolling:touch !important;
+}
+.sidebar::after{
+  content:"";
+  display:block;
+  height:32px;
+  flex:0 0 32px;
+}
+.main,
+.content-shell,
+.page{
+  min-width:0 !important;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -6790,7 +6998,7 @@ a{color:inherit;text-decoration:none}
 <div class="sub">25+ dias sem agendar</div>
 </div>
 </div>
-<div class="mini-list compact" id="overview-retention-list"></div></div>
+<div class="mini-list compact" id="overview-retention-list"></div>
 <div class="overview-radar-footer">
 <div class="overview-radar-stat">
 <span class="label">Em risco</span>
@@ -8538,6 +8746,7 @@ async function persistAppointments(){
       professional_id:professional?.id || null,
       professional_name:item.professional,
       status:item.status,
+      duration_minutes:Number(item.duration)||getServiceDuration(item.service),
       updated_at:new Date().toISOString()
     };
   });
@@ -8568,7 +8777,7 @@ async function hydrateCoreDataFromSupabase(force=false){
       sb.from('services').select('id,name,price,duration,active').order('created_at',{ascending:true}),
       sb.from('team_members').select('id,name,commission,active').order('created_at',{ascending:true}),
       sb.from('appointments')
-        .select('id,appointment_date,appointment_time,client_name,service_id,service_name,professional_id,professional_name,status')
+        .select('id,appointment_date,appointment_time,client_name,service_id,service_name,professional_id,professional_name,status,duration_minutes')
         .order('appointment_date',{ascending:true})
         .order('appointment_time',{ascending:true}),
       sb.from('financial_entries')
@@ -8618,7 +8827,8 @@ async function hydrateCoreDataFromSupabase(force=false){
       client:item.client_name,
       service:item.service_name,
       professional:item.professional_name,
-      status:item.status
+      status:item.status,
+      duration:Number(item.duration_minutes)||getServiceDuration(item.service_name)
     }));
 
 
@@ -8775,11 +8985,18 @@ function openPage(page,navElement){
 }
 
 function goToTab(label){
-  if(label==='Agenda do dia'){
-    openPage('agenda');
-  }else{
-    showToast(`${label}: funcionalidade em desenvolvimento.`);
-  }
+  const routes={
+    'Agenda do dia':'agenda',
+    'Clientes':'radar',
+    'Aniversariantes':'birthdays',
+    'Fidelidade':'loyalty',
+    'Financeiro':'finance',
+    'Ranking da equipe':'ranking',
+    'Serviços':'services',
+    'Equipe':'team'
+  };
+  const page=routes[label];
+  if(page) openPage(page);
 }
 
 function newAppointment(){
@@ -8961,16 +9178,17 @@ async function saveAppointment(){
   }
 
   const activeStatus=!['desmarcado','no-show'].includes(status);
-  const localConflict=activeStatus && appointments.some(item=>
-    Number(item.id)!==Number(appointmentEditId) &&
-    item.date===date &&
-    item.time===time &&
-    item.professional===professional &&
-    !['desmarcado','no-show'].includes(item.status)
-  );
+  const selectedDuration=getServiceDuration(service);
+  const localConflict=activeStatus && hasProfessionalConflict({
+    date,
+    time,
+    professional,
+    duration:selectedDuration,
+    excludeId:appointmentEditId
+  });
 
   if(localConflict){
-    showToast('Este profissional já possui um agendamento neste horário.');
+    showToast('Este profissional já possui um atendimento que ocupa esse período.');
     return;
   }
 
@@ -8995,6 +9213,7 @@ async function saveAppointment(){
     service_name:serviceItem.name,
     professional_id:professionalItem.id,
     professional_name:professionalItem.name,
+    duration_minutes:selectedDuration,
     status,
     updated_at:new Date().toISOString()
   };
@@ -9005,19 +9224,19 @@ async function saveAppointment(){
       result=await sb.from('appointments')
         .update(payload)
         .eq('id',appointmentEditId)
-        .select('id,appointment_date,appointment_time,client_name,service_name,professional_name,status')
+        .select('id,appointment_date,appointment_time,client_name,service_name,professional_name,status,duration_minutes')
         .single();
     }else{
       result=await sb.from('appointments')
         .insert(payload)
-        .select('id,appointment_date,appointment_time,client_name,service_name,professional_name,status')
+        .select('id,appointment_date,appointment_time,client_name,service_name,professional_name,status,duration_minutes')
         .single();
     }
 
     const {data,error}=result;
     if(error){
-      if(error.code==='23505'){
-        showToast('Este horário já foi ocupado por outro agendamento.');
+      if(error.code==='23505' || error.code==='23P01'){
+        showToast('Este profissional já possui um atendimento que ocupa esse período.');
         await hydrateCoreDataFromSupabase(true);
         return;
       }
@@ -9033,7 +9252,8 @@ async function saveAppointment(){
       client:data.client_name,
       service:data.service_name,
       professional:data.professional_name,
-      status:data.status
+      status:data.status,
+      duration:Number(data.duration_minutes)||selectedDuration
     };
 
     if(appointmentEditId!==null){
@@ -9077,7 +9297,13 @@ async function changeAppointmentStatus(id,status){
     const {error}=await sb.from('appointments')
       .update({status,updated_at:new Date().toISOString()})
       .eq('id',id);
-    if(error) throw error;
+    if(error){
+      if(error.code==='23505' || error.code==='23P01'){
+        showToast('Não é possível reativar este agendamento porque o período já está ocupado.');
+        return;
+      }
+      throw error;
+    }
 
     item.status=status;
     rebuildDerivedClientModules();
@@ -9175,6 +9401,34 @@ function getAppointmentsForMonth(year,month){
 }
 
 
+
+function timeToMinutes(time){
+  const [h,m]=String(time||'00:00').split(':').map(Number);
+  return (Number(h)||0)*60+(Number(m)||0);
+}
+
+function appointmentDuration(item){
+  return Math.max(1,Number(item?.duration)||getServiceDuration(item?.service)||30);
+}
+
+function appointmentsOverlap(startA,durationA,startB,durationB){
+  const aStart=timeToMinutes(startA);
+  const aEnd=aStart+Math.max(1,Number(durationA)||30);
+  const bStart=timeToMinutes(startB);
+  const bEnd=bStart+Math.max(1,Number(durationB)||30);
+  return aStart<bEnd && bStart<aEnd;
+}
+
+function hasProfessionalConflict({date,time,professional,duration,excludeId=null}){
+  return appointments.some(item=>
+    Number(item.id)!==Number(excludeId) &&
+    item.date===date &&
+    item.professional===professional &&
+    !['desmarcado','no-show'].includes(item.status) &&
+    appointmentsOverlap(time,duration,item.time,appointmentDuration(item))
+  );
+}
+
 function getServiceDuration(serviceName){
   const service=SERVICE_CATALOG.find(item=>item.name===serviceName);
   return Math.max(0,Number(service?.duration)||0);
@@ -9189,7 +9443,7 @@ function getDailyCapacityMinutes(){
 function getOccupiedMinutesForDate(date){
   return getAppointmentsForDate(date)
     .filter(item=>!['desmarcado','no-show'].includes(item.status))
-    .reduce((sum,item)=>sum+getServiceDuration(item.service),0);
+    .reduce((sum,item)=>sum+appointmentDuration(item),0);
 }
 
 function getDailyCapacity(){
@@ -9202,7 +9456,7 @@ function renderAgendaKPIs(){
   const dayAppointments = getAppointmentsForDate(selectedDate);
   const active = dayAppointments.filter(item=>!['desmarcado','no-show'].includes(item.status));
   const totalCapacityMinutes = getDailyCapacityMinutes();
-  const occupiedMinutes = active.reduce((sum,item)=>sum+getServiceDuration(item.service),0);
+  const occupiedMinutes = active.reduce((sum,item)=>sum+appointmentDuration(item),0);
   const occupancy = totalCapacityMinutes ? (occupiedMinutes/totalCapacityMinutes)*100 : 0;
 
   const forecast = active.reduce((sum,item)=>sum+getServicePrice(item.service),0);
@@ -9239,22 +9493,36 @@ function renderAgendaKPIs(){
     `${noShows} ${noShows===1?'cliente não compareceu':'clientes não compareceram'} no mês`;
 }
 
-function buildIdleSlots(){
-  const dayAppointments = getAppointmentsForDate(selectedDate)
-    .filter(item=>!['desmarcado','no-show'].includes(item.status));
+function buildIdleSlots(slotDuration=60){
+  const dateKey=formatDateKey(selectedDate);
+  const professionals=TEAM_CATALOG.filter(p=>p.active!==false);
+  const result=[];
 
-  const busyByHour = new Set(
-    dayAppointments.map(item=>Number(item.time.split(':')[0]))
-  );
+  const startDay=OPENING_HOUR*60;
+  const endDay=CLOSING_HOUR*60;
+  const step=30;
 
-  const slots=[];
-  for(let h=OPENING_HOUR;h<CLOSING_HOUR;h++){
-    if(!busyByHour.has(h)){
-      slots.push(`${String(h).padStart(2,'0')}:00`);
+  for(let start=startDay; start+slotDuration<=endDay; start+=step){
+    const time=`${String(Math.floor(start/60)).padStart(2,'0')}:${String(start%60).padStart(2,'0')}`;
+
+    const freeProfessionals=professionals.filter(prof=>
+      !hasProfessionalConflict({
+        date:dateKey,
+        time,
+        professional:prof.name,
+        duration:slotDuration
+      })
+    );
+
+    if(freeProfessionals.length){
+      result.push({
+        time,
+        availableProfessionals:freeProfessionals.map(p=>p.name)
+      });
     }
   }
 
-  return slots;
+  return result;
 }
 
 function renderIdleSlots(){
@@ -9640,7 +9908,10 @@ function radarRiskClass(risk){
 }
 
 function formatShortDate(key){
-  return parseDateKey(key).toLocaleDateString('pt-BR',{
+  if(!key) return '—';
+  const date=parseDateKey(key);
+  if(Number.isNaN(date.getTime())) return '—';
+  return date.toLocaleDateString('pt-BR',{
     day:'2-digit',
     month:'2-digit',
     year:'2-digit'
@@ -9655,6 +9926,7 @@ function getFilteredRadarClients(){
   const days = document.getElementById('radar-days-filter')?.value || 'all';
 
   return RADAR_CLIENTS.filter(client=>{
+    if(client.daysAway<25) return false;
     if(search && !client.name.toLowerCase().includes(search)) return false;
     if(risk!=='all' && client.risk!==risk) return false;
     if(prof!=='all' && client.professional!==prof) return false;
@@ -9729,7 +10001,8 @@ function renderRadarTable(){
 function renderRadarKPIs(){
   const atRisk = RADAR_CLIENTS.filter(c=>c.daysAway>=25).length;
   const lost = RADAR_CLIENTS.filter(c=>c.daysAway>=60).length;
-  const potential = RADAR_CLIENTS.reduce((sum,c)=>sum+c.ticket,0);
+  const riskClients=RADAR_CLIENTS.filter(c=>c.daysAway>=25);
+  const potential = riskClients.reduce((sum,c)=>sum+c.ticket,0);
   const contacted = RADAR_CLIENTS.filter(c=>c.contacted).length;
 
   document.getElementById('radar-risk-count').textContent = atRisk;
@@ -9752,7 +10025,7 @@ function renderRadarPriorities(){
   };
 
   const priority = RADAR_CLIENTS
-    .filter(c=>!c.contacted)
+    .filter(c=>c.daysAway>=25 && !c.contacted)
     .slice()
     .sort((a,b)=>score(b)-score(a))
     .slice(0,4);
@@ -10085,7 +10358,7 @@ function renderTeamRankingKPIs(data){
   document.getElementById('ranking-top-ticket-meta').textContent=money(byTicket.ticket);
 
   document.getElementById('ranking-top-retention').textContent=byRetention.name;
-  document.getElementById('ranking-top-retention-meta').textContent=`${byRetention.retention}% de retenção`;
+  document.getElementById('ranking-top-retention-meta').textContent=`${byRetention.retention.toFixed(0)}% de retenção`;
 }
 
 function renderTeamRanking(){
@@ -10237,7 +10510,7 @@ function renderFinanceSummary(){
     .filter(a=>['desmarcado','no-show'].includes(a.status));
   const lostRevenue=cancelled.reduce((s,a)=>s+getServicePrice(a.service),0);
   const comboPrice=SERVICE_PRICES['Corte + Barba']||0;
-  const idlePotential=buildIdleSlots().length*comboPrice;
+  const idlePotential=buildIdleSlots(60).length*comboPrice;
 
   document.getElementById('finance-goal-current').textContent=money(current);
   document.getElementById('finance-goal-target').textContent=`meta ${money(goal)}`;
@@ -11029,16 +11302,14 @@ function renderBirthdayOpportunity(){
   document.getElementById('birthday-risk-count').textContent = atRisk;
 }
 
-function cycleBirthdayStatus(id){
-  const client=BIRTHDAY_CLIENTS.find(c=>c.id===id);
+async function cycleBirthdayStatus(id){
+  const client=BIRTHDAY_CLIENTS.find(c=>c.id===Number(id));
   if(!client) return;
 
   const sequence=['pendente','gerada','contatado','agendou'];
   const current=sequence.indexOf(client.status);
-  client.status=sequence[(current+1)%sequence.length];
-
-  renderBirthdays();
-  showToast(`${client.name}: status atualizado para ${birthdayStatusLabel(client.status)}.`);
+  const next=sequence[(current+1)%sequence.length];
+  await updateBirthdayStatus(id,next);
 }
 
 function renderBirthdays(){
@@ -11237,11 +11508,11 @@ function renderHomeManagement(){
   const forecastRevenue = active.reduce((sum,item)=>sum+getServicePrice(item.service),0);
 
   const capacityMinutes = getDailyCapacityMinutes();
-  const occupiedMinutes = active.reduce((sum,item)=>sum+getServiceDuration(item.service),0);
+  const occupiedMinutes = active.reduce((sum,item)=>sum+appointmentDuration(item),0);
   const occupancy = capacityMinutes ? (occupiedMinutes/capacityMinutes)*100 : 0;
   const ticket = active.length ? forecastRevenue/active.length : 0;
 
-  const idleSlots = buildIdleSlots().length;
+  const idleSlots = buildIdleSlots(60).length;
 
   const monthAppointments = getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth());
   const bad = monthAppointments.filter(item=>['desmarcado','no-show'].includes(item.status)).length;
@@ -11254,7 +11525,9 @@ function renderHomeManagement(){
   const netProfit=currentRevenue-monthOut;
   const monthlyGoal=Math.max(0,Number(BUSINESS_SETTINGS.monthly_goal)||0);
   const daysInMonth = new Date(appToday.getFullYear(),appToday.getMonth()+1,0).getDate();
-  const expectedByToday = monthlyGoal * (appToday.getDate()/daysInMonth);
+  const expectedByToday = monthlyGoal>0
+    ? monthlyGoal * (appToday.getDate()/daysInMonth)
+    : 0;
   const paceDiff = currentRevenue - expectedByToday;
 
   document.getElementById('home-occupancy-top').textContent = `${occupancy.toFixed(0)}%`;
@@ -11301,7 +11574,9 @@ function renderHomeManagement(){
 
   const comparison = document.getElementById('home-goal-comparison');
   if(comparison){
-    comparison.innerHTML = paceDiff >= 0
+    if(monthlyGoal<=0){
+      comparison.innerHTML='Defina uma meta mensal em Fidelidade → Configurar fidelidade.';
+    }else comparison.innerHTML = paceDiff >= 0
       ? `Ritmo esperado até hoje: <strong>${money(expectedByToday)}</strong> · você está <strong style="color:#4ADE80">${money(Math.abs(paceDiff))} acima</strong>`
       : `Ritmo esperado até hoje: <strong>${money(expectedByToday)}</strong> · você está <strong style="color:#FBBF24">${money(Math.abs(paceDiff))} abaixo</strong>`;
   }
@@ -11311,7 +11586,9 @@ function renderHomeManagement(){
   const goalTarget = document.getElementById('goal-target');
   const goalFill = document.getElementById('goal-bar-fill');
   const goalPct = document.getElementById('goal-pct');
-  const goalPercent = Math.min(100,(currentRevenue/monthlyGoal)*100);
+  const goalPercent = monthlyGoal>0
+    ? Math.min(100,(currentRevenue/monthlyGoal)*100)
+    : 0;
 
   if(goalCurrent) goalCurrent.textContent = money(currentRevenue);
   if(goalTarget) goalTarget.textContent = `meta ${money(monthlyGoal)}`;
