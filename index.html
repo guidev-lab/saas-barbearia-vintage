@@ -6677,6 +6677,75 @@ a{color:inherit;text-decoration:none}
   min-width:0 !important;
 }
 
+
+/* =========================================================
+   EXPORTAR BASE — ALINHAMENTO MOBILE
+========================================================= */
+@media (max-width: 768px){
+  #page-export .page-head,
+  #page-export .section-head,
+  #page-export .export-header,
+  .page[data-page="export"] .page-head,
+  .page[data-page="export"] .section-head,
+  .page[data-page="export"] .export-header{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+    gap:8px !important;
+    width:100% !important;
+  }
+
+  #page-export .page-head > div,
+  #page-export .section-head > div,
+  #page-export .export-header > div,
+  .page[data-page="export"] .page-head > div,
+  .page[data-page="export"] .section-head > div,
+  .page[data-page="export"] .export-header > div{
+    width:100% !important;
+    min-width:0 !important;
+    text-align:left !important;
+  }
+
+  #page-export h1,
+  #page-export h2,
+  #page-export p,
+  .page[data-page="export"] h1,
+  .page[data-page="export"] h2,
+  .page[data-page="export"] p{
+    text-align:left !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+
+  #page-export .page-actions,
+  #page-export .export-actions,
+  .page[data-page="export"] .page-actions,
+  .page[data-page="export"] .export-actions{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+    margin-left:0 !important;
+  }
+
+  #page-export .page-actions button,
+  #page-export .export-actions button,
+  .page[data-page="export"] .page-actions button,
+  .page[data-page="export"] .export-actions button{
+    width:100% !important;
+    justify-content:center !important;
+  }
+
+  #page-export .card,
+  #page-export .export-card,
+  .page[data-page="export"] .card,
+  .page[data-page="export"] .export-card{
+    width:100% !important;
+    min-width:0 !important;
+  }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
