@@ -7764,7 +7764,7 @@ button,a,input,select,textarea{max-width:100%}
 </div>
 </div>
 <div class="finance-kpi-grid">
-<div class="finance-kpi-card"><div class="label">Faturamento bruto (mês)</div><div class="value" id="finance-gross">—</div><div class="meta">Receita total antes de comissões e despesas</div></div>
+<div class="finance-kpi-card"><div class="label">Faturamento realizado (mês)</div><div class="value" id="finance-gross">—</div><div class="meta">Serviços finalizados + outras entradas realizadas</div></div>
 <div class="finance-kpi-card"><div class="label">Lucro estimado</div><div class="value" id="finance-net">—</div><div class="meta" id="finance-margin-meta">Margem estimada —</div></div>
 <div class="finance-kpi-card"><div class="label">Comissões devidas</div><div class="value" id="finance-commissions">—</div><div class="meta" id="finance-commission-meta">— do faturamento</div></div>
 <div class="finance-kpi-card"><div class="label">Ticket médio</div><div class="value" id="finance-ticket">—</div><div class="meta">Média por atendimento no período</div></div>
@@ -8961,7 +8961,7 @@ async function hydrateCoreDataFromSupabase(force=false){
         .order('appointment_date',{ascending:true})
         .order('appointment_time',{ascending:true}),
       finance:sb.from('financial_entries')
-        .select('id,entry_date,description,client_name,professional_id,professional_name,category,type,payment_method,amount')
+        .select('id,entry_date,description,client_name,professional_id,professional_name,category,type,payment_method,amount,appointment_id')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .order('entry_date',{ascending:false})
         .order('id',{ascending:false}),
@@ -9024,7 +9024,7 @@ async function hydrateCoreDataFromSupabase(force=false){
     FINANCE_MOVEMENTS=(data.finance||[]).map(item=>({
       id:Number(item.id),date:item.entry_date,description:item.description,client:item.client_name||'—',
       professional:item.professional_name||'—',professionalId:item.professional_id||'',category:item.category,
-      type:item.type,payment:item.payment_method,value:Number(item.amount)||0
+      type:item.type,payment:item.payment_method,value:Number(item.amount)||0,appointmentId:item.appointment_id?Number(item.appointment_id):null
     }));
 
     CLIENTS=(data.clients||[]).map(item=>({
@@ -9516,6 +9516,11 @@ async function changeAppointmentStatus(id,status){
     // 2) A partir daqui o banco JÁ confirmou a finalização.
     item.status='finalizado';
 
+    // O valor do serviço passa a fazer parte do faturamento realizado imediatamente.
+    // appointmentPrice(item) usa o preço congelado no momento do agendamento.
+    const finalizedValue=appointmentPrice(item);
+    console.info(`Atendimento ${id} finalizado: ${money(finalizedValue)} incluído no faturamento realizado.`);
+
     const safeRender=(name,fn)=>{
       try{ fn(); }
       catch(error){ console.error(`Erro visual após finalizar (${name}):`,error); }
@@ -9544,7 +9549,7 @@ async function changeAppointmentStatus(id,status){
       console.error('Atendimento finalizado, mas houve falha ao recarregar a interface:',error);
     }
 
-    showToast('Atendimento finalizado. Valor incluído no faturamento realizado.');
+    showToast(`Atendimento finalizado. ${money(finalizedValue)} incluído no faturamento realizado.`);
     return;
   }
 
@@ -10717,12 +10722,8 @@ function renderFinanceInsightsReal(){
   const prevDate=new Date(y,m-1,1);
   const prevPrefix=`${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}`;
 
-  const sumRevenue=prefix=>FINANCE_MOVEMENTS
-    .filter(x=>x.type==='entrada' && String(x.date||'').startsWith(prefix))
-    .reduce((s,x)=>s+(Number(x.value)||0),0);
-
-  const currentRevenue=sumRevenue(currentPrefix);
-  const previousRevenue=sumRevenue(prevPrefix);
+  const currentRevenue=realizedGrossRevenueForMonth(y,m);
+  const previousRevenue=realizedGrossRevenueForMonth(prevDate.getFullYear(),prevDate.getMonth());
 
   if(currentRevenue<=0 || previousRevenue<=0){
     revEl.textContent='—';
@@ -10859,6 +10860,45 @@ let FINANCE_MOVEMENTS=[];
 
 
 
+
+function finalizedAppointmentsInMonth(year,month){
+  return getAppointmentsForMonth(year,month).filter(a=>a.status==='finalizado');
+}
+
+function realizedServiceRevenueForMonth(year,month){
+  return finalizedAppointmentsInMonth(year,month)
+    .reduce((sum,a)=>sum+appointmentPrice(a),0);
+}
+
+function realizedServiceRevenueForDate(dateKey){
+  return appointments
+    .filter(a=>a.date===dateKey && a.status==='finalizado')
+    .reduce((sum,a)=>sum+appointmentPrice(a),0);
+}
+
+function manualRevenueForMonth(year,month){
+  const prefix=`${year}-${String(month+1).padStart(2,'0')}`;
+  return FINANCE_MOVEMENTS
+    .filter(m=>m.type==='entrada'
+      && String(m.date||'').startsWith(prefix)
+      && !m.appointmentId)
+    .reduce((sum,m)=>sum+(Number(m.value)||0),0);
+}
+
+function manualRevenueForDate(dateKey){
+  return FINANCE_MOVEMENTS
+    .filter(m=>m.type==='entrada' && m.date===dateKey && !m.appointmentId)
+    .reduce((sum,m)=>sum+(Number(m.value)||0),0);
+}
+
+function realizedGrossRevenueForMonth(year,month){
+  return realizedServiceRevenueForMonth(year,month)+manualRevenueForMonth(year,month);
+}
+
+function realizedGrossRevenueForDate(dateKey){
+  return realizedServiceRevenueForDate(dateKey)+manualRevenueForDate(dateKey);
+}
+
 function getDateRangeForFinance(range){
   if(range==='month'){
     const start=new Date(appToday.getFullYear(),appToday.getMonth(),1);
@@ -10876,9 +10916,7 @@ function buildRevenueSeries(range='week'){
   const cursor=new Date(start);
   while(cursor<=end){
     const key=formatDateKey(cursor);
-    const value=FINANCE_MOVEMENTS
-      .filter(m=>m.type==='entrada' && m.date===key)
-      .reduce((s,m)=>s+m.value,0);
+    const value=realizedGrossRevenueForDate(key);
     days.push({
       label:cursor.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.',''),
       value
@@ -10911,12 +10949,9 @@ function renderFinanceChart(range='week'){
 function renderFinanceKPIs(){
   const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
   const monthMovements=FINANCE_MOVEMENTS.filter(i=>String(i.date||'').startsWith(monthPrefix));
-  const entries=monthMovements.filter(i=>i.type==='entrada');
   const outputs=monthMovements.filter(i=>i.type==='saida');
-  const gross=entries.reduce((s,i)=>s+i.value,0);
-
-  const completed=getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth())
-    .filter(a=>a.status==='finalizado');
+  const completed=finalizedAppointmentsInMonth(appToday.getFullYear(),appToday.getMonth());
+  const gross=realizedGrossRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
 
   const commissionDue=completed.reduce((sum,a)=>{
     const member=TEAM_CATALOG.find(m=>String(m.name)===String(a.professional));
@@ -10947,7 +10982,7 @@ function renderFinanceKPIs(){
 function renderFinanceSummary(){
   const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
   const monthEntries=FINANCE_MOVEMENTS.filter(m=>m.date.startsWith(monthPrefix));
-  const current=monthEntries.filter(m=>m.type==='entrada').reduce((s,m)=>s+m.value,0);
+  const current=realizedGrossRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
   const goal=Math.max(0,Number(BUSINESS_SETTINGS.monthly_goal)||0);
   const pct=goal?Math.min(100,(current/goal)*100):0;
 
@@ -11989,7 +12024,7 @@ function renderHomeManagement(){
 
   const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
   const monthFinance=FINANCE_MOVEMENTS.filter(m=>m.date.startsWith(monthPrefix));
-  const currentRevenue=monthFinance.filter(m=>m.type==='entrada').reduce((s,m)=>s+m.value,0);
+  const currentRevenue=realizedGrossRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
   const monthOut=monthFinance.filter(m=>m.type==='saida').reduce((s,m)=>s+m.value,0);
   const netProfit=currentRevenue-monthOut;
 
@@ -12113,7 +12148,7 @@ function renderOverviewRealOnly(){
   const todayActive=appointments.filter(a=>a.date===todayKey && !['desmarcado','no-show'].includes(a.status));
   const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
   const monthMovements=FINANCE_MOVEMENTS.filter(m=>String(m.date||'').startsWith(monthPrefix));
-  const gross=monthMovements.filter(m=>m.type==='entrada').reduce((s,m)=>s+(Number(m.value)||0),0);
+  const gross=realizedGrossRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
   const outputs=monthMovements.filter(m=>m.type==='saida').reduce((s,m)=>s+(Number(m.value)||0),0);
 
   const completed=getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth()).filter(a=>a.status==='finalizado');
