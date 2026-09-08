@@ -9050,6 +9050,13 @@ let LOYALTY_REDEMPTIONS=[];
 let CURRENT_BARBERSHOP_ID=null;
 let CURRENT_BARBERSHOP_SLUG=null;
 let CURRENT_BARBERSHOP=null;
+const TENANT_ROLES={
+  owner:'Proprietário',
+  manager:'Gerente',
+  reception:'Recepção',
+  barber:'Barbeiro'
+};
+
 let CURRENT_USER_ROLE='owner';
 let CURRENT_PERMISSIONS={};
 let CURRENT_FINANCE_SETTINGS={};
@@ -9121,7 +9128,10 @@ async function resolveCurrentBarbershop(force=false){
   // Platform admin may inspect a shop without tenant membership.
   const {data:isMaster}=await sb.rpc('is_platform_admin');
   CURRENT_USER_ROLE=membership?.role || (isMaster ? 'owner' : '');
-  if(!CURRENT_USER_ROLE) throw new Error('Este usuário não possui acesso ativo a esta barbearia.');
+
+  if(!CURRENT_USER_ROLE || !Object.prototype.hasOwnProperty.call(TENANT_ROLES,CURRENT_USER_ROLE)){
+    throw new Error('Este usuário possui um cargo inválido ou não possui acesso ativo a esta barbearia.');
+  }
 
   CURRENT_PERMISSIONS=shop.permission_defaults||{};
   CURRENT_FINANCE_SETTINGS=shop.finance_settings||{};
@@ -9142,6 +9152,11 @@ async function resolveCurrentBarbershop(force=false){
 
 function roleCan(feature){
   if(CURRENT_USER_ROLE==='owner') return true;
+
+  if(!['manager','reception','barber'].includes(CURRENT_USER_ROLE)){
+    return false;
+  }
+
   return CURRENT_PERMISSIONS?.[CURRENT_USER_ROLE]?.[feature]===true;
 }
 
