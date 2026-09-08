@@ -7015,6 +7015,30 @@ button,a,input,select,textarea{max-width:100%}
   }
 }
 
+
+/* ===== HISTÓRICO FINALIZADO IMUTÁVEL ===== */
+.appointment-locked-note{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:0 9px;
+  border:1px solid rgba(96,165,250,.18);
+  border-radius:8px;
+  background:rgba(59,130,246,.06);
+  color:#8FB7E8;
+  font-size:9.5px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+@media(max-width:520px){
+  .appointment-locked-note{
+    width:100%;
+    justify-content:center;
+    min-height:36px;
+  }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -9602,11 +9626,17 @@ function renderAppointments(){
         ${statusLabel[item.status] || item.status}
       </div>
       <div class="appointment-actions">
-        <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
-        ${!['finalizado','desmarcado','no-show'].includes(item.status)
-          ? `<button class="appointment-action appointment-action-finish" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
-          : ''}
-        ${!['desmarcado','no-show'].includes(item.status) ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>` : ''}
+        ${item.status==='finalizado'
+          ? `<span class="appointment-locked-note">Histórico finalizado</span>`
+          : `
+            <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
+            ${!['desmarcado','no-show'].includes(item.status)
+              ? `<button class="appointment-action appointment-action-finish" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
+              : ''}
+            ${!['desmarcado','no-show'].includes(item.status)
+              ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>`
+              : ''}
+          `}
       </div>
     </div>
   `).join('');
@@ -9629,6 +9659,13 @@ function openAppointmentModal(id=null){
       showToast('Agendamento não encontrado.');
       return;
     }
+
+    if(item.status==='finalizado'){
+      appointmentEditId=null;
+      showToast('Atendimentos finalizados são históricos e não podem ser editados.');
+      return;
+    }
+
     title.textContent='Editar agendamento';
     deleteBtn.style.display='';
     saveBtn.textContent='Salvar alterações';
@@ -9675,6 +9712,11 @@ async function saveAppointment(){
   const existingAppointment=appointmentEditId!==null
     ? appointments.find(a=>Number(a.id)===Number(appointmentEditId))
     : null;
+
+  if(existingAppointment?.status==='finalizado'){
+    showToast('Atendimentos finalizados são históricos e não podem ser alterados.');
+    return;
+  }
 
   if(status==='finalizado' && existingAppointment?.status!=='finalizado'){
     showToast('Para finalizar um atendimento, use o botão Finalizar após o horário agendado.');
@@ -9795,7 +9837,10 @@ async function saveAppointment(){
     showToast(wasEditing?'Agendamento atualizado.':'Agendamento salvo com sucesso.');
   }catch(error){
     console.error(error);
-    showToast('Não foi possível salvar o agendamento.');
+    const msg=String(error?.message||'');
+    showToast(msg.includes('finalized_appointment_locked')
+      ? 'Atendimentos finalizados são históricos e não podem ser alterados.'
+      : 'Não foi possível salvar o agendamento.');
   }finally{
     saveButton.disabled=false;
     saveButton.textContent=originalText;
@@ -9958,6 +10003,15 @@ async function changeAppointmentStatus(id,status){
 
 async function deleteEditingAppointment(){
   if(appointmentEditId===null) return;
+
+  if(!assertPermission('agenda')) return;
+
+  const item=appointments.find(a=>Number(a.id)===Number(appointmentEditId));
+  if(item?.status==='finalizado'){
+    showToast('Atendimentos finalizados são históricos e não podem ser excluídos.');
+    return;
+  }
+
   if(!confirm('Excluir este agendamento definitivamente?')) return;
 
   try{
@@ -9977,7 +10031,10 @@ async function deleteEditingAppointment(){
     showToast('Agendamento excluído.');
   }catch(error){
     console.error(error);
-    showToast('Não foi possível excluir o agendamento.');
+    const msg=String(error?.message||'');
+    showToast(msg.includes('finalized_appointment_locked')
+      ? 'Atendimentos finalizados são históricos e não podem ser excluídos.'
+      : 'Não foi possível excluir o agendamento.');
   }
 }
 
