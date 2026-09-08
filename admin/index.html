@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vintage SaaS — Painel Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F17;--panel:#111827;--card:#141B29;--card2:#101722;--border:#243041;--text:#F5F8FC;--muted:#94A3B8;--blue:#3B82F6;--green:#22C55E;--amber:#D6A33D;--red:#EF6464}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial}.hidden{display:none!important}button,input,select,textarea{font:inherit}button{cursor:pointer}h1,h2,h3{font-family:Sora}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 20% 10%,rgba(59,130,246,.14),transparent 30%),var(--bg)}.login-card{width:min(100%,420px);background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px}.login-card h1{font-size:25px;margin:18px 0 8px}.login-card p{font-size:11px;line-height:1.6;color:var(--muted)}
+.badge{display:inline-flex;border:1px solid rgba(59,130,246,.18);background:rgba(59,130,246,.06);color:#A9CBF4;border-radius:999px;padding:6px 10px;font-size:9px;font-weight:700;text-transform:uppercase}
+.field{display:grid;gap:7px;margin:10px 0}.field label{font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase}.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:#0D1420;color:#fff;border-radius:9px;padding:0 11px;outline:none}.field input,.field select{height:42px}.field textarea{min-height:82px;padding:10px 11px}.btn{height:39px;border-radius:9px;border:1px solid var(--border);background:#111A26;color:#DCE6F2;padding:0 13px;font-size:10px;font-weight:700}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.danger{color:#F1A0A0}.login-card .btn{width:100%;height:44px;margin-top:10px}
+.shell{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh}.side{position:sticky;top:0;height:100vh;background:#0D131E;border-right:1px solid var(--border);padding:20px 15px;display:flex;flex-direction:column}.brand strong{font-family:Sora;font-size:15px}.brand span{display:block;margin-top:5px;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.nav{display:grid;gap:5px;margin-top:24px}.nav button{height:40px;border:1px solid transparent;border-radius:9px;background:transparent;color:#A6B3C3;text-align:left;padding:0 11px;font-size:10px;font-weight:600}.nav button.active{background:rgba(59,130,246,.07);color:#EAF3FF;border-color:rgba(59,130,246,.14)}.side .bottom{margin-top:auto}
+.main{min-width:0;padding:26px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px}.top h1{font-size:23px;margin:0 0 5px}.top p{margin:0;color:var(--muted);font-size:10px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.kpi,.card{background:var(--card);border:1px solid var(--border);border-radius:14px}.kpi{padding:15px}.kpi span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase}.kpi strong{display:block;font-family:Sora;font-size:20px;margin-top:7px}.card{padding:16px;margin-top:14px}.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.card-head h2{font-size:13px;margin:0}.card-head p{font-size:9px;color:var(--muted);margin:4px 0 0}
+.search{height:38px;min-width:240px;border:1px solid var(--border);background:#0D1420;color:#fff;border-radius:9px;padding:0 11px}.shops{display:grid;gap:8px}.shop{display:grid;grid-template-columns:minmax(210px,1.4fr) .7fr .8fr .9fr auto;gap:11px;align-items:center;border:1px solid #1C2735;background:var(--card2);border-radius:11px;padding:12px}.shop:hover{border-color:#34445A}.shop strong{font-size:10.5px}.shop span{display:block;color:var(--muted);font-size:8.5px;margin-top:4px}.pill{display:inline-flex;border:1px solid rgba(34,197,94,.18);background:rgba(34,197,94,.06);color:#8CDDA9;border-radius:999px;padding:5px 8px;font-size:8px;font-weight:700}.pill.bad{border-color:rgba(239,100,100,.18);background:rgba(239,100,100,.06);color:#EFA2A2}.pill.warn{border-color:rgba(214,163,61,.2);background:rgba(214,163,61,.06);color:#E2BF72}
+.detail-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:15px}.avatar{width:48px;height:48px;border-radius:12px;border:1px solid var(--border);background:linear-gradient(145deg,#182336,#0F1724);display:grid;place-items:center;font-family:Sora;color:#D7E8FB}.detail-title{flex:1}.detail-title h1{font-size:20px;margin:0 0 5px}.detail-title p{font-size:9px;color:var(--muted);margin:0}.meta{display:flex;gap:6px;margin-top:8px}
+.tabs{display:flex;gap:6px;overflow:auto;padding:4px 0;margin-bottom:7px;scrollbar-width:none}.tab{flex:0 0 auto;height:36px;border-radius:9px;border:1px solid var(--border);background:#0F1722;color:#94A3B8;font-size:9px;font-weight:700;padding:0 10px}.tab.active{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.23);color:#DDEBFF}.pane{display:none}.pane.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}.mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.mini{border:1px solid #1C2735;background:var(--card2);border-radius:10px;padding:11px}.mini span{display:block;color:var(--muted);font-size:8px}.mini strong{display:block;font-family:Sora;font-size:15px;margin-top:6px}.progress-wrap{height:7px;background:#0B111A;border-radius:999px;overflow:hidden}.progress{height:100%;background:var(--blue)}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid #1C2735;background:var(--card2);border-radius:10px;padding:11px;margin:7px 0}.setting strong{font-size:10px}.setting span{display:block;color:var(--muted);font-size:8.5px;margin-top:3px}.switch{width:38px;height:22px;border:1px solid #324054;background:#182233;border-radius:999px;position:relative;flex:0 0 auto}.switch:after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#7D8A99;top:2px;left:3px;transition:.15s}.switch.on{background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.35)}.switch.on:after{left:17px;background:#69A8F5}
+.hours{display:grid;grid-template-columns:1fr 110px 110px 90px;gap:8px;align-items:center;margin:7px 0}.hours span{font-size:9px;color:#CBD5E1}.hours input,.hours select{height:36px;border:1px solid var(--border);border-radius:8px;background:#0D1420;color:#fff;padding:0 8px}
+.data{display:grid;gap:7px}.row{display:grid;grid-template-columns:minmax(160px,1.4fr) .8fr .8fr .65fr auto;gap:9px;align-items:center;border:1px solid #1C2735;background:var(--card2);border-radius:10px;padding:10px}.row.team{grid-template-columns:minmax(160px,1.4fr) .8fr .7fr auto}.row span{font-size:8.5px;color:var(--muted)}.save{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border);padding-top:13px;margin-top:14px}.code{border:1px solid var(--border);background:#0B111A;border-radius:9px;padding:10px;font-family:monospace;font-size:9px;color:#B7CAE0;overflow:auto;white-space:nowrap}
+.modal-bg{position:fixed;inset:0;background:rgba(2,6,12,.76);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.modal-bg.open{display:flex}.modal{width:min(100%,620px);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px}.modal h2{font-size:16px;margin:0 0 15px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px;border-top:1px solid var(--border);padding-top:13px}.toast{position:fixed;right:18px;bottom:18px;background:#121B28;border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:9px;opacity:0;transform:translateY(8px);transition:.18s}.toast.show{opacity:1;transform:none}
+@media(max-width:1050px){.kpis{grid-template-columns:repeat(3,1fr)}.shop{grid-template-columns:1.3fr .7fr .8fr}.shop .hide{display:none}.shop .actions{grid-column:1/-1}}
+@media(max-width:780px){.shell{display:block}.side{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--border);padding:13px}.nav{display:flex;overflow:auto;margin-top:12px}.nav button{flex:0 0 auto}.side .bottom{display:none}.main{padding:15px 10px}.top{flex-direction:column}.top .actions,.top .btn{width:100%}.kpis{grid-template-columns:1fr 1fr}.shop{grid-template-columns:1fr}.grid2,.form2{grid-template-columns:1fr}.full{grid-column:auto}.mini-grid{grid-template-columns:1fr 1fr}.hours{grid-template-columns:1fr 1fr}.hours span{grid-column:1/-1}.row,.row.team{grid-template-columns:1fr}.search{width:100%;min-width:0}.detail-head{flex-wrap:wrap}}
+
+.master-grid{display:grid;grid-template-columns:1.45fr .85fr;gap:12px;margin-top:14px}
+.master-stack{display:grid;gap:12px}.overview-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.overview-card h2{font-family:Sora;font-size:13px;margin:0}.overview-card p{font-size:8.5px;color:var(--muted);margin:4px 0 0}
+.metric-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.metric-box{background:var(--card2);border:1px solid #1C2735;border-radius:10px;padding:11px}
+.metric-box span{display:block;color:var(--muted);font-size:7.5px;text-transform:uppercase}.metric-box strong{display:block;font-family:Sora;font-size:15px;margin-top:6px}.metric-box small{display:block;color:#6F7F92;font-size:7.5px;margin-top:4px}
+.attention-list,.ranking-list,.recent-list{display:grid;gap:7px;margin-top:12px}.attention-item,.ranking-item,.recent-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card2);border:1px solid #1C2735;border-radius:10px;padding:10px}
+.attention-item strong,.ranking-item strong,.recent-item strong{font-size:9.5px}.attention-item span,.ranking-item span,.recent-item span{display:block;color:var(--muted);font-size:7.8px;margin-top:3px}
+.alert-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);flex:0 0 auto}.alert-dot.high{background:var(--red)}.alert-dot.low{background:var(--blue)}
+.attention-main{display:flex;align-items:center;gap:9px}.overview-click{cursor:pointer}.overview-click:hover{border-color:#34445A}
+.plan-bars{display:grid;gap:10px;margin-top:13px}.plan-line{display:grid;grid-template-columns:70px 1fr 34px;gap:8px;align-items:center;font-size:8.5px}
+.plan-track{height:7px;border-radius:999px;background:#0A1018;overflow:hidden}.plan-fill{height:100%;background:var(--blue)}.health-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.health-badge{border:1px solid var(--border);background:var(--card2);border-radius:999px;padding:6px 8px;font-size:8px;color:#C5D1DE}.section-eyebrow{font-size:7.5px;color:#6F7F92;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+@media(max-width:1100px){.master-grid{grid-template-columns:1fr}.metric-strip{grid-template-columns:1fr 1fr}}@media(max-width:620px){.metric-strip{grid-template-columns:1fr}.attention-item,.ranking-item,.recent-item{align-items:flex-start;flex-direction:column}}
+
+
+/* ===== ABA BARBEARIAS SIMPLIFICADA ===== */
+.simple-shops{display:grid;gap:8px;margin-top:12px}
+.simple-shop{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:var(--card2);border:1px solid #1C2735;border-radius:11px;
+  padding:14px;cursor:pointer;transition:.15s
+}
+.simple-shop:hover{border-color:#34445A;transform:translateY(-1px)}
+.simple-shop-main{display:flex;align-items:center;gap:12px;min-width:0}
+.simple-avatar{
+  width:42px;height:42px;border-radius:10px;border:1px solid var(--border);
+  background:linear-gradient(145deg,#182336,#0F1724);display:grid;place-items:center;
+  font-family:Sora;font-size:13px;color:#D6E7FA;flex:0 0 auto
+}
+.simple-shop-text{min-width:0}
+.simple-shop-text strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.simple-shop-text span{display:block;color:var(--muted);font-size:8.5px;margin-top:4px}
+.simple-shop-arrow{font-size:18px;color:#64748B}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px}
+.summary-card span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.05em}
+.summary-card strong{display:block;font-family:Sora;font-size:18px;margin-top:7px}
+.summary-card small{display:block;color:#718096;font-size:8px;margin-top:4px}
+.summary-two{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}
+.summary-list{display:grid;gap:8px;margin-top:10px}
+.summary-row{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  background:var(--card2);border:1px solid #1C2735;border-radius:10px;padding:10px
+}
+.summary-row span{font-size:8.5px;color:var(--muted)}
+.summary-row strong{font-size:10px}
+@media(max-width:980px){.summary-grid{grid-template-columns:1fr 1fr}.summary-two{grid-template-columns:1fr}}
+@media(max-width:560px){.summary-grid{grid-template-columns:1fr}.simple-shop{align-items:flex-start}}
+
+
+/* ===== PLANOS ===== */
+.plans-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative}
+.plan-card.featured{border-color:rgba(59,130,246,.42);box-shadow:0 0 0 1px rgba(59,130,246,.08) inset}
+.plan-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.plan-card h2{font-size:15px;margin:0}.plan-price{font-family:Sora;font-size:24px;margin-top:12px}.plan-price small{font-family:Inter;font-size:8px;color:var(--muted)}
+.plan-desc{font-size:8.5px;color:var(--muted);line-height:1.5;min-height:40px;margin-top:6px}
+.plan-limits,.feature-list{display:grid;gap:7px;margin-top:13px}
+.plan-limit,.feature-line{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid #1C2735;background:var(--card2);border-radius:9px;padding:9px}
+.plan-limit span,.feature-line span{font-size:8.5px;color:var(--muted)}.plan-limit strong,.feature-line strong{font-size:9px}
+.feature-state{font-size:8px;font-weight:700}.feature-state.on{color:#88DDA7}.feature-state.off{color:#6E7B8D}
+.plan-actions{display:flex;gap:7px;margin-top:13px}
+.plan-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+
+/* ===== RELATÓRIOS ===== */
+.report-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.report-controls .field{margin:0;min-width:150px}
+.report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.report-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+.report-table{display:grid;gap:7px;margin-top:10px}
+.report-row{display:grid;grid-template-columns:36px minmax(160px,1.5fr) .75fr .75fr .85fr .75fr;gap:9px;align-items:center;border:1px solid #1C2735;background:var(--card2);border-radius:10px;padding:10px}
+.report-row.header{background:#0E1520;color:#738396;font-size:7.5px;text-transform:uppercase;letter-spacing:.05em}
+.report-row strong{font-size:9px}.report-row span{font-size:8px;color:var(--muted)}
+.usage-bars{display:grid;gap:11px;margin-top:12px}.usage-item{display:grid;grid-template-columns:95px 1fr 38px;gap:8px;align-items:center}
+.usage-item span{font-size:8.5px;color:var(--muted)}.usage-track{height:7px;background:#0A1018;border-radius:999px;overflow:hidden}.usage-fill{height:100%;background:var(--blue);border-radius:999px}
+.report-note{font-size:8.5px;color:var(--muted);line-height:1.5;margin-top:10px}
+@media(max-width:1080px){.plans-grid{grid-template-columns:1fr 1fr}.report-kpis,.plan-summary{grid-template-columns:1fr 1fr}.report-grid{grid-template-columns:1fr}}
+@media(max-width:680px){.plans-grid{grid-template-columns:1fr}.report-kpis,.plan-summary{grid-template-columns:1fr}.report-row{grid-template-columns:1fr}.report-row.header{display:none}.report-controls{align-items:stretch}.report-controls .field,.report-controls .btn{width:100%}}
+
+
+/* ===== VISÃO GERAL EXECUTIVA ===== */
+.exec-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:12px;margin-top:14px}
+.exec-stack{display:grid;gap:12px}
+.exec-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.exec-card h2{font-family:Sora;font-size:13px;margin:0}
+.exec-card p{font-size:8.5px;color:var(--muted);margin:4px 0 0}
+.exec-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.exec-kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px}
+.exec-kpi span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.06em}
+.exec-kpi strong{display:block;font-family:Sora;font-size:20px;margin-top:7px}
+.exec-kpi small{display:block;color:#718096;font-size:8px;margin-top:4px}
+.action-list,.onboarding-list,.today-list{display:grid;gap:8px;margin-top:12px}
+.action-item,.onboarding-item,.today-item{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #1C2735;background:var(--card2);border-radius:10px;padding:10px}
+.action-main{display:flex;gap:9px;align-items:center;min-width:0}.action-main div{min-width:0}
+.action-item strong,.onboarding-item strong,.today-item strong{font-size:9.5px}
+.action-item span,.onboarding-item span,.today-item span{display:block;color:var(--muted);font-size:8px;margin-top:3px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:0 0 auto}
+.status-dot.warn{background:var(--amber)}.status-dot.bad{background:var(--red)}.status-dot.good{background:var(--green)}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.quick-btn{border:1px solid #1C2735;background:var(--card2);border-radius:10px;padding:11px;text-align:left;color:#D7E2EF}
+.quick-btn strong{display:block;font-size:9.5px}.quick-btn span{display:block;color:var(--muted);font-size:8px;margin-top:4px}
+.quick-btn:hover{border-color:#34445A}
+.exec-progress{margin-top:12px}
+.exec-progress-line{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:6px}
+.exec-progress-track{height:7px;border-radius:999px;background:#0A1018;overflow:hidden}
+.exec-progress-fill{height:100%;background:var(--blue);border-radius:999px}
+@media(max-width:1000px){.exec-grid{grid-template-columns:1fr}.exec-kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.exec-kpis{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.action-item,.onboarding-item,.today-item{align-items:flex-start;flex-direction:column}}
+
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <div class="login-card">
+    <div class="badge">Administração da plataforma</div>
+    <h1>Painel Master</h1>
+    <p>Gerencie cada barbearia como uma conta completa do SaaS, com métricas, identidade, operação, acessos e personalização.</p>
+    <div class="field"><label>Email</label><input id="email" type="email"></div>
+    <div class="field"><label>Senha</label><input id="password" type="password"></div>
+    <button class="btn primary" onclick="login()">Entrar</button>
+    <div id="login-error" style="font-size:9px;color:#F1A0A0;margin-top:10px"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<div class="shell">
+<aside class="side">
+  <div class="brand"><strong>Vintage SaaS</strong><span>Painel do proprietário</span></div>
+  <div class="nav">
+    <button id="nav-platform" class="active" onclick="showPlatform()">Visão geral</button>
+    <button id="nav-barbershops" onclick="showBarbershops()">Barbearias</button>
+    <button id="nav-plans" onclick="showPlans()">Planos</button>
+    <button id="nav-reports" onclick="showReports()">Relatórios</button>
+  </div>
+  <div class="bottom"><button class="btn danger" style="width:100%" onclick="logout()">Sair</button></div>
+</aside>
+
+<main class="main">
+<section id="platform">
+  <div class="top">
+    <div>
+      <div class="section-eyebrow">Painel executivo</div>
+      <h1>Visão geral</h1>
+      <p>O que precisa da sua atenção hoje para manter a plataforma saudável.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="loadPlatform()">Atualizar</button>
+      <button class="btn primary" onclick="openCreate()">+ Nova barbearia</button>
+    </div>
+  </div>
+
+  <div class="exec-kpis">
+    <div class="exec-kpi"><span>Barbearias ativas</span><strong id="p-active">—</strong><small id="p-total-label">— cadastradas</small></div>
+    <div class="exec-kpi"><span>Atenções abertas</span><strong id="exec-alerts">—</strong><small>Contas que exigem ação</small></div>
+    <div class="exec-kpi"><span>Trials ativos</span><strong id="p-trials">—</strong><small>Em fase de conversão</small></div>
+    <div class="exec-kpi"><span>MRR em risco</span><strong id="p-risk">—</strong><small id="p-pastdue-label">— pagamentos pendentes</small></div>
+  </div>
+
+  <div class="exec-grid">
+    <div class="exec-stack">
+      <div class="exec-card">
+        <div class="card-head">
+          <div><h2>Atenção necessária</h2><p>Prioridades que você deveria resolver primeiro.</p></div>
+          <span id="attention-count" class="pill warn">0 alertas</span>
+        </div>
+        <div id="attention-list" class="action-list"></div>
+      </div>
+
+      <div class="exec-card">
+        <div class="card-head">
+          <div><h2>Implantações recentes</h2><p>Novas barbearias e estágio inicial de uso.</p></div>
+          <button class="btn" onclick="showBarbershops()">Ver todas</button>
+        </div>
+        <div id="exec-onboarding" class="onboarding-list"></div>
+      </div>
+
+      <div class="exec-card">
+        <div class="card-head">
+          <div><h2>Movimento de hoje</h2><p>Leitura rápida da operação da plataforma hoje.</p></div>
+        </div>
+        <div class="exec-kpis" style="grid-template-columns:repeat(3,1fr)">
+          <div class="exec-kpi"><span>Agendamentos hoje</span><strong id="exec-today-appts">—</strong><small>Todas as barbearias</small></div>
+          <div class="exec-kpi"><span>Contas sem uso 7d</span><strong id="p-inactive7">—</strong><small>Precisam acompanhamento</small></div>
+          <div class="exec-kpi"><span>Novas no mês</span><strong id="p-new">—</strong><small>Entraram na plataforma</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exec-stack">
+      <div class="exec-card">
+        <div class="card-head"><div><h2>Saúde da base</h2><p>Leitura rápida da carteira.</p></div></div>
+        <div class="today-list">
+          <div class="today-item"><div><strong>Ativação</strong><span id="p-never-label">— sem ativar</span></div><strong id="p-activation">—</strong></div>
+          <div class="today-item"><div><strong>Sem atividade 15d</strong><span>Risco moderado</span></div><strong id="p-inactive15">—</strong></div>
+          <div class="today-item"><div><strong>Sem atividade 30d</strong><span>Risco elevado</span></div><strong id="p-inactive30">—</strong></div>
+          <div class="today-item"><div><strong>Suspensas/bloqueadas</strong><span>Sem acesso normal</span></div><strong id="p-suspended">—</strong></div>
+        </div>
+      </div>
+
+      <div class="exec-card">
+        <div class="card-head"><div><h2>Atalhos</h2><p>Ações frequentes do proprietário.</p></div></div>
+        <div class="quick-grid">
+          <button class="quick-btn" onclick="showBarbershops()"><strong>Gerenciar barbearias</strong><span>Abrir contas e configurações</span></button>
+          <button class="quick-btn" onclick="showPlans()"><strong>Planos</strong><span>Preços, limites e recursos</span></button>
+          <button class="quick-btn" onclick="showReports()"><strong>Relatórios</strong><span>Análises e comparações</span></button>
+          <button class="quick-btn" onclick="openCreate()"><strong>Nova barbearia</strong><span>Iniciar uma nova implantação</span></button>
+        </div>
+      </div>
+
+      <div class="exec-card">
+        <div class="card-head"><div><h2>Objetivo da base</h2><p>Acompanhamento simples do crescimento.</p></div></div>
+        <div class="exec-progress">
+          <div class="exec-progress-line"><span id="exec-base-label">— de 10 barbearias</span><strong id="exec-base-pct">—</strong></div>
+          <div class="exec-progress-track"><div id="exec-base-fill" class="exec-progress-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="barbershops-view" class="hidden">
+  <div class="top">
+    <div>
+      <div class="section-eyebrow">Contas cadastradas</div>
+      <h1>Barbearias</h1>
+      <p>Selecione uma barbearia para ver um resumo da operação.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="loadPlatform().then(renderSimpleShops)">Atualizar</button>
+      <button class="btn primary" onclick="openCreate()">+ Nova barbearia</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div><h2>Suas barbearias</h2><p>Uma conta por linha, sem excesso de informações.</p></div>
+      <input id="simple-search" class="search" placeholder="Buscar barbearia..." oninput="renderSimpleShops()">
+    </div>
+    <div id="simple-shops" class="simple-shops"></div>
+  </div>
+</section>
+
+<section id="shop-summary" class="hidden">
+  <div class="detail-head">
+    <button class="btn" onclick="showBarbershops()">← Barbearias</button>
+    <div id="summary-avatar" class="avatar">BV</div>
+    <div class="detail-title">
+      <h1 id="summary-name">Barbearia</h1>
+      <p id="summary-location">—</p>
+      <div class="meta">
+        <span id="summary-plan" class="badge">Plano</span>
+        <span id="summary-status" class="pill">Ativa</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="openOwner()">Abrir painel do dono</button>
+      <button class="btn primary" onclick="openFullManagement()">Gerenciar configurações</button>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card"><span>Faturamento no mês</span><strong id="sum-revenue">—</strong><small>Financeiro do painel do dono</small></div>
+    <div class="summary-card"><span>Atendimentos no mês</span><strong id="sum-appts">—</strong><small id="sum-completed">— finalizados</small></div>
+    <div class="summary-card"><span>Clientes</span><strong id="sum-clients">—</strong><small>Base cadastrada</small></div>
+    <div class="summary-card"><span>Ticket médio</span><strong id="sum-ticket">—</strong><small>Atendimentos finalizados</small></div>
+  </div>
+
+  <div class="summary-two">
+    <div class="card">
+      <div class="card-head"><div><h2>Resumo da operação</h2><p>Dados do sistema do dono desta barbearia.</p></div></div>
+      <div class="summary-list">
+        <div class="summary-row"><span>Agendamentos hoje</span><strong id="sum-today">—</strong></div>
+        <div class="summary-row"><span>Próximos 7 dias</span><strong id="sum-next">—</strong></div>
+        <div class="summary-row"><span>Profissionais ativos</span><strong id="sum-team">—</strong></div>
+        <div class="summary-row"><span>Serviços ativos</span><strong id="sum-services">—</strong></div>
+        <div class="summary-row"><span>Cancelamentos no mês</span><strong id="sum-cancelled">—</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>Meta mensal</h2><p>Comparação com a meta configurada no painel do dono.</p></div></div>
+      <strong id="sum-goal-label" style="font-family:Sora;font-size:17px">—</strong>
+      <div class="progress-wrap" style="margin-top:10px"><div id="sum-goal-progress" class="progress" style="width:0%"></div></div>
+      <p id="sum-goal-hint" style="font-size:9px;color:var(--muted);line-height:1.5;margin-top:10px"></p>
+      <div class="save" style="justify-content:flex-start">
+        <button class="btn" onclick="openBooking()">Página de agendamento</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="plans-view" class="hidden">
+  <div class="top">
+    <div>
+      <div class="section-eyebrow">Comercial e acesso</div>
+      <h1>Planos</h1>
+      <p>Defina preço, limites e funcionalidades disponíveis para cada nível do SaaS.</p>
+    </div>
+    <div class="actions"><button class="btn" onclick="loadPlans()">Atualizar</button><button class="btn primary" onclick="openPlanEditor()">+ Novo plano</button></div>
+  </div>
+
+  <div class="plan-summary">
+    <div class="kpi"><span>Planos ativos</span><strong id="plans-active-count">—</strong><small>Disponíveis para contratação</small></div>
+    <div class="kpi"><span>Barbearias em planos</span><strong id="plans-shops-count">—</strong><small>Contas vinculadas</small></div>
+    <div class="kpi"><span>Ticket médio SaaS</span><strong id="plans-arpa">—</strong><small>Mensalidade média ativa</small></div>
+    <div class="kpi"><span>MRR atual</span><strong id="plans-mrr">—</strong><small>Receita recorrente</small></div>
+  </div>
+
+  <div id="plans-grid" class="plans-grid"></div>
+</section>
+
+<section id="reports-view" class="hidden">
+  <div class="top">
+    <div>
+      <div class="section-eyebrow">Análise da plataforma</div>
+      <h1>Relatórios</h1>
+      <p>Analise crescimento, receita, churn, uso e desempenho das barbearias por período.</p>
+    </div>
+    <div class="actions"><button class="btn" onclick="exportReportCSV()">Exportar CSV</button><button class="btn primary" onclick="loadReports()">Gerar relatório</button></div>
+  </div>
+
+  <div class="card">
+    <div class="report-controls">
+      <div class="field"><label>Data inicial</label><input id="report-start" type="date"></div>
+      <div class="field"><label>Data final</label><input id="report-end" type="date"></div>
+      <div class="field"><label>Atalho</label><select id="report-range" onchange="applyReportRange()"><option value="month">Este mês</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="year">Este ano</option><option value="custom">Personalizado</option></select></div>
+      <button class="btn" onclick="loadReports()">Aplicar</button>
+    </div>
+  </div>
+
+  <div class="report-kpis">
+    <div class="kpi"><span>MRR</span><strong id="r-mrr">—</strong><small>Assinaturas ativas hoje</small></div>
+    <div class="kpi"><span>Novas barbearias</span><strong id="r-new">—</strong><small>No período selecionado</small></div>
+    <div class="kpi"><span>Cancelamentos</span><strong id="r-churn">—</strong><small>Contas canceladas</small></div>
+    <div class="kpi"><span>Agendamentos</span><strong id="r-appts">—</strong><small>Volume operacional</small></div>
+    <div class="kpi"><span>Clientes</span><strong id="r-clients">—</strong><small>Base total da plataforma</small></div>
+    <div class="kpi"><span>Volume financeiro</span><strong id="r-volume">—</strong><small>Entradas das barbearias</small></div>
+    <div class="kpi"><span>MRR em risco</span><strong id="r-risk">—</strong><small>Pagamentos pendentes</small></div>
+    <div class="kpi"><span>Equipe ativa</span><strong id="r-team">—</strong><small>Profissionais cadastrados</small></div>
+  </div>
+
+  <div class="report-grid">
+    <div class="card">
+      <div class="card-head"><div><h2>Ranking no período</h2><p>Desempenho das barbearias pelo volume registrado.</p></div></div>
+      <div id="report-ranking" class="report-table"></div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><div><h2>Uso das funcionalidades</h2><p>Quantas contas estão utilizando os principais módulos.</p></div></div>
+        <div id="usage-bars" class="usage-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Composição por plano</h2><p>Distribuição atual das barbearias.</p></div></div>
+        <div id="report-plan-mix" class="usage-bars"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="detail" class="hidden">
+  <div class="detail-head">
+    <button class="btn" onclick="showPlatform()">← Voltar</button>
+    <div id="avatar" class="avatar">BV</div>
+    <div class="detail-title"><h1 id="d-name">Barbearia</h1><p id="d-location">—</p><div class="meta"><span id="d-plan" class="badge">Plano</span><span id="d-status" class="pill">Ativa</span></div></div>
+    <div class="actions"><button class="btn" onclick="openOwner()">Painel do dono</button><button class="btn" onclick="openBooking()">Agendamento</button></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="overview" onclick="tab('overview')">Visão geral</button>
+    <button class="tab" data-tab="identity" onclick="tab('identity')">Identidade</button>
+    <button class="tab" data-tab="plan" onclick="tab('plan')">Plano e acesso</button>
+    <button class="tab" data-tab="hours" onclick="tab('hours')">Horários</button>
+    <button class="tab" data-tab="team" onclick="tab('team')">Equipe</button>
+    <button class="tab" data-tab="services" onclick="tab('services')">Serviços</button>
+    <button class="tab" data-tab="agenda" onclick="tab('agenda')">Agenda</button>
+    <button class="tab" data-tab="finance" onclick="tab('finance')">Financeiro</button>
+    <button class="tab" data-tab="loyalty" onclick="tab('loyalty')">Fidelidade</button>
+    <button class="tab" data-tab="whatsapp" onclick="tab('whatsapp')">WhatsApp</button>
+    <button class="tab" data-tab="public" onclick="tab('public')">Página pública</button>
+    <button class="tab" data-tab="permissions" onclick="tab('permissions')">Permissões</button>
+  </div>
+
+  <div id="pane-overview" class="pane active">
+    <div class="kpis">
+      <div class="kpi"><span>Faturamento no mês</span><strong id="m-revenue">—</strong></div>
+      <div class="kpi"><span>Agendamentos no mês</span><strong id="m-appts">—</strong></div>
+      <div class="kpi"><span>Ticket médio</span><strong id="m-ticket">—</strong></div>
+      <div class="kpi"><span>Clientes</span><strong id="m-clients">—</strong></div>
+      <div class="kpi"><span>Próximos 7 dias</span><strong id="m-next">—</strong></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-head"><div><h2>Saúde da operação</h2><p>Mês atual.</p></div></div><div class="mini-grid"><div class="mini"><span>Hoje</span><strong id="m-today">—</strong></div><div class="mini"><span>Equipe</span><strong id="m-team">—</strong></div><div class="mini"><span>Serviços</span><strong id="m-services">—</strong></div><div class="mini"><span>Cancelados</span><strong id="m-cancelled">—</strong></div></div></div>
+      <div class="card"><div class="card-head"><div><h2>Configuração da conta</h2><p>Implantação da barbearia.</p></div></div><strong id="setup-label" style="font-family:Sora;font-size:17px">—</strong><div class="progress-wrap" style="margin-top:10px"><div id="setup" class="progress" style="width:0"></div></div><p id="setup-hint" style="font-size:9px;color:var(--muted)"></p></div>
+    </div>
+    <div class="card"><div class="card-head"><div><h2>Links da conta</h2></div></div><div class="grid2"><div><p style="font-size:8px;color:var(--muted)">Painel do dono</p><div id="owner-url" class="code"></div></div><div><p style="font-size:8px;color:var(--muted)">Agendamento público</p><div id="booking-url" class="code"></div></div></div></div>
+  </div>
+
+  <div id="pane-identity" class="pane"><div class="card"><h3>Identidade e dados</h3><div class="form2">
+    <div class="field"><label>Nome</label><input id="i-name"></div><div class="field"><label>Slug</label><input id="i-slug" disabled></div>
+    <div class="field"><label>Telefone</label><input id="i-phone"></div><div class="field"><label>WhatsApp</label><input id="i-whatsapp"></div>
+    <div class="field"><label>Instagram</label><input id="i-instagram"></div><div class="field"><label>Cor principal</label><input id="i-color" type="color"></div>
+    <div class="field full"><label>Descrição pública</label><textarea id="i-description"></textarea></div>
+    <div class="field full"><label>URL da logo</label><input id="i-logo"></div>
+    <div class="field"><label>Cidade</label><input id="i-city"></div><div class="field"><label>Estado</label><input id="i-state"></div>
+    <div class="field full"><label>Endereço</label><input id="i-address"></div><div class="field full"><label>Domínio personalizado</label><input id="i-domain"></div>
+  </div><div class="save"><button class="btn primary" onclick="saveIdentity()">Salvar identidade</button></div></div></div>
+
+  <div id="pane-plan" class="pane"><div class="grid2">
+    <div class="card"><h3>Plano e assinatura</h3><div class="form2"><div class="field"><label>Plano</label><select id="pl-plan"><option value="basic">Básico</option><option value="pro">Pro</option><option value="premium">Premium</option></select></div><div class="field"><label>Status</label><select id="pl-status"><option value="trial">Trial</option><option value="active">Ativa</option><option value="past_due">Pagamento pendente</option><option value="suspended">Suspensa</option><option value="cancelled">Cancelada</option></select></div><div class="field"><label>Mensalidade (R$)</label><input id="pl-price" type="number" min="0" step="0.01"></div><div class="field"><label>Fim do trial</label><input id="pl-trial-end" type="date"></div></div><div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="save"><button class="btn primary" onclick="savePlan()">Salvar</button></div></div>
+    <div class="card"><h3>Acesso do proprietário</h3><div class="field"><label>Email</label><input id="owner-email" type="email"></div><div class="field"><label>Senha inicial / nova senha</label><input id="owner-password" type="password"></div><button class="btn primary" onclick="provisionOwner()">Salvar acesso</button></div>
+  </div></div>
+
+  <div id="pane-hours" class="pane"><div class="card"><div class="card-head"><div><h2>Horário de funcionamento</h2><p>Configuração geral semanal.</p></div></div><div id="hours-wrap"></div><div class="save"><button class="btn primary" onclick="saveHours()">Salvar horários</button></div></div></div>
+
+  <div id="pane-team" class="pane"><div class="card"><div class="card-head"><div><h2>Equipe</h2><p>Profissionais desta barbearia.</p></div><button class="btn primary" onclick="openTeam()">+ Profissional</button></div><div id="team-list" class="data"></div></div></div>
+
+  <div id="pane-services" class="pane"><div class="card"><div class="card-head"><div><h2>Serviços</h2><p>Preços, duração e disponibilidade.</p></div><button class="btn primary" onclick="openService()">+ Serviço</button></div><div id="services-list" class="data"></div></div></div>
+
+  <div id="pane-agenda" class="pane"><div class="card"><h3>Regras de agendamento</h3><div class="form2">
+    <div class="field"><label>Antecedência mínima (min)</label><input id="a-min" type="number"></div><div class="field"><label>Máximo de dias futuros</label><input id="a-max" type="number"></div>
+    <div class="field"><label>Intervalo base (min)</label><input id="a-slot" type="number"></div><div class="field"><label>Limite de cancelamento (h)</label><input id="a-cancel-hours" type="number"></div>
+  </div>
+  <div class="setting"><div><strong>Qualquer profissional</strong><span>Cliente não precisa escolher barbeiro.</span></div><button id="a-any" class="switch" onclick="toggle(this)"></button></div>
+  <div class="setting"><div><strong>Agendamento no mesmo dia</strong><span>Permitir horários disponíveis para hoje.</span></div><button id="a-sameday" class="switch" onclick="toggle(this)"></button></div>
+  <div class="setting"><div><strong>Cancelamento pelo cliente</strong></div><button id="a-cancel" class="switch" onclick="toggle(this)"></button></div>
+  <div class="setting"><div><strong>Remarcação pelo cliente</strong></div><button id="a-reschedule" class="switch" onclick="toggle(this)"></button></div>
+  <div class="setting"><div><strong>Confirmação obrigatória</strong></div><button id="a-confirm" class="switch" onclick="toggle(this)"></button></div>
+  <div class="save"><button class="btn primary" onclick="saveAgenda()">Salvar regras</button></div></div></div>
+
+  <div id="pane-finance" class="pane"><div class="grid2"><div class="card"><h3>Configuração financeira</h3><div class="field"><label>Meta mensal</label><input id="f-goal" type="number"></div><div class="setting"><div><strong>Comissão ativa</strong></div><button id="f-commission" class="switch" onclick="toggle(this)"></button></div><div class="setting"><div><strong>Equipe vê faturamento</strong></div><button id="f-show" class="switch" onclick="toggle(this)"></button></div><div class="field"><label>Pagamento padrão</label><select id="f-payment"><option>Outro</option><option>Pix</option><option>Dinheiro</option><option>Crédito</option><option>Débito</option></select></div><div class="save"><button class="btn primary" onclick="saveFinance()">Salvar</button></div></div><div class="card"><h3>Resumo do mês</h3><div class="mini-grid" style="grid-template-columns:1fr 1fr"><div class="mini"><span>Entradas</span><strong id="f-in">—</strong></div><div class="mini"><span>Saídas</span><strong id="f-out">—</strong></div></div></div></div></div>
+
+  <div id="pane-loyalty" class="pane"><div class="card"><h3>Programa de fidelidade</h3><div class="setting"><div><strong>Fidelidade ativa</strong></div><button id="l-enabled" class="switch" onclick="toggle(this)"></button></div><div class="form2"><div class="field"><label>Visitas para recompensa</label><input id="l-goal" type="number"></div><div class="field"><label>Recompensa</label><input id="l-reward"></div></div><div class="save"><button class="btn primary" onclick="saveLoyalty()">Salvar</button></div></div></div>
+
+  <div id="pane-whatsapp" class="pane"><div class="card"><h3>WhatsApp e automações</h3>
+    <div class="setting"><div><strong>Integração ativa</strong></div><button id="w-enabled" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Confirmação de agendamento</strong></div><button id="w-confirm" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Lembrete</strong></div><button id="w-reminder" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Aniversário</strong></div><button id="w-birthday" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Pós-atendimento</strong></div><button id="w-post" class="switch" onclick="toggle(this)"></button></div>
+    <div class="field" style="max-width:220px"><label>Horas antes do lembrete</label><input id="w-hours" type="number"></div>
+    <div class="save"><button class="btn primary" onclick="saveWhatsApp()">Salvar</button></div>
+  </div></div>
+
+  <div id="pane-public" class="pane"><div class="card"><h3>Página pública</h3><div class="field"><label>Título</label><input id="pub-title"></div><div class="field"><label>Subtítulo</label><textarea id="pub-subtitle"></textarea></div>
+    <div class="setting"><div><strong>Mostrar preços</strong></div><button id="pub-prices" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Mostrar equipe</strong></div><button id="pub-team" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Mostrar endereço</strong></div><button id="pub-address" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Mostrar Instagram</strong></div><button id="pub-instagram" class="switch" onclick="toggle(this)"></button></div>
+    <div class="save"><button class="btn primary" onclick="savePublic()">Salvar</button></div>
+  </div></div>
+
+  <div id="pane-permissions" class="pane"><div class="card"><div class="card-head"><div><h2>Permissões padrão</h2><p>Gerente, recepção e barbeiro.</p></div></div><div id="permissions"></div><div class="save"><button class="btn primary" onclick="savePermissions()">Salvar</button></div></div></div>
+</section>
+</main>
+</div>
+</div>
+
+<div id="create-modal" class="modal-bg"><div class="modal"><h2>Nova barbearia</h2><div class="form2"><div class="field"><label>Nome</label><input id="c-name" oninput="document.getElementById('c-slug').value=slugify(this.value)"></div><div class="field"><label>Slug</label><input id="c-slug"></div><div class="field"><label>WhatsApp</label><input id="c-whatsapp"></div><div class="field"><label>Plano</label><select id="c-plan"><option value="basic">Básico</option><option value="pro" selected>Pro</option><option value="premium">Premium</option></select></div><div class="field"><label>Cidade</label><input id="c-city"></div><div class="field"><label>Estado</label><input id="c-state"></div><div class="field"><label>Email do dono</label><input id="c-email" type="email"></div><div class="field"><label>Senha inicial</label><input id="c-password" type="password"></div></div><div class="modal-actions"><button class="btn" onclick="closeModal('create-modal')">Cancelar</button><button class="btn primary" onclick="createShop()">Criar e abrir</button></div></div></div>
+
+<div id="service-modal" class="modal-bg"><div class="modal" style="max-width:500px"><h2>Serviço</h2><input id="s-id" type="hidden"><div class="field"><label>Nome</label><input id="s-name"></div><div class="form2"><div class="field"><label>Preço</label><input id="s-price" type="number"></div><div class="field"><label>Duração (min)</label><input id="s-duration" type="number"></div></div><div class="setting"><div><strong>Ativo</strong></div><button id="s-active" class="switch on" onclick="toggle(this)"></button></div><div class="modal-actions"><button class="btn" onclick="closeModal('service-modal')">Cancelar</button><button class="btn primary" onclick="saveService()">Salvar</button></div></div></div>
+
+<div id="team-modal" class="modal-bg"><div class="modal" style="max-width:500px"><h2>Profissional</h2><input id="t-id" type="hidden"><div class="field"><label>Nome</label><input id="t-name"></div><div class="field"><label>Comissão (%)</label><input id="t-commission" type="number"></div><div class="setting"><div><strong>Ativo</strong></div><button id="t-active" class="switch on" onclick="toggle(this)"></button></div><div class="modal-actions"><button class="btn" onclick="closeModal('team-modal')">Cancelar</button><button class="btn primary" onclick="saveTeam()">Salvar</button></div></div></div>
+
+
+<div id="plan-modal" class="modal-bg">
+  <div class="modal" style="max-width:720px">
+    <h2 id="plan-modal-title">Plano</h2>
+    <input id="plan-id" type="hidden">
+    <div class="form2">
+      <div class="field"><label>Nome</label><input id="plan-name"></div>
+      <div class="field"><label>Preço mensal (R$)</label><input id="plan-price" type="number" min="0" step="0.01"></div>
+      <div class="field full"><label>Descrição</label><textarea id="plan-description"></textarea></div>
+      <div class="field"><label>Máx. profissionais</label><input id="plan-professionals" type="number" min="1"></div>
+      <div class="field"><label>Máx. usuários</label><input id="plan-users" type="number" min="1"></div>
+      <div class="field"><label>Máx. unidades</label><input id="plan-units" type="number" min="1"></div>
+    </div>
+    <div class="setting"><div><strong>Plano ativo</strong><span>Disponível para novas contratações.</span></div><button id="plan-active" class="switch on" onclick="toggle(this)"></button></div>
+    <div style="margin-top:14px;font-family:Sora;font-size:11px">Recursos incluídos</div>
+    <div id="plan-feature-editor"></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('plan-modal')">Cancelar</button><button class="btn primary" onclick="savePlanDefinition()">Salvar plano</button></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function createRestClient(baseUrl, apiKey){
+  let accessToken=null;
+
+  const headers=(extra={})=>({
+    apikey:apiKey,
+    Authorization:`Bearer ${accessToken||apiKey}`,
+    'Content-Type':'application/json',
+    ...extra
+  });
+
+  async function parseResponse(r){
+    const text=await r.text();
+    let data=null;
+    try{ data=text?JSON.parse(text):null; }catch{ data=text||null; }
+    if(!r.ok){
+      return {data:null,error:{message:data?.message||data?.error_description||data?.error||r.statusText,status:r.status,details:data}};
+    }
+    return {data,error:null};
+  }
+
+  class QueryBuilder{
+    constructor(table){
+      this.table=table;
+      this.method='GET';
+      this.params=new URLSearchParams();
+      this.body=undefined;
+      this.prefer=[];
+      this.expect='many';
+    }
+    select(cols='*'){
+      if(this.method==='GET'){
+        this.params.set('select',cols);
+      }else{
+        this.params.set('select',cols);
+        if(!this.prefer.includes('return=representation')) this.prefer.push('return=representation');
+      }
+      return this;
+    }
+    eq(col,val){ this.params.append(col,`eq.${val}`); return this; }
+    order(col,opt={}){ this.params.set('order',`${col}.${opt.ascending===false?'desc':'asc'}`); return this; }
+    maybeSingle(){ this.expect='maybeSingle'; return this; }
+    single(){ this.expect='single'; return this; }
+    update(obj){ this.method='PATCH'; this.body=obj; return this; }
+    insert(obj){ this.method='POST'; this.body=obj; return this; }
+    upsert(obj){
+      this.method='POST'; this.body=obj;
+      this.params.set('on_conflict','id');
+      this.prefer.push('resolution=merge-duplicates');
+      return this;
+    }
+    delete(){ this.method='DELETE'; return this; }
+
+    async execute(){
+      const url=`${baseUrl}/rest/v1/${this.table}${this.params.toString()?`?${this.params}`:''}`;
+      const h=headers();
+      if(this.prefer.length) h.Prefer=this.prefer.join(',');
+      const init={method:this.method,headers:h};
+      if(this.body!==undefined) init.body=JSON.stringify(this.body);
+      const r=await fetch(url,init);
+      const result=await parseResponse(r);
+      if(result.error) return result;
+
+      let data=result.data;
+      if(this.expect==='single'){
+        if(Array.isArray(data)) data=data[0]??null;
+        if(!data) return {data:null,error:{message:'Registro não encontrado.'}};
+      }else if(this.expect==='maybeSingle'){
+        if(Array.isArray(data)) data=data[0]??null;
+      }
+      return {data,error:null};
+    }
+    then(resolve,reject){ return this.execute().then(resolve,reject); }
+  }
+
+  return {
+    auth:{
+      async signInWithPassword({email,password}){
+        const r=await fetch(`${baseUrl}/auth/v1/token?grant_type=password`,{
+          method:'POST',
+          headers:{apikey:apiKey,'Content-Type':'application/json'},
+          body:JSON.stringify({email,password})
+        });
+        const result=await parseResponse(r);
+        if(result.error) return {data:null,error:result.error};
+        accessToken=result.data?.access_token||null;
+        return {
+          data:{
+            user:result.data?.user||null,
+            session:result.data
+          },
+          error:null
+        };
+      },
+      async signOut(){
+        if(accessToken){
+          try{
+            await fetch(`${baseUrl}/auth/v1/logout`,{method:'POST',headers:headers()});
+          }catch{}
+        }
+        accessToken=null;
+        return {error:null};
+      },
+      async getSession(){
+        return {data:{session:accessToken?{access_token:accessToken}:null},error:null};
+      }
+    },
+    async rpc(name,args={}){
+      const r=await fetch(`${baseUrl}/rest/v1/rpc/${name}`,{
+        method:'POST',
+        headers:headers(),
+        body:JSON.stringify(args||{})
+      });
+      return parseResponse(r);
+    },
+    from(table){ return new QueryBuilder(table); }
+  };
+}
+</script>
+
+<script>
+const URL='https://gfdtnjhqamtmxvlaaeoz.supabase.co',KEY='sb_publishable_7jBvCxY-xK4BTTAvEY0N9A_d7RqcEnu';
+const sb=createRestClient(URL,KEY);
+let shops=[],shop=null,metrics={},services=[],team=[],biz=null,platformPlans=[],reportData=null;
+const days=[['mon','Segunda'],['tue','Terça'],['wed','Quarta'],['thu','Quinta'],['fri','Sexta'],['sat','Sábado'],['sun','Domingo']];
+const roles={manager:'Gerente',reception:'Recepção',barber:'Barbeiro'},perms={agenda:'Agenda',clients:'Clientes',finance:'Financeiro',team:'Equipe',services:'Serviços'};
+const $=id=>document.getElementById(id);
+function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function slugify(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function toggle(el){el.classList.toggle('on')} function sw(id,v){$(id).classList.toggle('on',!!v)} function getSw(id){return $(id).classList.contains('on')}
+function openModal(id){$(id).classList.add('open')} function closeModal(id){$(id).classList.remove('open')}
+async function login(){
+  const errorEl=$('login-error');
+  const loginBtn=document.querySelector('#login .btn.primary');
+  if(loginBtn){loginBtn.disabled=true;loginBtn.textContent='Entrando...';}
+  errorEl.textContent='';
+  const email=$('email').value.trim();
+  const password=$('password').value;
+  if(!email||!password){
+    errorEl.textContent='Preencha email e senha.';
+    if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='Entrar';}
+    return;
+  }
+
+  const {data:authData,error:authError}=await sb.auth.signInWithPassword({email,password});
+  if(authError||!authData?.user){
+    errorEl.textContent='Email ou senha inválidos.';
+    if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='Entrar';}
+    return;
+  }
+
+  const {data:summary,error:adminError}=await sb.rpc('platform_admin_summary');
+  if(adminError||!summary){
+    console.error('Falha na validação administrativa:',adminError);
+    await sb.auth.signOut();
+    errorEl.textContent='Seu login foi aceito, mas o acesso Master não pôde ser validado.';
+    if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='Entrar';}
+    return;
+  }
+
+  $('login').classList.add('hidden');
+  $('app').classList.remove('hidden');
+
+  await loadPlatform();
+  if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='Entrar';}
+}
+async function logout(){await sb.auth.signOut();location.reload()}
+async function loadPlatform(){
+  const [overviewRes,listRes,plansRes]=await Promise.all([
+    sb.rpc('platform_master_overview'),
+    sb.from('barbershops').select('*').order('created_at',{ascending:false}),
+    sb.from('platform_plans').select('*').eq('active',true).order('sort_order')
+  ]);
+  if(overviewRes.error||listRes.error||plansRes.error){
+    console.error('Erro ao carregar visão geral:',overviewRes.error||listRes.error||plansRes.error);
+    toast('Não foi possível carregar todos os indicadores.');
+  }
+
+  const ov=overviewRes.data||{},s=ov.summary||{};
+  shops=listRes.data||[];
+  if(Array.isArray(plansRes.data)&&plansRes.data.length) platformPlans=plansRes.data;
+
+  populatePlanSelects();
+
+  $('p-active').textContent=s.active??0;
+  $('p-total-label').textContent=`${s.total??0} cadastradas`;
+  $('p-trials').textContent=s.trials??0;
+  $('p-risk').textContent=money(s.mrr_at_risk);
+  $('p-pastdue-label').textContent=`${s.past_due??0} pagamentos pendentes`;
+  $('p-new').textContent=s.new_month??0;
+  $('p-activation').textContent=`${Number(s.activation_rate||0).toLocaleString('pt-BR')}%`;
+  $('p-never-label').textContent=`${s.never_activated??0} sem ativar`;
+  $('p-inactive7').textContent=s.inactive_7d??0;
+  $('p-inactive15').textContent=s.inactive_15d??0;
+  $('p-inactive30').textContent=s.inactive_30d??0;
+  $('p-suspended').textContent=s.suspended??0;
+
+  const attention=ov.attention||[];
+  $('exec-alerts').textContent=attention.length;
+  renderAttention(attention);
+  renderExecutiveOnboarding(ov.recent_shops||[]);
+
+  $('exec-today-appts').textContent=s.appointments_today??0;
+
+  const goal=10,total=Number(s.total||0),pct=Math.min(100,Math.round(total/goal*100));
+  $('exec-base-label').textContent=`${total} de ${goal} barbearias`;
+  $('exec-base-pct').textContent=`${pct}%`;
+  $('exec-base-fill').style.width=`${pct}%`;
+
+  renderSimpleShops();
+}
+
+function populatePlanSelects(){
+  if(!platformPlans.length) return;
+  ['c-plan','pl-plan'].forEach(id=>{
+    const select=$(id);
+    if(!select) return;
+    const old=select.value;
+    select.innerHTML=platformPlans.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+    if(platformPlans.some(p=>p.id===old)) select.value=old;
+  });
+}
+function renderExecutiveOnboarding(items){
+  $('exec-onboarding').innerHTML=items.length?items.slice(0,5).map(item=>{
+    const appts=Number(item.total_appts||0);
+    const stage=appts>0?'Já começou a usar':'Ainda sem agendamentos';
+    return `<div class="onboarding-item overview-click" onclick="openShopSummary('${item.id}')">
+      <div><strong>${esc(item.name)}</strong><span>${new Date(item.created_at).toLocaleDateString('pt-BR')} · ${stage}</span></div>
+      <span>${appts} agend.</span>
+    </div>`;
+  }).join(''):'<div style="padding:14px;color:var(--muted);font-size:9px">Nenhuma implantação recente.</div>';
+}
+function renderAttention(items){
+  $('attention-count').textContent=`${items.length} alerta${items.length===1?'':'s'}`;
+  $('attention-list').innerHTML=items.length?items.map(item=>`<div class="action-item overview-click" onclick="openShopSummary('${item.id}')"><div class="action-main"><span class="alert-dot ${esc(item.severity||'medium')}"></span><div><strong>${esc(item.name)}</strong><span>${esc(item.reason)}</span></div></div><button class="btn" onclick="event.stopPropagation();openShopSummary('${item.id}')">Abrir</button></div>`).join(''):'<div style="padding:14px;color:var(--muted);font-size:9px">Nenhuma atenção crítica no momento.</div>';
+}
+function setMasterNav(active){
+  const ids={platform:'nav-platform',barbershops:'nav-barbershops',plans:'nav-plans',reports:'nav-reports'};
+  Object.entries(ids).forEach(([key,id])=>$(id)?.classList.toggle('active',key===active));
+}
+function hideMasterViews(){
+  ['platform','barbershops-view','shop-summary','plans-view','reports-view','detail'].forEach(id=>$(id)?.classList.add('hidden'));
+}
+function showBarbershops(){
+  hideMasterViews();
+  $('barbershops-view').classList.remove('hidden');
+  setMasterNav('barbershops');
+  renderSimpleShops();
+  scrollTo(0,0);
+}
+function renderSimpleShops(){
+  const root=$('simple-shops');
+  if(!root) return;
+  const q=($('simple-search')?.value||'').trim().toLowerCase();
+  const list=shops.filter(x=>!q||[x.name,x.city,x.state,x.slug].join(' ').toLowerCase().includes(q));
+  root.innerHTML=list.length?list.map(x=>`
+    <div class="simple-shop" onclick="openShopSummary('${x.id}')">
+      <div class="simple-shop-main">
+        <div class="simple-avatar">${esc(x.name.split(/\s+/).slice(0,2).map(y=>y[0]).join('').toUpperCase())}</div>
+        <div class="simple-shop-text">
+          <strong>${esc(x.name)}</strong>
+          <span>${esc([x.city,x.state].filter(Boolean).join(', ')||'Local não informado')}</span>
+        </div>
+      </div>
+      <div class="simple-shop-arrow">›</div>
+    </div>`).join(''):'<div style="padding:30px;text-align:center;color:var(--muted);font-size:10px">Nenhuma barbearia encontrada.</div>';
+}
+async function openShopSummary(id){
+  shop=shops.find(x=>x.id===id);
+  if(!shop) return;
+  hideMasterViews();
+  $('shop-summary').classList.remove('hidden');
+  setMasterNav('barbershops');
+
+  $('summary-name').textContent=shop.name;
+  $('summary-location').textContent=[shop.address,shop.city,shop.state].filter(Boolean).join(' · ')||'Localização não informada';
+  $('summary-avatar').textContent=shop.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+  $('summary-plan').textContent='Plano '+(shop.plan||'pro').toUpperCase();
+  $('summary-status').textContent=shop.active?shop.subscription_status:'bloqueada';
+
+  const [{data:m},{data:b}]=await Promise.all([
+    sb.rpc('platform_barbershop_metrics',{p_barbershop_id:id}),
+    sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle()
+  ]);
+  metrics=m||{};
+  biz=b||{monthly_goal:0};
+
+  $('sum-revenue').textContent=money(metrics.revenue_month);
+  $('sum-appts').textContent=metrics.appointments_month??0;
+  $('sum-completed').textContent=`${metrics.completed_month??0} finalizados`;
+  $('sum-clients').textContent=metrics.clients??0;
+  $('sum-ticket').textContent=money(metrics.avg_ticket);
+  $('sum-today').textContent=metrics.appointments_today??0;
+  $('sum-next').textContent=metrics.next_7_days??0;
+  $('sum-team').textContent=metrics.active_team??0;
+  $('sum-services').textContent=metrics.active_services??0;
+  $('sum-cancelled').textContent=metrics.cancelled_month??0;
+
+  const goal=Number(biz.monthly_goal||0),revenue=Number(metrics.revenue_month||0);
+  const pct=goal>0?Math.min(100,Math.round(revenue/goal*100)):0;
+  $('sum-goal-label').textContent=goal>0?`${pct}% da meta`:'Meta não configurada';
+  $('sum-goal-progress').style.width=`${pct}%`;
+  $('sum-goal-hint').textContent=goal>0?`${money(revenue)} de ${money(goal)} no mês.`:'Configure a meta mensal no sistema do dono ou nas configurações desta barbearia.';
+
+  scrollTo(0,0);
+}
+function openFullManagement(){
+  if(!shop) return;
+  openShop(shop.id);
+}
+
+const PLAN_FEATURES={
+  agenda:'Agenda',
+  clients:'Clientes',
+  services:'Serviços',
+  team:'Equipe',
+  radar:'Clientes RADAR',
+  birthdays:'Aniversariantes',
+  finance:'Financeiro',
+  ranking:'Ranking da equipe',
+  loyalty:'Fidelidade',
+  exports:'Exportar base',
+  whatsapp:'WhatsApp / automações',
+  reports:'Relatórios'
+};
+
+function showPlans(){
+  hideMasterViews();
+  $('plans-view').classList.remove('hidden');
+  setMasterNav('plans');
+  loadPlans();
+  scrollTo(0,0);
+}
+async function loadPlans(){
+  const [{data:plans,error:e1},{data:overview,error:e2}]=await Promise.all([
+    sb.from('platform_plans').select('*').order('sort_order'),
+    sb.rpc('platform_master_overview')
+  ]);
+  if(e1||e2){console.error(e1||e2);toast('Não foi possível carregar os planos.');return}
+  platformPlans=plans||[];populatePlanSelects();
+  const s=overview?.summary||{};
+  $('plans-active-count').textContent=platformPlans.filter(p=>p.active).length;
+  $('plans-shops-count').textContent=s.total??shops.length;
+  $('plans-mrr').textContent=money(s.mrr);
+  const activeShops=Number(s.active||0);
+  $('plans-arpa').textContent=activeShops?money(Number(s.mrr||0)/activeShops):money(0);
+  renderPlans();
+}
+function renderPlans(){
+  const root=$('plans-grid');
+  if(!platformPlans.length){root.innerHTML='<div style="color:var(--muted);font-size:9px">Nenhum plano cadastrado.</div>';return}
+  root.innerHTML=platformPlans.map((p,i)=>{
+    const limits=p.limits||{},features=p.features||{};
+    return `<div class="plan-card ${p.id==='pro'?'featured':''}">
+      <div class="plan-card-head">
+        <div><h2>${esc(p.name)}</h2><span class="pill ${p.active?'':'bad'}">${p.active?'Ativo':'Inativo'}</span></div>
+        <button class="btn" onclick="openPlanEditor('${p.id}')">Editar</button>
+      </div>
+      <div class="plan-price">${money(p.monthly_price)} <small>/ mês</small></div>
+      <div class="plan-desc">${esc(p.description||'')}</div>
+      <div class="plan-limits">
+        <div class="plan-limit"><span>Profissionais</span><strong>${Number(limits.professionals||0)>=999?'Ilimitado':limits.professionals||0}</strong></div>
+        <div class="plan-limit"><span>Usuários</span><strong>${limits.users||0}</strong></div>
+        <div class="plan-limit"><span>Unidades</span><strong>${limits.units||1}</strong></div>
+      </div>
+      <div class="feature-list">
+        ${Object.entries(PLAN_FEATURES).map(([k,label])=>`<div class="feature-line"><span>${label}</span><strong class="feature-state ${features[k]?'on':'off'}">${features[k]?'Incluído':'Não incluído'}</strong></div>`).join('')}
+      </div>
+    </div>`
+  }).join('');
+}
+function openPlanEditor(id=null){
+  const p=platformPlans.find(x=>x.id===id);
+  $('plan-modal-title').textContent=p?'Editar plano':'Novo plano';
+  $('plan-id').value=p?.id||'';
+  $('plan-name').value=p?.name||'';
+  $('plan-price').value=p?.monthly_price??0;
+  $('plan-description').value=p?.description||'';
+  $('plan-professionals').value=p?.limits?.professionals??3;
+  $('plan-users').value=p?.limits?.users??2;
+  $('plan-units').value=p?.limits?.units??1;
+  sw('plan-active',p?p.active:true);
+  $('plan-feature-editor').innerHTML=Object.entries(PLAN_FEATURES).map(([k,label])=>`
+    <div class="setting"><div><strong>${label}</strong></div><button id="plan-feature-${k}" class="switch ${p?.features?.[k]?'on':''}" onclick="toggle(this)"></button></div>`).join('');
+  openModal('plan-modal');
+}
+async function savePlanDefinition(){
+  const existingId=$('plan-id').value;
+  const name=$('plan-name').value.trim();
+  if(!name){toast('Informe o nome do plano.');return}
+  const id=existingId||slugify(name);
+  if(!id){toast('Nome do plano inválido.');return}
+  const features={};Object.keys(PLAN_FEATURES).forEach(k=>features[k]=getSw(`plan-feature-${k}`));
+  const payload={
+    id,name,
+    monthly_price:Number($('plan-price').value||0),
+    description:$('plan-description').value.trim()||null,
+    active:getSw('plan-active'),
+    sort_order:existingId?(platformPlans.find(x=>x.id===existingId)?.sort_order||50):(platformPlans.length+1)*10,
+    limits:{
+      professionals:Number($('plan-professionals').value||1),
+      users:Number($('plan-users').value||1),
+      units:Number($('plan-units').value||1)
+    },
+    features,
+    updated_at:new Date().toISOString()
+  };
+  const {error}=await sb.from('platform_plans').upsert(payload);
+  if(error){console.error(error);toast('Não foi possível salvar o plano.');return}
+  closeModal('plan-modal');toast('Plano atualizado.');await loadPlans();
+}
+
+function showReports(){
+  hideMasterViews();
+  $('reports-view').classList.remove('hidden');
+  setMasterNav('reports');
+  if(!$('report-start').value) applyReportRange();
+  loadReports();
+  scrollTo(0,0);
+}
+function isoDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function applyReportRange(){
+  const mode=$('report-range').value;
+  const today=new Date(),start=new Date(today);
+  if(mode==='month') start.setDate(1);
+  else if(mode==='30') start.setDate(today.getDate()-29);
+  else if(mode==='90') start.setDate(today.getDate()-89);
+  else if(mode==='year'){start.setMonth(0);start.setDate(1)}
+  else return;
+  $('report-start').value=isoDate(start);$('report-end').value=isoDate(today);
+}
+async function loadReports(){
+  const start=$('report-start').value,end=$('report-end').value;
+  if(!start||!end){toast('Escolha o período.');return}
+  if(start>end){toast('A data inicial deve ser anterior à final.');return}
+  const {data,error}=await sb.rpc('platform_reports',{p_start:start,p_end:end});
+  if(error){console.error(error);toast('Não foi possível gerar o relatório.');return}
+  reportData=data||{};
+  renderReports();
+}
+function renderReports(){
+  const s=reportData?.summary||{};
+  $('r-mrr').textContent=money(s.mrr);
+  $('r-new').textContent=s.new_shops??0;
+  $('r-churn').textContent=s.cancelled_shops??0;
+  $('r-appts').textContent=s.appointments??0;
+  $('r-clients').textContent=s.clients??0;
+  $('r-volume').textContent=money(s.platform_revenue);
+  $('r-risk').textContent=money(s.mrr_at_risk);
+  $('r-team').textContent=s.team??0;
+
+  const ranking=reportData?.ranking||[];
+  $('report-ranking').innerHTML=`<div class="report-row header"><span>#</span><span>Barbearia</span><span>Plano</span><span>Agend.</span><span>Receita</span><span>Cancel.</span></div>`+
+    (ranking.length?ranking.map((x,i)=>`<div class="report-row"><strong>${i+1}</strong><strong>${esc(x.name)}</strong><span>${esc((x.plan||'pro').toUpperCase())}</span><span>${x.appointments||0}</span><strong>${money(x.revenue)}</strong><span>${x.cancelled||0}</span></div>`).join(''):'<div style="padding:16px;color:var(--muted);font-size:9px">Sem dados no período.</div>');
+
+  const usage=reportData?.usage||{},total=Math.max(1,Number(s.shops_total||0));
+  const usageLabels={finance:'Financeiro',loyalty:'Fidelidade',whatsapp:'WhatsApp',public_booking:'Agendamento público'};
+  $('usage-bars').innerHTML=Object.entries(usageLabels).map(([k,label])=>{
+    const v=Number(usage[k]||0),pct=Math.round(v/total*100);
+    return `<div class="usage-item"><span>${label}</span><div class="usage-track"><div class="usage-fill" style="width:${pct}%"></div></div><strong>${v}</strong></div>`
+  }).join('');
+
+  const mix=reportData?.plan_mix||{};
+  const planTotal=Math.max(1,Object.values(mix).reduce((a,b)=>a+Number(b||0),0));
+  const labels={basic:'Básico',pro:'Pro',premium:'Premium'};
+  $('report-plan-mix').innerHTML=Object.keys(labels).map(k=>{
+    const v=Number(mix[k]||0),pct=Math.round(v/planTotal*100);
+    return `<div class="usage-item"><span>${labels[k]}</span><div class="usage-track"><div class="usage-fill" style="width:${pct}%"></div></div><strong>${v}</strong></div>`
+  }).join('');
+}
+function exportReportCSV(){
+  if(!reportData){toast('Gere um relatório antes de exportar.');return}
+  const rows=[['Posição','Barbearia','Plano','Agendamentos','Clientes ativos','Receita','Cancelamentos']];
+  (reportData.ranking||[]).forEach((x,i)=>rows.push([i+1,x.name,x.plan,x.appointments,x.active_clients,x.revenue,x.cancelled]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=window.URL.createObjectURL(blob);a.download=`relatorio-plataforma-${$('report-start').value}-a-${$('report-end').value}.csv`;a.click();window.URL.revokeObjectURL(a.href);
+}
+function showPlatform(){hideMasterViews();$('platform').classList.remove('hidden');setMasterNav('platform');scrollTo(0,0)}
+function tab(n){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===n));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+n))}
+async function openShop(id){shop=shops.find(x=>x.id===id);if(!shop)return;hideMasterViews();$('detail').classList.remove('hidden');setMasterNav('barbershops');$('d-name').textContent=shop.name;$('d-location').textContent=[shop.address,shop.city,shop.state].filter(Boolean).join(' · ')||'Localização não informada';$('avatar').textContent=shop.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();$('d-plan').textContent='Plano '+(shop.plan||'pro').toUpperCase();$('d-status').textContent=shop.active?shop.subscription_status:'bloqueada';$('owner-url').textContent=`${location.origin}/?shop=${shop.slug}`;$('booking-url').textContent=`${location.origin}/agendar/?shop=${shop.slug}`;tab('overview');await loadShopData();scrollTo(0,0)}
+async function loadShopData(){const id=shop.id;const [{data:m},{data:s},{data:t},{data:b}]=await Promise.all([sb.rpc('platform_barbershop_metrics',{p_barbershop_id:id}),sb.from('services').select('*').eq('barbershop_id',id).order('created_at'),sb.from('team_members').select('*').eq('barbershop_id',id).order('created_at'),sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle()]);metrics=m||{};services=s||[];team=t||[];biz=b||{monthly_goal:0,loyalty_enabled:true,loyalty_visit_goal:10,loyalty_reward_name:'Corte grátis'};renderAll()}
+function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('m-appts').textContent=metrics.appointments_month??0;$('m-ticket').textContent=money(metrics.avg_ticket);$('m-clients').textContent=metrics.clients??0;$('m-next').textContent=metrics.next_7_days??0;$('m-today').textContent=metrics.appointments_today??0;$('m-team').textContent=metrics.active_team??0;$('m-services').textContent=metrics.active_services??0;$('m-cancelled').textContent=metrics.cancelled_month??0;$('f-in').textContent=money(metrics.revenue_month);$('f-out').textContent=money(metrics.expenses_month);const checks=[shop.name,shop.whatsapp,shop.city,shop.address,services.length,team.length,shop.weekly_hours,Object.keys(shop.booking_settings||{}).length],pct=Math.round(checks.filter(Boolean).length/checks.length*100);$('setup-label').textContent=pct+'% configurado';$('setup').style.width=pct+'%';$('setup-hint').textContent=pct===100?'Principais dados preenchidos.':'Ainda há itens de implantação a completar.';fillForms();renderHours();renderServices();renderTeam();renderPermissions()}
+function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
+async function updateShop(patch,msg){const {data,error}=await sb.from('barbershops').update({...patch,updated_at:new Date().toISOString()}).eq('id',shop.id).select().single();if(error){console.error(error);toast('Não foi possível salvar.');return false}shop=data;shops=shops.map(x=>x.id===data.id?data:x);toast(msg);return true}
+async function saveIdentity(){if(await updateShop({name:$('i-name').value.trim(),phone:$('i-phone').value.trim()||null,whatsapp:$('i-whatsapp').value.trim()||null,instagram:$('i-instagram').value.trim()||null,accent_color:$('i-color').value,public_description:$('i-description').value.trim()||null,logo_url:$('i-logo').value.trim()||null,city:$('i-city').value.trim()||null,state:$('i-state').value.trim().toUpperCase()||null,address:$('i-address').value.trim()||null,custom_domain:$('i-domain').value.trim()||null},'Identidade atualizada.')) await openShop(shop.id)}
+async function savePlan(){const status=$('pl-status').value;const patch={plan:$('pl-plan').value,subscription_status:status,subscription_price:Number($('pl-price').value||0),trial_ends_at:$('pl-trial-end').value||null,active:getSw('pl-active')};if(status==='cancelled'&&!shop.cancelled_at)patch.cancelled_at=new Date().toISOString().slice(0,10);if(status!=='cancelled')patch.cancelled_at=null;if(await updateShop(patch,'Plano e acesso atualizados.'))await openShop(shop.id)}
+function renderHours(){let h=shop.weekly_hours||{};$('hours-wrap').innerHTML=days.map(([k,l])=>{let d=h[k]||{open:'09:00',close:'19:00',closed:k==='sun'};return `<div class="hours"><span>${l}</span><input id="${k}-o" type="time" value="${d.open||'09:00'}"><input id="${k}-c" type="time" value="${d.close||'19:00'}"><select id="${k}-x"><option value="false" ${!d.closed?'selected':''}>Aberto</option><option value="true" ${d.closed?'selected':''}>Fechado</option></select></div>`}).join('')}
+async function saveHours(){let h={};days.forEach(([k])=>h[k]={open:$(k+'-o').value,close:$(k+'-c').value,closed:$(k+'-x').value==='true'});await updateShop({weekly_hours:h},'Horários atualizados.')}
+function renderServices(){$('services-list').innerHTML=services.length?services.map(s=>`<div class="row"><strong>${esc(s.name)}</strong><span>${money(s.price)}</span><span>${s.duration} min</span><span>${s.active?'Ativo':'Inativo'}</span><div class="actions"><button class="btn" onclick="openService('${s.id}')">Editar</button><button class="btn danger" onclick="deleteService('${s.id}')">Excluir</button></div></div>`).join(''):'<div style="padding:20px;color:var(--muted);font-size:9px">Nenhum serviço.</div>'}
+function openService(id){let s=services.find(x=>x.id===id);$('s-id').value=s?.id||'';$('s-name').value=s?.name||'';$('s-price').value=s?.price??'';$('s-duration').value=s?.duration??45;sw('s-active',s?s.active:true);openModal('service-modal')}
+async function saveService(){let id=$('s-id').value||'srv_'+crypto.randomUUID().slice(0,8),p={id,barbershop_id:shop.id,name:$('s-name').value.trim(),price:Number($('s-price').value||0),duration:Number($('s-duration').value||45),active:getSw('s-active'),updated_at:new Date().toISOString()};if(!p.name){toast('Informe o nome.');return}const {error}=await sb.from('services').upsert(p);if(error){toast('Erro ao salvar serviço.');return}closeModal('service-modal');toast('Serviço salvo.');await loadShopData()}
+async function deleteService(id){if(!confirm('Excluir serviço?'))return;await sb.from('services').delete().eq('id',id).eq('barbershop_id',shop.id);await loadShopData()}
+function renderTeam(){$('team-list').innerHTML=team.length?team.map(t=>`<div class="row team"><strong>${esc(t.name)}</strong><span>Comissão ${Number(t.commission||0)}%</span><span>${t.active?'Ativo':'Inativo'}</span><div class="actions"><button class="btn" onclick="openTeam('${t.id}')">Editar</button><button class="btn danger" onclick="deleteTeam('${t.id}')">Excluir</button></div></div>`).join(''):'<div style="padding:20px;color:var(--muted);font-size:9px">Nenhum profissional.</div>'}
+function openTeam(id){let t=team.find(x=>x.id===id);$('t-id').value=t?.id||'';$('t-name').value=t?.name||'';$('t-commission').value=t?.commission??0;sw('t-active',t?t.active:true);openModal('team-modal')}
+async function saveTeam(){let id=$('t-id').value||'team_'+crypto.randomUUID().slice(0,8),p={id,barbershop_id:shop.id,name:$('t-name').value.trim(),commission:Number($('t-commission').value||0),active:getSw('t-active'),updated_at:new Date().toISOString()};if(!p.name){toast('Informe o nome.');return}const {error}=await sb.from('team_members').upsert(p);if(error){toast('Erro ao salvar profissional.');return}closeModal('team-modal');toast('Profissional salvo.');await loadShopData()}
+async function deleteTeam(id){if(!confirm('Excluir profissional?'))return;await sb.from('team_members').delete().eq('id',id).eq('barbershop_id',shop.id);await loadShopData()}
+async function saveAgenda(){await updateShop({booking_settings:{min_advance_minutes:Number($('a-min').value||0),max_advance_days:Number($('a-max').value||45),slot_interval:Number($('a-slot').value||30),cancellation_limit_hours:Number($('a-cancel-hours').value||4),allow_any_professional:getSw('a-any'),allow_same_day:getSw('a-sameday'),allow_client_cancel:getSw('a-cancel'),allow_client_reschedule:getSw('a-reschedule'),require_confirmation:getSw('a-confirm')}},'Regras de agenda atualizadas.')}
+async function saveFinance(){await updateShop({finance_settings:{commission_enabled:getSw('f-commission'),show_revenue_to_team:getSw('f-show'),default_payment_method:$('f-payment').value}},'Financeiro atualizado.');let p={monthly_goal:Number($('f-goal').value||0),updated_at:new Date().toISOString()};if(biz?.id)await sb.from('business_settings').update(p).eq('id',biz.id);else await sb.from('business_settings').insert({...p,barbershop_id:shop.id});await loadShopData()}
+async function saveLoyalty(){let p={loyalty_enabled:getSw('l-enabled'),loyalty_visit_goal:Number($('l-goal').value||10),loyalty_reward_name:$('l-reward').value.trim()||'Recompensa',updated_at:new Date().toISOString()};if(biz?.id)await sb.from('business_settings').update(p).eq('id',biz.id);else await sb.from('business_settings').insert({...p,barbershop_id:shop.id});toast('Fidelidade atualizada.');await loadShopData()}
+async function saveWhatsApp(){await updateShop({whatsapp_settings:{enabled:getSw('w-enabled'),confirmation:getSw('w-confirm'),reminder:getSw('w-reminder'),birthday:getSw('w-birthday'),post_service:getSw('w-post'),reminder_hours:Number($('w-hours').value||24)}},'WhatsApp atualizado.')}
+async function savePublic(){await updateShop({public_page_settings:{hero_title:$('pub-title').value.trim(),hero_subtitle:$('pub-subtitle').value.trim(),show_prices:getSw('pub-prices'),show_team:getSw('pub-team'),show_address:getSw('pub-address'),show_instagram:getSw('pub-instagram')}},'Página pública atualizada.')}
+function renderPermissions(){let p=shop.permission_defaults||{};$('permissions').innerHTML=Object.keys(roles).map(r=>`<div class="card" style="background:#101722;margin:8px 0"><div class="card-head"><h2>${roles[r]}</h2></div>${Object.keys(perms).map(k=>`<div class="setting"><strong>${perms[k]}</strong><button id="perm-${r}-${k}" class="switch ${p[r]?.[k]?'on':''}" onclick="toggle(this)"></button></div>`).join('')}</div>`).join('')}
+async function savePermissions(){let p={};Object.keys(roles).forEach(r=>{p[r]={};Object.keys(perms).forEach(k=>p[r][k]=getSw(`perm-${r}-${k}`))});await updateShop({permission_defaults:p},'Permissões atualizadas.')}
+async function provisionOwner(){let email=$('owner-email').value.trim(),password=$('owner-password').value;if(!email||password.length<8){toast('Informe email e senha com 8+ caracteres.');return}const {data:{session}}=await sb.auth.getSession();const r=await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:shop.id,email,password})});toast(r.ok?'Acesso do dono configurado.':'Não foi possível configurar o acesso.')}
+function openOwner(){window.open(`../?shop=${encodeURIComponent(shop.slug)}`,'_blank')} function openBooking(){window.open(`../agendar/?shop=${encodeURIComponent(shop.slug)}`,'_blank')}
+function openCreate(){['c-name','c-slug','c-whatsapp','c-city','c-state','c-email','c-password'].forEach(id=>$(id).value='');populatePlanSelects();if(platformPlans.some(p=>p.id==='pro'))$('c-plan').value='pro';else if(platformPlans[0])$('c-plan').value=platformPlans[0].id;openModal('create-modal')}
+async function createShop(){let name=$('c-name').value.trim(),slug=slugify($('c-slug').value);if(name.length<2||!slug){toast('Preencha nome e slug.');return}const {data:id,error}=await sb.rpc('platform_create_barbershop',{p_name:name,p_slug:slug,p_whatsapp:$('c-whatsapp').value.trim()||null,p_city:$('c-city').value.trim()||null,p_state:$('c-state').value.trim().toUpperCase()||null,p_plan:$('c-plan').value});if(error){toast('Erro ao criar barbearia.');return}let email=$('c-email').value.trim(),password=$('c-password').value;if(email&&password.length>=8){const {data:{session}}=await sb.auth.getSession();await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:id,email,password})})}closeModal('create-modal');await loadPlatform();await openShop(id)}
+</script>
+</body></html>
