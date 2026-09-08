@@ -686,7 +686,22 @@ const URL='https://gfdtnjhqamtmxvlaaeoz.supabase.co',KEY='sb_publishable_7jBvCxY
 const sb=createRestClient(URL,KEY);
 let shops=[],shop=null,metrics={},services=[],team=[],biz=null,platformPlans=[],reportData=null;
 const days=[['mon','Segunda'],['tue','Terça'],['wed','Quarta'],['thu','Quinta'],['fri','Sexta'],['sat','Sábado'],['sun','Domingo']];
-const roles={manager:'Gerente',reception:'Recepção',barber:'Barbeiro'},perms={agenda:'Agenda',clients:'Clientes',finance:'Financeiro',team:'Equipe',services:'Serviços'};
+const MEMBERSHIP_ROLES={
+  owner:'Proprietário',
+  manager:'Gerente',
+  reception:'Recepção',
+  barber:'Barbeiro'
+};
+const permissionRoles={
+  manager:'Gerente',
+  reception:'Recepção',
+  barber:'Barbeiro'
+};
+const perms={agenda:'Agenda',clients:'Clientes',finance:'Financeiro',team:'Equipe',services:'Serviços'};
+
+function isValidMembershipRole(role){
+  return Object.prototype.hasOwnProperty.call(MEMBERSHIP_ROLES,String(role||''));
+}
 const $=id=>document.getElementById(id);
 function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
 function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
@@ -1183,12 +1198,38 @@ async function saveFinance(){await updateShop({finance_settings:{commission_enab
 async function saveLoyalty(){let p={loyalty_enabled:getSw('l-enabled'),loyalty_visit_goal:Number($('l-goal').value||10),loyalty_reward_name:$('l-reward').value.trim()||'Recompensa',updated_at:new Date().toISOString()};if(biz?.id)await sb.from('business_settings').update(p).eq('id',biz.id);else await sb.from('business_settings').insert({...p,barbershop_id:shop.id});toast('Fidelidade atualizada.');await loadShopData()}
 async function saveWhatsApp(){await updateShop({whatsapp_settings:{enabled:getSw('w-enabled'),confirmation:getSw('w-confirm'),reminder:getSw('w-reminder'),birthday:getSw('w-birthday'),post_service:getSw('w-post'),reminder_hours:Number($('w-hours').value||24)}},'WhatsApp atualizado.')}
 async function savePublic(){await updateShop({public_page_settings:{hero_title:$('pub-title').value.trim(),hero_subtitle:$('pub-subtitle').value.trim(),show_prices:getSw('pub-prices'),show_team:getSw('pub-team'),show_address:getSw('pub-address'),show_instagram:getSw('pub-instagram')}},'Página pública atualizada.')}
-function renderPermissions(){let p=shop.permission_defaults||{};$('permissions').innerHTML=Object.keys(roles).map(r=>`<div class="card" style="background:#101722;margin:8px 0"><div class="card-head"><h2>${roles[r]}</h2></div>${Object.keys(perms).map(k=>`<div class="setting"><strong>${perms[k]}</strong><button id="perm-${r}-${k}" class="switch ${p[r]?.[k]?'on':''}" onclick="toggle(this)"></button></div>`).join('')}</div>`).join('')}
-async function savePermissions(){let p={};Object.keys(roles).forEach(r=>{p[r]={};Object.keys(perms).forEach(k=>p[r][k]=getSw(`perm-${r}-${k}`))});await updateShop({permission_defaults:p},'Permissões atualizadas.')}
-async function provisionOwner(){let email=$('owner-email').value.trim(),password=$('owner-password').value;if(!email||password.length<8){toast('Informe email e senha com 8+ caracteres.');return}const {data:{session}}=await sb.auth.getSession();const r=await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:shop.id,email,password})});toast(r.ok?'Acesso do dono configurado.':'Não foi possível configurar o acesso.')}
+function renderPermissions(){
+  let p=shop.permission_defaults||{};
+  const ownerCard=`<div class="card" style="background:#101722;margin:8px 0">
+    <div class="card-head"><h2>${MEMBERSHIP_ROLES.owner}</h2></div>
+    <div style="padding:4px 0 8px;color:var(--muted);font-size:10px;line-height:1.5">
+      Acesso total à própria barbearia. As permissões do proprietário não podem ser reduzidas por esta tela.
+    </div>
+  </div>`;
+
+  $('permissions').innerHTML=ownerCard+Object.keys(permissionRoles).map(r=>`
+    <div class="card" style="background:#101722;margin:8px 0">
+      <div class="card-head"><h2>${permissionRoles[r]}</h2></div>
+      ${Object.keys(perms).map(k=>`
+        <div class="setting">
+          <strong>${perms[k]}</strong>
+          <button id="perm-${r}-${k}" class="switch ${p[r]?.[k]?'on':''}" onclick="toggle(this)"></button>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+async function savePermissions(){
+  let p={};
+  Object.keys(permissionRoles).forEach(r=>{
+    p[r]={};
+    Object.keys(perms).forEach(k=>p[r][k]=getSw(`perm-${r}-${k}`));
+  });
+  await updateShop({permission_defaults:p},'Permissões atualizadas.');
+}
+async function provisionOwner(){let email=$('owner-email').value.trim(),password=$('owner-password').value;if(!email||password.length<8){toast('Informe email e senha com 8+ caracteres.');return}const {data:{session}}=await sb.auth.getSession();const r=await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:shop.id,email,password,role:'owner'})});toast(r.ok?'Acesso do dono configurado.':'Não foi possível configurar o acesso.')}
 function openOwner(){window.open(`../?shop=${encodeURIComponent(shop.slug)}`,'_blank')} function openBooking(){window.open(`../agendar/?shop=${encodeURIComponent(shop.slug)}`,'_blank')}
 function openCreate(){['c-name','c-slug','c-whatsapp','c-city','c-state','c-email','c-password'].forEach(id=>$(id).value='');populatePlanSelects();if(platformPlans.some(p=>p.id==='pro'))$('c-plan').value='pro';else if(platformPlans[0])$('c-plan').value=platformPlans[0].id;openModal('create-modal')}
-async function createShop(){let name=$('c-name').value.trim(),slug=slugify($('c-slug').value);if(name.length<2||!slug){toast('Preencha nome e slug.');return}const {data:id,error}=await sb.rpc('platform_create_barbershop',{p_name:name,p_slug:slug,p_whatsapp:$('c-whatsapp').value.trim()||null,p_city:$('c-city').value.trim()||null,p_state:$('c-state').value.trim().toUpperCase()||null,p_plan:$('c-plan').value});if(error){toast('Erro ao criar barbearia.');return}let email=$('c-email').value.trim(),password=$('c-password').value;if(email&&password.length>=8){const {data:{session}}=await sb.auth.getSession();await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:id,email,password})})}closeModal('create-modal');await loadPlatform();await openShop(id)}
+async function createShop(){let name=$('c-name').value.trim(),slug=slugify($('c-slug').value);if(name.length<2||!slug){toast('Preencha nome e slug.');return}const {data:id,error}=await sb.rpc('platform_create_barbershop',{p_name:name,p_slug:slug,p_whatsapp:$('c-whatsapp').value.trim()||null,p_city:$('c-city').value.trim()||null,p_state:$('c-state').value.trim().toUpperCase()||null,p_plan:$('c-plan').value});if(error){toast('Erro ao criar barbearia.');return}let email=$('c-email').value.trim(),password=$('c-password').value;if(email&&password.length>=8){const {data:{session}}=await sb.auth.getSession();await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:id,email,password,role:'owner'})})}closeModal('create-modal');await loadPlatform();await openShop(id)}
 </script>
 <script>
 function updateAdminConnection(){
