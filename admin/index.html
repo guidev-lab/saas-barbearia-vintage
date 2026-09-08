@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vintage SaaS — Painel Master</title>
+<meta name="description" content="Painel administrativo da plataforma.">
+<meta name="robots" content="noindex,nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0B0F17;--panel:#111827;--card:#141B29;--card2:#101722;--border:#243041;--text:#F5F8FC;--muted:#94A3B8;--blue:#3B82F6;--green:#22C55E;--amber:#D6A33D;--red:#EF6464}
@@ -134,6 +136,52 @@
 @media(max-width:1000px){.exec-grid{grid-template-columns:1fr}.exec-kpis{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.exec-kpis{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.action-item,.onboarding-item,.today-item{align-items:flex-start;flex-direction:column}}
 
+
+/* ===== ACESSIBILIDADE / LOADING / MOBILE ===== */
+html,body{max-width:100%;overflow-x:hidden}
+.card,.main,.shell{min-width:0}
+.skeleton{
+  color:transparent!important;
+  position:relative;
+  overflow:hidden;
+  background:#1A2432!important;
+  border-radius:6px;
+  min-height:1em;
+  min-width:54px;
+  display:inline-block!important
+}
+.skeleton::after{
+  content:"";position:absolute;inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+  animation:skeletonSweep 1.25s infinite
+}
+@keyframes skeletonSweep{100%{transform:translateX(100%)}}
+.metric-error{font-size:9px;color:#EFA2A2}
+.modal{position:relative}
+.modal-close{
+  position:absolute;right:14px;top:12px;width:36px;height:36px;border-radius:9px;
+  border:1px solid var(--border);background:#111A26;color:#CBD5E1
+}
+.modal-close:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--blue);outline-offset:2px
+}
+.connection-banner{
+  position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;
+  transform:translateX(-50%);z-index:1000;display:none;
+  width:min(92vw,520px);padding:10px 13px;border-radius:10px;
+  background:#2B1C14;border:1px solid rgba(214,163,61,.35);
+  color:#E9C77A;font-size:10px;font-weight:700;text-align:center
+}
+.connection-banner.show{display:block}
+.report-table,.data{max-width:100%;overflow-x:auto}
+@media(max-width:430px){
+  .main{padding:12px 8px}
+  .modal-bg{padding:8px}
+  .modal{max-height:96dvh;border-radius:14px;padding:16px}
+  .btn{min-height:44px}
+}
+
 </style>
 </head>
 <body>
@@ -142,8 +190,8 @@
     <div class="badge">Administração da plataforma</div>
     <h1>Painel Master</h1>
     <p>Gerencie cada barbearia como uma conta completa do SaaS, com métricas, identidade, operação, acessos e personalização.</p>
-    <div class="field"><label>Email</label><input id="email" type="email"></div>
-    <div class="field"><label>Senha</label><input id="password" type="password"></div>
+    <div class="field"><label for="email">Email</label><input id="email" type="email"></div>
+    <div class="field"><label for="password">Senha</label><input id="password" type="password"></div>
     <button class="btn primary" onclick="login()">Entrar</button>
     <div id="login-error" style="font-size:9px;color:#F1A0A0;margin-top:10px"></div>
   </div>
@@ -349,9 +397,9 @@
 
   <div class="card">
     <div class="report-controls">
-      <div class="field"><label>Data inicial</label><input id="report-start" type="date"></div>
-      <div class="field"><label>Data final</label><input id="report-end" type="date"></div>
-      <div class="field"><label>Atalho</label><select id="report-range" onchange="applyReportRange()"><option value="month">Este mês</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="year">Este ano</option><option value="custom">Personalizado</option></select></div>
+      <div class="field"><label for="report-start">Data inicial</label><input id="report-start" type="date"></div>
+      <div class="field"><label for="report-end">Data final</label><input id="report-end" type="date"></div>
+      <div class="field"><label for="report-range">Atalho</label><select id="report-range" onchange="applyReportRange()"><option value="month">Este mês</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="year">Este ano</option><option value="custom">Personalizado</option></select></div>
       <button class="btn" onclick="loadReports()">Aplicar</button>
     </div>
   </div>
@@ -425,18 +473,18 @@
   </div>
 
   <div id="pane-identity" class="pane"><div class="card"><h3>Identidade e dados</h3><div class="form2">
-    <div class="field"><label>Nome</label><input id="i-name"></div><div class="field"><label>Slug</label><input id="i-slug" disabled></div>
-    <div class="field"><label>Telefone</label><input id="i-phone"></div><div class="field"><label>WhatsApp</label><input id="i-whatsapp"></div>
-    <div class="field"><label>Instagram</label><input id="i-instagram"></div><div class="field"><label>Cor principal</label><input id="i-color" type="color"></div>
+    <div class="field"><label for="i-name">Nome</label><input id="i-name"></div><div class="field"><label for="i-slug">Slug</label><input id="i-slug" disabled></div>
+    <div class="field"><label for="i-phone">Telefone</label><input id="i-phone"></div><div class="field"><label for="i-whatsapp">WhatsApp</label><input id="i-whatsapp"></div>
+    <div class="field"><label for="i-instagram">Instagram</label><input id="i-instagram"></div><div class="field"><label for="i-color">Cor principal</label><input id="i-color" type="color"></div>
     <div class="field full"><label>Descrição pública</label><textarea id="i-description"></textarea></div>
     <div class="field full"><label>URL da logo</label><input id="i-logo"></div>
-    <div class="field"><label>Cidade</label><input id="i-city"></div><div class="field"><label>Estado</label><input id="i-state"></div>
+    <div class="field"><label for="i-city">Cidade</label><input id="i-city"></div><div class="field"><label for="i-state">Estado</label><input id="i-state"></div>
     <div class="field full"><label>Endereço</label><input id="i-address"></div><div class="field full"><label>Domínio personalizado</label><input id="i-domain"></div>
   </div><div class="save"><button class="btn primary" onclick="saveIdentity()">Salvar identidade</button></div></div></div>
 
   <div id="pane-plan" class="pane"><div class="grid2">
-    <div class="card"><h3>Plano e assinatura</h3><div class="form2"><div class="field"><label>Plano</label><select id="pl-plan"><option value="basic">Básico</option><option value="pro">Pro</option><option value="premium">Premium</option></select></div><div class="field"><label>Status</label><select id="pl-status"><option value="trial">Trial</option><option value="active">Ativa</option><option value="past_due">Pagamento pendente</option><option value="suspended">Suspensa</option><option value="cancelled">Cancelada</option></select></div><div class="field"><label>Mensalidade (R$)</label><input id="pl-price" type="number" min="0" step="0.01"></div><div class="field"><label>Fim do trial</label><input id="pl-trial-end" type="date"></div></div><div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="save"><button class="btn primary" onclick="savePlan()">Salvar</button></div></div>
-    <div class="card"><h3>Acesso do proprietário</h3><div class="field"><label>Email</label><input id="owner-email" type="email"></div><div class="field"><label>Senha inicial / nova senha</label><input id="owner-password" type="password"></div><button class="btn primary" onclick="provisionOwner()">Salvar acesso</button></div>
+    <div class="card"><h3>Plano e assinatura</h3><div class="form2"><div class="field"><label for="pl-plan">Plano</label><select id="pl-plan"><option value="basic">Básico</option><option value="pro">Pro</option><option value="premium">Premium</option></select></div><div class="field"><label for="pl-status">Status</label><select id="pl-status"><option value="trial">Trial</option><option value="active">Ativa</option><option value="past_due">Pagamento pendente</option><option value="suspended">Suspensa</option><option value="cancelled">Cancelada</option></select></div><div class="field"><label for="pl-price">Mensalidade (R$)</label><input id="pl-price" type="number" min="0" step="0.01"></div><div class="field"><label for="pl-trial-end">Fim do trial</label><input id="pl-trial-end" type="date"></div></div><div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="save"><button class="btn primary" onclick="savePlan()">Salvar</button></div></div>
+    <div class="card"><h3>Acesso do proprietário</h3><div class="field"><label for="owner-email">Email</label><input id="owner-email" type="email"></div><div class="field"><label for="owner-password">Senha inicial / nova senha</label><input id="owner-password" type="password"></div><button class="btn primary" onclick="provisionOwner()">Salvar acesso</button></div>
   </div></div>
 
   <div id="pane-hours" class="pane"><div class="card"><div class="card-head"><div><h2>Horário de funcionamento</h2><p>Configuração geral semanal.</p></div></div><div id="hours-wrap"></div><div class="save"><button class="btn primary" onclick="saveHours()">Salvar horários</button></div></div></div>
@@ -446,8 +494,8 @@
   <div id="pane-services" class="pane"><div class="card"><div class="card-head"><div><h2>Serviços</h2><p>Preços, duração e disponibilidade.</p></div><button class="btn primary" onclick="openService()">+ Serviço</button></div><div id="services-list" class="data"></div></div></div>
 
   <div id="pane-agenda" class="pane"><div class="card"><h3>Regras de agendamento</h3><div class="form2">
-    <div class="field"><label>Antecedência mínima (min)</label><input id="a-min" type="number"></div><div class="field"><label>Máximo de dias futuros</label><input id="a-max" type="number"></div>
-    <div class="field"><label>Intervalo base (min)</label><input id="a-slot" type="number"></div><div class="field"><label>Limite de cancelamento (h)</label><input id="a-cancel-hours" type="number"></div>
+    <div class="field"><label for="a-min">Antecedência mínima (min)</label><input id="a-min" type="number"></div><div class="field"><label for="a-max">Máximo de dias futuros</label><input id="a-max" type="number"></div>
+    <div class="field"><label for="a-slot">Intervalo base (min)</label><input id="a-slot" type="number"></div><div class="field"><label for="a-cancel-hours">Limite de cancelamento (h)</label><input id="a-cancel-hours" type="number"></div>
   </div>
   <div class="setting"><div><strong>Qualquer profissional</strong><span>Cliente não precisa escolher barbeiro.</span></div><button id="a-any" class="switch" onclick="toggle(this)"></button></div>
   <div class="setting"><div><strong>Agendamento no mesmo dia</strong><span>Permitir horários disponíveis para hoje.</span></div><button id="a-sameday" class="switch" onclick="toggle(this)"></button></div>
@@ -456,9 +504,9 @@
   <div class="setting"><div><strong>Confirmação obrigatória</strong></div><button id="a-confirm" class="switch" onclick="toggle(this)"></button></div>
   <div class="save"><button class="btn primary" onclick="saveAgenda()">Salvar regras</button></div></div></div>
 
-  <div id="pane-finance" class="pane"><div class="grid2"><div class="card"><h3>Configuração financeira</h3><div class="field"><label>Meta mensal</label><input id="f-goal" type="number"></div><div class="setting"><div><strong>Comissão ativa</strong></div><button id="f-commission" class="switch" onclick="toggle(this)"></button></div><div class="setting"><div><strong>Equipe vê faturamento</strong></div><button id="f-show" class="switch" onclick="toggle(this)"></button></div><div class="field"><label>Pagamento padrão</label><select id="f-payment"><option>Outro</option><option>Pix</option><option>Dinheiro</option><option>Crédito</option><option>Débito</option></select></div><div class="save"><button class="btn primary" onclick="saveFinance()">Salvar</button></div></div><div class="card"><h3>Resumo do mês</h3><div class="mini-grid" style="grid-template-columns:1fr 1fr"><div class="mini"><span>Entradas</span><strong id="f-in">—</strong></div><div class="mini"><span>Saídas</span><strong id="f-out">—</strong></div></div></div></div></div>
+  <div id="pane-finance" class="pane"><div class="grid2"><div class="card"><h3>Configuração financeira</h3><div class="field"><label for="f-goal">Meta mensal</label><input id="f-goal" type="number"></div><div class="setting"><div><strong>Comissão ativa</strong></div><button id="f-commission" class="switch" onclick="toggle(this)"></button></div><div class="setting"><div><strong>Equipe vê faturamento</strong></div><button id="f-show" class="switch" onclick="toggle(this)"></button></div><div class="field"><label for="f-payment">Pagamento padrão</label><select id="f-payment"><option>Outro</option><option>Pix</option><option>Dinheiro</option><option>Crédito</option><option>Débito</option></select></div><div class="save"><button class="btn primary" onclick="saveFinance()">Salvar</button></div></div><div class="card"><h3>Resumo do mês</h3><div class="mini-grid" style="grid-template-columns:1fr 1fr"><div class="mini"><span>Entradas</span><strong id="f-in">—</strong></div><div class="mini"><span>Saídas</span><strong id="f-out">—</strong></div></div></div></div></div>
 
-  <div id="pane-loyalty" class="pane"><div class="card"><h3>Programa de fidelidade</h3><div class="setting"><div><strong>Fidelidade ativa</strong></div><button id="l-enabled" class="switch" onclick="toggle(this)"></button></div><div class="form2"><div class="field"><label>Visitas para recompensa</label><input id="l-goal" type="number"></div><div class="field"><label>Recompensa</label><input id="l-reward"></div></div><div class="save"><button class="btn primary" onclick="saveLoyalty()">Salvar</button></div></div></div>
+  <div id="pane-loyalty" class="pane"><div class="card"><h3>Programa de fidelidade</h3><div class="setting"><div><strong>Fidelidade ativa</strong></div><button id="l-enabled" class="switch" onclick="toggle(this)"></button></div><div class="form2"><div class="field"><label for="l-goal">Visitas para recompensa</label><input id="l-goal" type="number"></div><div class="field"><label for="l-reward">Recompensa</label><input id="l-reward"></div></div><div class="save"><button class="btn primary" onclick="saveLoyalty()">Salvar</button></div></div></div>
 
   <div id="pane-whatsapp" class="pane"><div class="card"><h3>WhatsApp e automações</h3>
     <div class="setting"><div><strong>Integração ativa</strong></div><button id="w-enabled" class="switch" onclick="toggle(this)"></button></div>
@@ -470,7 +518,7 @@
     <div class="save"><button class="btn primary" onclick="saveWhatsApp()">Salvar</button></div>
   </div></div>
 
-  <div id="pane-public" class="pane"><div class="card"><h3>Página pública</h3><div class="field"><label>Título</label><input id="pub-title"></div><div class="field"><label>Subtítulo</label><textarea id="pub-subtitle"></textarea></div>
+  <div id="pane-public" class="pane"><div class="card"><h3>Página pública</h3><div class="field"><label for="pub-title">Título</label><input id="pub-title"></div><div class="field"><label for="pub-subtitle">Subtítulo</label><textarea id="pub-subtitle"></textarea></div>
     <div class="setting"><div><strong>Mostrar preços</strong></div><button id="pub-prices" class="switch" onclick="toggle(this)"></button></div>
     <div class="setting"><div><strong>Mostrar equipe</strong></div><button id="pub-team" class="switch" onclick="toggle(this)"></button></div>
     <div class="setting"><div><strong>Mostrar endereço</strong></div><button id="pub-address" class="switch" onclick="toggle(this)"></button></div>
@@ -484,11 +532,11 @@
 </div>
 </div>
 
-<div id="create-modal" class="modal-bg"><div class="modal"><h2>Nova barbearia</h2><div class="form2"><div class="field"><label>Nome</label><input id="c-name" oninput="document.getElementById('c-slug').value=slugify(this.value)"></div><div class="field"><label>Slug</label><input id="c-slug"></div><div class="field"><label>WhatsApp</label><input id="c-whatsapp"></div><div class="field"><label>Plano</label><select id="c-plan"><option value="basic">Básico</option><option value="pro" selected>Pro</option><option value="premium">Premium</option></select></div><div class="field"><label>Cidade</label><input id="c-city"></div><div class="field"><label>Estado</label><input id="c-state"></div><div class="field"><label>Email do dono</label><input id="c-email" type="email"></div><div class="field"><label>Senha inicial</label><input id="c-password" type="password"></div></div><div class="modal-actions"><button class="btn" onclick="closeModal('create-modal')">Cancelar</button><button class="btn primary" onclick="createShop()">Criar e abrir</button></div></div></div>
+<div id="create-modal" class="modal-bg"><div class="modal"><h2>Nova barbearia</h2><div class="form2"><div class="field"><label for="c-name">Nome</label><input id="c-name" oninput="document.getElementById('c-slug').value=slugify(this.value)"></div><div class="field"><label for="c-slug">Slug</label><input id="c-slug"></div><div class="field"><label for="c-whatsapp">WhatsApp</label><input id="c-whatsapp"></div><div class="field"><label for="c-plan">Plano</label><select id="c-plan"><option value="basic">Básico</option><option value="pro" selected>Pro</option><option value="premium">Premium</option></select></div><div class="field"><label for="c-city">Cidade</label><input id="c-city"></div><div class="field"><label for="c-state">Estado</label><input id="c-state"></div><div class="field"><label for="c-email">Email do dono</label><input id="c-email" type="email"></div><div class="field"><label for="c-password">Senha inicial</label><input id="c-password" type="password"></div></div><div class="modal-actions"><button class="btn" onclick="closeModal('create-modal')">Cancelar</button><button class="btn primary" onclick="createShop()">Criar e abrir</button></div></div></div>
 
-<div id="service-modal" class="modal-bg"><div class="modal" style="max-width:500px"><h2>Serviço</h2><input id="s-id" type="hidden"><div class="field"><label>Nome</label><input id="s-name"></div><div class="form2"><div class="field"><label>Preço</label><input id="s-price" type="number"></div><div class="field"><label>Duração (min)</label><input id="s-duration" type="number"></div></div><div class="setting"><div><strong>Ativo</strong></div><button id="s-active" class="switch on" onclick="toggle(this)"></button></div><div class="modal-actions"><button class="btn" onclick="closeModal('service-modal')">Cancelar</button><button class="btn primary" onclick="saveService()">Salvar</button></div></div></div>
+<div id="service-modal" class="modal-bg"><div class="modal" style="max-width:500px"><h2>Serviço</h2><input id="s-id" type="hidden"><div class="field"><label for="s-name">Nome</label><input id="s-name"></div><div class="form2"><div class="field"><label for="s-price">Preço</label><input id="s-price" type="number"></div><div class="field"><label for="s-duration">Duração (min)</label><input id="s-duration" type="number"></div></div><div class="setting"><div><strong>Ativo</strong></div><button id="s-active" class="switch on" onclick="toggle(this)"></button></div><div class="modal-actions"><button class="btn" onclick="closeModal('service-modal')">Cancelar</button><button class="btn primary" onclick="saveService()">Salvar</button></div></div></div>
 
-<div id="team-modal" class="modal-bg"><div class="modal" style="max-width:500px"><h2>Profissional</h2><input id="t-id" type="hidden"><div class="field"><label>Nome</label><input id="t-name"></div><div class="field"><label>Comissão (%)</label><input id="t-commission" type="number"></div><div class="setting"><div><strong>Ativo</strong></div><button id="t-active" class="switch on" onclick="toggle(this)"></button></div><div class="modal-actions"><button class="btn" onclick="closeModal('team-modal')">Cancelar</button><button class="btn primary" onclick="saveTeam()">Salvar</button></div></div></div>
+<div id="team-modal" class="modal-bg"><div class="modal" style="max-width:500px"><h2>Profissional</h2><input id="t-id" type="hidden"><div class="field"><label for="t-name">Nome</label><input id="t-name"></div><div class="field"><label for="t-commission">Comissão (%)</label><input id="t-commission" type="number"></div><div class="setting"><div><strong>Ativo</strong></div><button id="t-active" class="switch on" onclick="toggle(this)"></button></div><div class="modal-actions"><button class="btn" onclick="closeModal('team-modal')">Cancelar</button><button class="btn primary" onclick="saveTeam()">Salvar</button></div></div></div>
 
 
 <div id="plan-modal" class="modal-bg">
@@ -496,12 +544,12 @@
     <h2 id="plan-modal-title">Plano</h2>
     <input id="plan-id" type="hidden">
     <div class="form2">
-      <div class="field"><label>Nome</label><input id="plan-name"></div>
-      <div class="field"><label>Preço mensal (R$)</label><input id="plan-price" type="number" min="0" step="0.01"></div>
+      <div class="field"><label for="plan-name">Nome</label><input id="plan-name"></div>
+      <div class="field"><label for="plan-price">Preço mensal (R$)</label><input id="plan-price" type="number" min="0" step="0.01"></div>
       <div class="field full"><label>Descrição</label><textarea id="plan-description"></textarea></div>
-      <div class="field"><label>Máx. profissionais</label><input id="plan-professionals" type="number" min="1"></div>
-      <div class="field"><label>Máx. usuários</label><input id="plan-users" type="number" min="1"></div>
-      <div class="field"><label>Máx. unidades</label><input id="plan-units" type="number" min="1"></div>
+      <div class="field"><label for="plan-professionals">Máx. profissionais</label><input id="plan-professionals" type="number" min="1"></div>
+      <div class="field"><label for="plan-users">Máx. usuários</label><input id="plan-users" type="number" min="1"></div>
+      <div class="field"><label for="plan-units">Máx. unidades</label><input id="plan-units" type="number" min="1"></div>
     </div>
     <div class="setting"><div><strong>Plano ativo</strong><span>Disponível para novas contratações.</span></div><button id="plan-active" class="switch on" onclick="toggle(this)"></button></div>
     <div style="margin-top:14px;font-family:Sora;font-size:11px">Recursos incluídos</div>
@@ -510,6 +558,7 @@
   </div>
 </div>
 
+<div id="admin-connection-banner" class="connection-banner" role="status" aria-live="polite">Sem conexão com a internet. Verifique sua conexão e tente novamente.</div>
 <div id="toast" class="toast"></div>
 
 <script>
@@ -644,7 +693,69 @@ function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',c
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function slugify(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 function toggle(el){el.classList.toggle('on')} function sw(id,v){$(id).classList.toggle('on',!!v)} function getSw(id){return $(id).classList.contains('on')}
-function openModal(id){$(id).classList.add('open')} function closeModal(id){$(id).classList.remove('open')}
+let lastModalTrigger=null;
+function getFocusable(root){
+  return [...root.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>!el.disabled && el.offsetParent!==null);
+}
+function enhanceModal(root){
+  if(!root) return;
+  const modal=root.querySelector('.modal');
+  if(!modal) return;
+  modal.setAttribute('role','dialog');
+  modal.setAttribute('aria-modal','true');
+  modal.setAttribute('tabindex','-1');
+
+  const heading=modal.querySelector('h2,h3');
+  if(heading){
+    if(!heading.id) heading.id=`${root.id}-title`;
+    modal.setAttribute('aria-labelledby',heading.id);
+  }
+
+  if(!modal.querySelector('.modal-close')){
+    const close=document.createElement('button');
+    close.type='button';
+    close.className='modal-close';
+    close.setAttribute('aria-label','Fechar');
+    close.textContent='×';
+    close.addEventListener('click',()=>closeModal(root.id));
+    modal.prepend(close);
+  }
+}
+function openModal(id){
+  const root=$(id);
+  if(!root) return;
+  lastModalTrigger=document.activeElement;
+  enhanceModal(root);
+  root.classList.add('open');
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{
+    const focusables=getFocusable(root);
+    (focusables[0]||root.querySelector('.modal'))?.focus();
+  });
+}
+function closeModal(id){
+  const root=$(id);
+  if(!root) return;
+  root.classList.remove('open');
+  document.body.style.overflow='';
+  lastModalTrigger?.focus?.();
+}
+document.addEventListener('keydown',e=>{
+  const open=document.querySelector('.modal-bg.open');
+  if(!open) return;
+  if(e.key==='Escape'){e.preventDefault();closeModal(open.id);return;}
+  if(e.key==='Tab'){
+    const focusables=getFocusable(open);
+    if(!focusables.length) return;
+    const first=focusables[0],last=focusables[focusables.length-1];
+    if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
+  }
+});
+document.addEventListener('click',e=>{
+  if(e.target.classList?.contains('modal-bg')) closeModal(e.target.id);
+});
 async function login(){
   const errorEl=$('login-error');
   const loginBtn=document.querySelector('#login .btn.primary');
@@ -681,7 +792,27 @@ async function login(){
   if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='Entrar';}
 }
 async function logout(){await sb.auth.signOut();location.reload()}
+
+const PLATFORM_LOADING_IDS=['p-active','exec-alerts','p-trials','p-risk','p-inactive7','p-new','p-activation','p-inactive15','p-inactive30','p-suspended'];
+const REPORT_LOADING_IDS=['r-mrr','r-new','r-churn','r-appts','r-clients','r-volume','r-risk','r-team'];
+function setLoading(ids,on=true){
+  ids.forEach(id=>{
+    const el=$(id); if(!el) return;
+    el.classList.toggle('skeleton',on);
+    if(on && !el.textContent.trim()) el.textContent='Carregando';
+  });
+}
+function setMetricError(ids){
+  ids.forEach(id=>{
+    const el=$(id); if(!el) return;
+    el.classList.remove('skeleton');
+    el.textContent='Erro';
+    el.title='Não foi possível carregar';
+  });
+}
+
 async function loadPlatform(){
+  setLoading(PLATFORM_LOADING_IDS,true);
   const [overviewRes,listRes,plansRes]=await Promise.all([
     sb.rpc('platform_master_overview'),
     sb.from('barbershops').select('*').order('created_at',{ascending:false}),
@@ -689,7 +820,9 @@ async function loadPlatform(){
   ]);
   if(overviewRes.error||listRes.error||plansRes.error){
     console.error('Erro ao carregar visão geral:',overviewRes.error||listRes.error||plansRes.error);
-    toast('Não foi possível carregar todos os indicadores.');
+    setMetricError(PLATFORM_LOADING_IDS);
+    toast(navigator.onLine?'Não foi possível carregar todos os indicadores. Tente novamente.':'Sem conexão com a internet. Verifique sua conexão e tente novamente.');
+    return;
   }
 
   const ov=overviewRes.data||{},s=ov.summary||{};
@@ -723,6 +856,7 @@ async function loadPlatform(){
   $('exec-base-pct').textContent=`${pct}%`;
   $('exec-base-fill').style.width=`${pct}%`;
 
+  setLoading(PLATFORM_LOADING_IDS,false);
   renderSimpleShops();
 }
 
@@ -946,13 +1080,20 @@ function applyReportRange(){
   $('report-start').value=isoDate(start);$('report-end').value=isoDate(today);
 }
 async function loadReports(){
+  setLoading(REPORT_LOADING_IDS,true);
   const start=$('report-start').value,end=$('report-end').value;
   if(!start||!end){toast('Escolha o período.');return}
   if(start>end){toast('A data inicial deve ser anterior à final.');return}
   const {data,error}=await sb.rpc('platform_reports',{p_start:start,p_end:end});
-  if(error){console.error(error);toast('Não foi possível gerar o relatório.');return}
+  if(error){
+    console.error(error);
+    setMetricError(REPORT_LOADING_IDS);
+    toast(navigator.onLine?'Não foi possível gerar o relatório. Tente novamente.':'Sem conexão com a internet. Verifique sua conexão e tente novamente.');
+    return;
+  }
   reportData=data||{};
   renderReports();
+  setLoading(REPORT_LOADING_IDS,false);
 }
 function renderReports(){
   const s=reportData?.summary||{};
@@ -1000,17 +1141,43 @@ function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('
 function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
 async function updateShop(patch,msg){const {data,error}=await sb.from('barbershops').update({...patch,updated_at:new Date().toISOString()}).eq('id',shop.id).select().single();if(error){console.error(error);toast('Não foi possível salvar.');return false}shop=data;shops=shops.map(x=>x.id===data.id?data:x);toast(msg);return true}
 async function saveIdentity(){if(await updateShop({name:$('i-name').value.trim(),phone:$('i-phone').value.trim()||null,whatsapp:$('i-whatsapp').value.trim()||null,instagram:$('i-instagram').value.trim()||null,accent_color:$('i-color').value,public_description:$('i-description').value.trim()||null,logo_url:$('i-logo').value.trim()||null,city:$('i-city').value.trim()||null,state:$('i-state').value.trim().toUpperCase()||null,address:$('i-address').value.trim()||null,custom_domain:$('i-domain').value.trim()||null},'Identidade atualizada.')) await openShop(shop.id)}
-async function savePlan(){const status=$('pl-status').value;const patch={plan:$('pl-plan').value,subscription_status:status,subscription_price:Number($('pl-price').value||0),trial_ends_at:$('pl-trial-end').value||null,active:getSw('pl-active')};if(status==='cancelled'&&!shop.cancelled_at)patch.cancelled_at=new Date().toISOString().slice(0,10);if(status!=='cancelled')patch.cancelled_at=null;if(await updateShop(patch,'Plano e acesso atualizados.'))await openShop(shop.id)}
+async function savePlan(){
+  const status=$('pl-status').value;
+  const nextPlan=$('pl-plan').value;
+  const nextActive=getSw('pl-active');
+
+  const becomingCritical=status==='cancelled'||status==='suspended'||!nextActive;
+  if(becomingCritical && (status!==shop.subscription_status || nextActive!==shop.active)){
+    const typed=window.prompt(`Esta ação pode interromper o acesso da barbearia.\n\nPara confirmar, digite exatamente:\n${shop.name}`);
+    if(typed!==shop.name){
+      toast('Alteração crítica cancelada.');
+      return;
+    }
+  }else if(nextPlan!==shop.plan){
+    if(!window.confirm(`Alterar o plano de ${shop.name} de ${(shop.plan||'').toUpperCase()} para ${nextPlan.toUpperCase()}?`)) return;
+  }
+
+  const patch={
+    plan:nextPlan,
+    subscription_status:status,
+    subscription_price:Number($('pl-price').value||0),
+    trial_ends_at:$('pl-trial-end').value||null,
+    active:nextActive
+  };
+  if(status==='cancelled'&&!shop.cancelled_at)patch.cancelled_at=new Date().toISOString().slice(0,10);
+  if(status!=='cancelled')patch.cancelled_at=null;
+  if(await updateShop(patch,'Plano e acesso atualizados.'))await openShop(shop.id);
+}
 function renderHours(){let h=shop.weekly_hours||{};$('hours-wrap').innerHTML=days.map(([k,l])=>{let d=h[k]||{open:'09:00',close:'19:00',closed:k==='sun'};return `<div class="hours"><span>${l}</span><input id="${k}-o" type="time" value="${d.open||'09:00'}"><input id="${k}-c" type="time" value="${d.close||'19:00'}"><select id="${k}-x"><option value="false" ${!d.closed?'selected':''}>Aberto</option><option value="true" ${d.closed?'selected':''}>Fechado</option></select></div>`}).join('')}
 async function saveHours(){let h={};days.forEach(([k])=>h[k]={open:$(k+'-o').value,close:$(k+'-c').value,closed:$(k+'-x').value==='true'});await updateShop({weekly_hours:h},'Horários atualizados.')}
 function renderServices(){$('services-list').innerHTML=services.length?services.map(s=>`<div class="row"><strong>${esc(s.name)}</strong><span>${money(s.price)}</span><span>${s.duration} min</span><span>${s.active?'Ativo':'Inativo'}</span><div class="actions"><button class="btn" onclick="openService('${s.id}')">Editar</button><button class="btn danger" onclick="deleteService('${s.id}')">Excluir</button></div></div>`).join(''):'<div style="padding:20px;color:var(--muted);font-size:9px">Nenhum serviço.</div>'}
 function openService(id){let s=services.find(x=>x.id===id);$('s-id').value=s?.id||'';$('s-name').value=s?.name||'';$('s-price').value=s?.price??'';$('s-duration').value=s?.duration??45;sw('s-active',s?s.active:true);openModal('service-modal')}
 async function saveService(){let id=$('s-id').value||'srv_'+crypto.randomUUID().slice(0,8),p={id,barbershop_id:shop.id,name:$('s-name').value.trim(),price:Number($('s-price').value||0),duration:Number($('s-duration').value||45),active:getSw('s-active'),updated_at:new Date().toISOString()};if(!p.name){toast('Informe o nome.');return}const {error}=await sb.from('services').upsert(p);if(error){toast('Erro ao salvar serviço.');return}closeModal('service-modal');toast('Serviço salvo.');await loadShopData()}
-async function deleteService(id){if(!confirm('Excluir serviço?'))return;await sb.from('services').delete().eq('id',id).eq('barbershop_id',shop.id);await loadShopData()}
+async function deleteService(id){if(!confirm('Excluir este serviço? Esta ação não pode ser desfeita.'))return;await sb.from('services').delete().eq('id',id).eq('barbershop_id',shop.id);await loadShopData()}
 function renderTeam(){$('team-list').innerHTML=team.length?team.map(t=>`<div class="row team"><strong>${esc(t.name)}</strong><span>Comissão ${Number(t.commission||0)}%</span><span>${t.active?'Ativo':'Inativo'}</span><div class="actions"><button class="btn" onclick="openTeam('${t.id}')">Editar</button><button class="btn danger" onclick="deleteTeam('${t.id}')">Excluir</button></div></div>`).join(''):'<div style="padding:20px;color:var(--muted);font-size:9px">Nenhum profissional.</div>'}
 function openTeam(id){let t=team.find(x=>x.id===id);$('t-id').value=t?.id||'';$('t-name').value=t?.name||'';$('t-commission').value=t?.commission??0;sw('t-active',t?t.active:true);openModal('team-modal')}
 async function saveTeam(){let id=$('t-id').value||'team_'+crypto.randomUUID().slice(0,8),p={id,barbershop_id:shop.id,name:$('t-name').value.trim(),commission:Number($('t-commission').value||0),active:getSw('t-active'),updated_at:new Date().toISOString()};if(!p.name){toast('Informe o nome.');return}const {error}=await sb.from('team_members').upsert(p);if(error){toast('Erro ao salvar profissional.');return}closeModal('team-modal');toast('Profissional salvo.');await loadShopData()}
-async function deleteTeam(id){if(!confirm('Excluir profissional?'))return;await sb.from('team_members').delete().eq('id',id).eq('barbershop_id',shop.id);await loadShopData()}
+async function deleteTeam(id){if(!confirm('Excluir este profissional? Esta ação não pode ser desfeita.'))return;await sb.from('team_members').delete().eq('id',id).eq('barbershop_id',shop.id);await loadShopData()}
 async function saveAgenda(){await updateShop({booking_settings:{min_advance_minutes:Number($('a-min').value||0),max_advance_days:Number($('a-max').value||45),slot_interval:Number($('a-slot').value||30),cancellation_limit_hours:Number($('a-cancel-hours').value||4),allow_any_professional:getSw('a-any'),allow_same_day:getSw('a-sameday'),allow_client_cancel:getSw('a-cancel'),allow_client_reschedule:getSw('a-reschedule'),require_confirmation:getSw('a-confirm')}},'Regras de agenda atualizadas.')}
 async function saveFinance(){await updateShop({finance_settings:{commission_enabled:getSw('f-commission'),show_revenue_to_team:getSw('f-show'),default_payment_method:$('f-payment').value}},'Financeiro atualizado.');let p={monthly_goal:Number($('f-goal').value||0),updated_at:new Date().toISOString()};if(biz?.id)await sb.from('business_settings').update(p).eq('id',biz.id);else await sb.from('business_settings').insert({...p,barbershop_id:shop.id});await loadShopData()}
 async function saveLoyalty(){let p={loyalty_enabled:getSw('l-enabled'),loyalty_visit_goal:Number($('l-goal').value||10),loyalty_reward_name:$('l-reward').value.trim()||'Recompensa',updated_at:new Date().toISOString()};if(biz?.id)await sb.from('business_settings').update(p).eq('id',biz.id);else await sb.from('business_settings').insert({...p,barbershop_id:shop.id});toast('Fidelidade atualizada.');await loadShopData()}
@@ -1022,5 +1189,18 @@ async function provisionOwner(){let email=$('owner-email').value.trim(),password
 function openOwner(){window.open(`../?shop=${encodeURIComponent(shop.slug)}`,'_blank')} function openBooking(){window.open(`../agendar/?shop=${encodeURIComponent(shop.slug)}`,'_blank')}
 function openCreate(){['c-name','c-slug','c-whatsapp','c-city','c-state','c-email','c-password'].forEach(id=>$(id).value='');populatePlanSelects();if(platformPlans.some(p=>p.id==='pro'))$('c-plan').value='pro';else if(platformPlans[0])$('c-plan').value=platformPlans[0].id;openModal('create-modal')}
 async function createShop(){let name=$('c-name').value.trim(),slug=slugify($('c-slug').value);if(name.length<2||!slug){toast('Preencha nome e slug.');return}const {data:id,error}=await sb.rpc('platform_create_barbershop',{p_name:name,p_slug:slug,p_whatsapp:$('c-whatsapp').value.trim()||null,p_city:$('c-city').value.trim()||null,p_state:$('c-state').value.trim().toUpperCase()||null,p_plan:$('c-plan').value});if(error){toast('Erro ao criar barbearia.');return}let email=$('c-email').value.trim(),password=$('c-password').value;if(email&&password.length>=8){const {data:{session}}=await sb.auth.getSession();await fetch(`${URL}/functions/v1/platform-provision-owner`,{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({barbershop_id:id,email,password})})}closeModal('create-modal');await loadPlatform();await openShop(id)}
+</script>
+<script>
+function updateAdminConnection(){
+  const el=document.getElementById('admin-connection-banner');
+  if(!el) return;
+  el.classList.toggle('show',!navigator.onLine);
+}
+window.addEventListener('online',()=>{updateAdminConnection(); if(!$('login').classList.contains('hidden')) return; loadPlatform();});
+window.addEventListener('offline',updateAdminConnection);
+document.addEventListener('DOMContentLoaded',()=>{
+  updateAdminConnection();
+  document.querySelectorAll('.modal-bg').forEach(enhanceModal);
+});
 </script>
 </body></html>

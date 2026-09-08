@@ -6,6 +6,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Painel — Barbearia Vintage</title>
+<meta name="description" content="Painel de gestão da barbearia.">
+<meta name="robots" content="noindex,nofollow">
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
@@ -6813,6 +6815,24 @@ body.auth-locked .mobile-menu-btn{
   outline-offset:2px;
 }
 
+
+/* ===== ROBUSTEZ MOBILE / CONEXÃO ===== */
+html,body{max-width:100%;overflow-x:hidden}
+.app,.main,.page,.content{min-width:0}
+button,a,input,select,textarea{max-width:100%}
+.connection-banner{
+  position:fixed;left:50%;top:max(10px,env(safe-area-inset-top));
+  transform:translateX(-50%);z-index:2147483646;
+  background:#2B1C14;border:1px solid rgba(245,158,11,.35);
+  color:#FFD28A;border-radius:10px;padding:9px 13px;
+  font-size:12px;font-weight:700;display:none;
+  box-shadow:0 10px 30px rgba(0,0,0,.28)
+}
+.connection-banner.show{display:block}
+@media(max-width:430px){
+  .connection-banner{width:calc(100% - 24px);text-align:center}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -12325,6 +12345,10 @@ function stopDashboardAutoSync(){
 }
 
 function showDashboard(){
+  // IMPORTANTE: libera a trava pré-login ANTES de revelar o dashboard.
+  // Sem isso, no mobile o login autenticava, mas o CSS auth-locked
+  // continuava escondendo .app/.main e a tela ficava apenas azul.
+  unlockAppAfterAuth();
   if(authGate) authGate.classList.add('is-hidden');
   if(dashboardApp) dashboardApp.style.display = '';
   document.body.classList.add('authenticated');
@@ -12339,6 +12363,7 @@ function showDashboard(){
 
 function showLogin(){
   if(passwordRecoveryMode) return;
+  lockAppForAuth();
   if(passwordResetGate) passwordResetGate.classList.remove('open');
   if(dashboardApp) dashboardApp.style.display = 'none';
   if(authGate){
@@ -12601,5 +12626,19 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 </script>
 
+<script>
+function updateConnectionState(){
+  const banner=document.getElementById('connection-banner');
+  if(!banner) return;
+  const offline=!navigator.onLine;
+  banner.classList.toggle('show',offline);
+  if(!offline && document.body.classList.contains('authenticated')){
+    syncDashboardInBackground();
+  }
+}
+window.addEventListener('online',updateConnectionState);
+window.addEventListener('offline',updateConnectionState);
+document.addEventListener('DOMContentLoaded',updateConnectionState);
+</script>
 </body>
 </html>
