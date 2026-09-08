@@ -182,6 +182,51 @@ html,body{max-width:100%;overflow-x:hidden}
   .btn{min-height:44px}
 }
 
+
+.plan-effective-summary{
+  margin:14px 0 4px;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#0E1520;
+}
+.plan-effective-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:9px;
+}
+.plan-effective-title strong{
+  color:#F8FAFC;
+  font-size:11px;
+}
+.plan-effective-title span{
+  color:#8FB7E8;
+  font-size:9px;
+  font-weight:700;
+}
+.plan-effective-limits{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.plan-effective-limits span{
+  padding:6px 8px;
+  border:1px solid #243041;
+  border-radius:8px;
+  color:var(--muted);
+  font-size:8.5px;
+}
+.plan-effective-limits strong{color:#DCE7F5}
+.plan-effective-note,
+.plan-effective-empty{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:8.5px;
+  line-height:1.5;
+}
+
 </style>
 </head>
 <body>
@@ -483,7 +528,9 @@ html,body{max-width:100%;overflow-x:hidden}
   </div><div class="save"><button class="btn primary" onclick="saveIdentity()">Salvar identidade</button></div></div></div>
 
   <div id="pane-plan" class="pane"><div class="grid2">
-    <div class="card"><h3>Plano e assinatura</h3><div class="form2"><div class="field"><label for="pl-plan">Plano</label><select id="pl-plan"><option value="basic">Básico</option><option value="pro">Pro</option><option value="premium">Premium</option></select></div><div class="field"><label for="pl-status">Status</label><select id="pl-status"><option value="trial">Trial</option><option value="active">Ativa</option><option value="past_due">Pagamento pendente</option><option value="suspended">Suspensa</option><option value="cancelled">Cancelada</option></select></div><div class="field"><label for="pl-price">Mensalidade (R$)</label><input id="pl-price" type="number" min="0" step="0.01"></div><div class="field"><label for="pl-trial-end">Fim do trial</label><input id="pl-trial-end" type="date"></div></div><div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="save"><button class="btn primary" onclick="savePlan()">Salvar</button></div></div>
+    <div class="card"><h3>Plano e assinatura</h3><div class="form2"><div class="field"><label for="pl-plan">Plano</label><select id="pl-plan" onchange="syncSelectedPlanPreview()"><option value="basic">Básico</option><option value="pro">Pro</option><option value="premium">Premium</option></select></div><div class="field"><label for="pl-status">Status</label><select id="pl-status"><option value="trial">Trial</option><option value="active">Ativa</option><option value="past_due">Pagamento pendente</option><option value="suspended">Suspensa</option><option value="cancelled">Cancelada</option></select></div><div class="field"><label for="pl-price">Mensalidade (R$)</label><input id="pl-price" type="number" min="0" step="0.01"></div><div class="field"><label for="pl-trial-end">Fim do trial</label><input id="pl-trial-end" type="date"></div></div>
+    <div id="pl-effective-summary" class="plan-effective-summary"></div>
+    <div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="save"><button class="btn primary" onclick="savePlan()">Salvar</button></div></div>
     <div class="card"><h3>Acesso do proprietário</h3><div class="field"><label for="owner-email">Email</label><input id="owner-email" type="email"></div><div class="field"><label for="owner-password">Senha inicial / nova senha</label><input id="owner-password" type="password"></div><button class="btn primary" onclick="provisionOwner()">Salvar acesso</button></div>
   </div></div>
 
@@ -1072,7 +1119,13 @@ async function savePlanDefinition(){
   };
   const {error}=await sb.from('platform_plans').upsert(payload);
   if(error){console.error(error);toast('Não foi possível salvar o plano.');return}
-  closeModal('plan-modal');toast('Plano atualizado.');await loadPlans();
+  closeModal('plan-modal');
+  toast('Plano atualizado. As barbearias desse plano foram sincronizadas.');
+  await loadPlans();
+
+  // Atualiza também o cache local das barbearias para refletir features/limites propagados pelo banco.
+  const {data:refreshedShops,error:shopsError}=await sb.from('barbershops').select('*').order('created_at',{ascending:false});
+  if(!shopsError && Array.isArray(refreshedShops)) shops=refreshedShops;
 }
 
 function showReports(){
@@ -1153,13 +1206,73 @@ function tab(n){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle(
 async function openShop(id){shop=shops.find(x=>x.id===id);if(!shop)return;hideMasterViews();$('detail').classList.remove('hidden');setMasterNav('barbershops');$('d-name').textContent=shop.name;$('d-location').textContent=[shop.address,shop.city,shop.state].filter(Boolean).join(' · ')||'Localização não informada';$('avatar').textContent=shop.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();$('d-plan').textContent='Plano '+(shop.plan||'pro').toUpperCase();$('d-status').textContent=shop.active?shop.subscription_status:'bloqueada';$('owner-url').textContent=`${location.origin}/?shop=${shop.slug}`;$('booking-url').textContent=`${location.origin}/agendar/?shop=${shop.slug}`;tab('overview');await loadShopData();scrollTo(0,0)}
 async function loadShopData(){const id=shop.id;const [{data:m},{data:s},{data:t},{data:b}]=await Promise.all([sb.rpc('platform_barbershop_metrics',{p_barbershop_id:id}),sb.from('services').select('*').eq('barbershop_id',id).order('created_at'),sb.from('team_members').select('*').eq('barbershop_id',id).order('created_at'),sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle()]);metrics=m||{};services=s||[];team=t||[];biz=b||{monthly_goal:0,loyalty_enabled:true,loyalty_visit_goal:10,loyalty_reward_name:'Corte grátis'};renderAll()}
 function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('m-appts').textContent=metrics.appointments_month??0;$('m-ticket').textContent=money(metrics.avg_ticket);$('m-clients').textContent=metrics.clients??0;$('m-next').textContent=metrics.next_7_days??0;$('m-today').textContent=metrics.appointments_today??0;$('m-team').textContent=metrics.active_team??0;$('m-services').textContent=metrics.active_services??0;$('m-cancelled').textContent=metrics.cancelled_month??0;$('f-in').textContent=money(metrics.revenue_month);$('f-out').textContent=money(metrics.expenses_month);const checks=[shop.name,shop.whatsapp,shop.city,shop.address,services.length,team.length,shop.weekly_hours,Object.keys(shop.booking_settings||{}).length],pct=Math.round(checks.filter(Boolean).length/checks.length*100);$('setup-label').textContent=pct+'% configurado';$('setup').style.width=pct+'%';$('setup-hint').textContent=pct===100?'Principais dados preenchidos.':'Ainda há itens de implantação a completar.';fillForms();renderHours();renderServices();renderTeam();renderPermissions()}
-function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
+function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);renderEffectivePlanSummary(shop.plan);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
 async function updateShop(patch,msg){const {data,error}=await sb.from('barbershops').update({...patch,updated_at:new Date().toISOString()}).eq('id',shop.id).select().single();if(error){console.error(error);toast('Não foi possível salvar.');return false}shop=data;shops=shops.map(x=>x.id===data.id?data:x);toast(msg);return true}
 async function saveIdentity(){if(await updateShop({name:$('i-name').value.trim(),phone:$('i-phone').value.trim()||null,whatsapp:$('i-whatsapp').value.trim()||null,instagram:$('i-instagram').value.trim()||null,accent_color:$('i-color').value,public_description:$('i-description').value.trim()||null,logo_url:$('i-logo').value.trim()||null,city:$('i-city').value.trim()||null,state:$('i-state').value.trim().toUpperCase()||null,address:$('i-address').value.trim()||null,custom_domain:$('i-domain').value.trim()||null},'Identidade atualizada.')) await openShop(shop.id)}
+
+function getPlanDefinition(planId){
+  return (platformPlans||[]).find(p=>p.id===planId)||null;
+}
+
+function planLimitLabel(value,{unlimitedAt=999}={}){
+  const n=Number(value||0);
+  return n>=unlimitedAt?'Ilimitado':String(n);
+}
+
+function renderEffectivePlanSummary(planId=null){
+  const plan=getPlanDefinition(planId||$('pl-plan')?.value||shop?.plan);
+  const root=$('pl-effective-summary');
+  if(!root) return;
+
+  if(!plan){
+    root.innerHTML='<div class="plan-effective-empty">Definição do plano indisponível.</div>';
+    return;
+  }
+
+  const limits=plan.limits||{};
+  const features=plan.features||{};
+  const enabled=Object.keys(PLAN_FEATURES).filter(key=>features[key]===true);
+
+  root.innerHTML=`
+    <div class="plan-effective-title">
+      <strong>${esc(plan.name)}</strong>
+      <span>${enabled.length} recursos ativos</span>
+    </div>
+    <div class="plan-effective-limits">
+      <span>Profissionais: <strong>${planLimitLabel(limits.professionals)}</strong></span>
+      <span>Usuários: <strong>${planLimitLabel(limits.users)}</strong></span>
+      <span>Unidades: <strong>${planLimitLabel(limits.units)}</strong></span>
+    </div>
+    <div class="plan-effective-note">
+      Ao salvar, os recursos e limites oficiais deste plano serão aplicados automaticamente à barbearia.
+    </div>`;
+}
+
+function syncSelectedPlanPreview(){
+  const plan=getPlanDefinition($('pl-plan')?.value);
+  if(!plan) return;
+
+  // Ao escolher outro plano, sugere o preço oficial dele.
+  $('pl-price').value=Number(plan.monthly_price||0).toFixed(2);
+  renderEffectivePlanSummary(plan.id);
+}
+
 async function savePlan(){
   const status=$('pl-status').value;
   const nextPlan=$('pl-plan').value;
   const nextActive=getSw('pl-active');
+  const planDef=getPlanDefinition(nextPlan);
+
+  if(!planDef || planDef.active===false){
+    toast('Selecione um plano ativo válido.');
+    return;
+  }
+
+  const price=Number($('pl-price').value);
+  if(!Number.isFinite(price) || price<0){
+    toast('Informe uma mensalidade válida.');
+    return;
+  }
 
   const becomingCritical=status==='cancelled'||status==='suspended'||!nextActive;
   if(becomingCritical && (status!==shop.subscription_status || nextActive!==shop.active)){
@@ -1169,19 +1282,53 @@ async function savePlan(){
       return;
     }
   }else if(nextPlan!==shop.plan){
-    if(!window.confirm(`Alterar o plano de ${shop.name} de ${(shop.plan||'').toUpperCase()} para ${nextPlan.toUpperCase()}?`)) return;
+    const limits=planDef.limits||{};
+    const enabled=Object.keys(PLAN_FEATURES).filter(key=>planDef.features?.[key]===true).length;
+    const confirmed=window.confirm(
+      `Alterar o plano de ${shop.name} de ${(shop.plan||'').toUpperCase()} para ${nextPlan.toUpperCase()}?\n\n`+
+      `O novo plano aplicará ${enabled} recursos e os limites oficiais de `+
+      `${planLimitLabel(limits.professionals)} profissionais, `+
+      `${planLimitLabel(limits.users)} usuários e ${planLimitLabel(limits.units)} unidades.`
+    );
+    if(!confirmed) return;
   }
 
-  const patch={
-    plan:nextPlan,
-    subscription_status:status,
-    subscription_price:Number($('pl-price').value||0),
-    trial_ends_at:$('pl-trial-end').value||null,
-    active:nextActive
-  };
-  if(status==='cancelled'&&!shop.cancelled_at)patch.cancelled_at=new Date().toISOString().slice(0,10);
-  if(status!=='cancelled')patch.cancelled_at=null;
-  if(await updateShop(patch,'Plano e acesso atualizados.'))await openShop(shop.id);
+  const {data,error}=await sb.rpc('platform_change_barbershop_plan',{
+    p_barbershop_id:shop.id,
+    p_plan:nextPlan,
+    p_status:status,
+    p_active:nextActive,
+    p_trial_ends_at:$('pl-trial-end').value||null,
+    p_subscription_price:price
+  });
+
+  if(error){
+    console.error(error);
+    const msg=String(error.message||'');
+    toast(
+      msg.includes('invalid_or_inactive_plan')?'O plano selecionado não está disponível.':
+      msg.includes('invalid_subscription_price')?'A mensalidade informada é inválida.':
+      'Não foi possível atualizar o plano.'
+    );
+    return;
+  }
+
+  const {data:fresh,error:freshError}=await sb.from('barbershops')
+    .select('*')
+    .eq('id',shop.id)
+    .single();
+
+  if(freshError){
+    console.error(freshError);
+    toast('Plano alterado, mas não foi possível recarregar os dados.');
+    return;
+  }
+
+  shop=fresh;
+  shops=shops.map(x=>x.id===fresh.id?fresh:x);
+
+  toast(`Plano ${String(fresh.plan||'').toUpperCase()} aplicado com recursos e limites sincronizados.`);
+  await openShop(fresh.id);
 }
 function renderHours(){let h=shop.weekly_hours||{};$('hours-wrap').innerHTML=days.map(([k,l])=>{let d=h[k]||{open:'09:00',close:'19:00',closed:k==='sun'};return `<div class="hours"><span>${l}</span><input id="${k}-o" type="time" value="${d.open||'09:00'}"><input id="${k}-c" type="time" value="${d.close||'19:00'}"><select id="${k}-x"><option value="false" ${!d.closed?'selected':''}>Aberto</option><option value="true" ${d.closed?'selected':''}>Fechado</option></select></div>`}).join('')}
 async function saveHours(){let h={};days.forEach(([k])=>h[k]={open:$(k+'-o').value,close:$(k+'-c').value,closed:$(k+'-x').value==='true'});await updateShop({weekly_hours:h},'Horários atualizados.')}
