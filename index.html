@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR">
+<html lang="pt-BR" class="auth-locked">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta charset="utf-8"/>
@@ -6746,10 +6746,77 @@ a{color:inherit;text-decoration:none}
   }
 }
 
+
+/* ===== BLOQUEIO TOTAL PRÉ-LOGIN / MOBILE ===== */
+html.auth-locked,
+body.auth-locked{
+  width:100%;
+  height:100%;
+  overflow:hidden !important;
+  overscroll-behavior:none;
+  touch-action:none;
+}
+
+body.auth-locked .app,
+body.auth-locked .sidebar,
+body.auth-locked .main,
+body.auth-locked .mobile-menu-btn{
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+#login-screen{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  min-height:100svh !important;
+  overflow:auto !important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  z-index:2147483647 !important;
+  background:var(--bg,#0B0F17) !important;
+  isolation:isolate;
+}
+
+#login-screen::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:var(--bg,#0B0F17);
+  z-index:-1;
+  pointer-events:none;
+}
+
+@media (max-width:1100px){
+  body.auth-locked{
+    position:fixed;
+    inset:0;
+  }
+  #login-screen{
+    padding-bottom:max(24px,env(safe-area-inset-bottom));
+  }
+}
+
+
+.idle-agenda-link{
+  appearance:none;
+  -webkit-appearance:none;
+  background:var(--bg-card,#141B29);
+  border:1px solid var(--border,#243041);
+}
+.idle-agenda-link:hover{
+  border-color:#34445A;
+}
+.idle-agenda-link:focus-visible{
+  outline:2px solid var(--accent,#3B82F6);
+  outline-offset:2px;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="auth-locked">
 
 
 <div id="auth-gate" class="auth-gate">
@@ -9238,6 +9305,7 @@ function buildCalendarButton(date,isOtherMonth){
     calendarDate=new Date(date);
     renderCalendar();
     renderAppointments();
+    renderCancellationReport();
     renderAgendaIntelligence();
   };
 
@@ -9252,6 +9320,11 @@ function changeMonth(direction){
 }
 
 function renderAppointments(){
+  // Mantém o relatório mensal sincronizado com qualquer atualização da agenda.
+  queueMicrotask(()=>{
+    try{ renderCancellationReport(); }catch(error){ console.warn('Falha ao atualizar taxa de desmarcações:',error); }
+  });
+
   const key = formatDateKey(selectedDate);
   const dayAppointments = appointments
     .filter(item=>item.date===key)
@@ -9477,9 +9550,54 @@ async function changeAppointmentStatus(id,status){
   if(!item) return;
 
   try{
+    if(status==='finalizado'){
+      const {error}=await sb.rpc('finalize_appointment',{p_appointment_id:Number(id)});
+
+      if(error){
+        if(error.code==='23505' || error.code==='23P01' || String(error.message||'').includes('slot_conflict')){
+          showToast('Não foi possível finalizar porque existe conflito de horário.');
+          return;
+        }
+        throw error;
+      }
+
+      // Atualização visual imediata.
+      item.status='finalizado';
+      renderCalendar();
+      renderAppointments();
+      renderCancellationReport();
+      renderAgendaIntelligence();
+      renderOverviewWidgets();
+      renderHomeManagement();
+      rebuildDerivedClientModules();
+      renderRadar();
+      renderBirthdays();
+      renderLoyalty();
+      renderOverviewRetention();
+      renderTeamRanking();
+      renderFinance();
+
+      // Recarrega os dados definitivos, incluindo financeiro automático.
+      await hydrateCoreDataFromSupabase(true);
+
+      renderCalendar();
+      renderAppointments();
+      renderCancellationReport();
+      renderAgendaIntelligence();
+      renderOverviewWidgets();
+      renderHomeManagement();
+      renderTeamRanking();
+      renderFinance();
+
+      showToast('Atendimento finalizado e financeiro atualizado.');
+      return;
+    }
+
     const {error}=await sb.from('appointments')
       .update({status,updated_at:new Date().toISOString()})
-      .eq('id',id);
+      .eq('id',id)
+      .eq('barbershop_id',CURRENT_BARBERSHOP_ID);
+
     if(error){
       if(error.code==='23505' || error.code==='23P01'){
         showToast('Não é possível reativar este agendamento porque o período já está ocupado.');
@@ -9489,11 +9607,20 @@ async function changeAppointmentStatus(id,status){
     }
 
     item.status=status;
+    renderCalendar();
+    renderAppointments();
+    renderCancellationReport();
+    renderAgendaIntelligence();
+    renderOverviewWidgets();
+    renderHomeManagement();
+
     await hydrateCoreDataFromSupabase(true);
-    showToast(status==='finalizado'?'Atendimento finalizado e lançado no financeiro.':'Agendamento cancelado.');
+    showToast('Agendamento atualizado.');
   }catch(error){
-    console.error(error);
-    showToast('Não foi possível alterar o status.');
+    console.error('Falha ao alterar status do agendamento:',error);
+    showToast(status==='finalizado'
+      ? 'Não foi possível finalizar este atendimento.'
+      : 'Não foi possível alterar o status.');
   }
 }
 
@@ -9698,6 +9825,24 @@ function buildIdleSlots(slotDuration=60){
   return result;
 }
 
+function openAgendaFromIdleSlots(){
+  const agendaNav=document.querySelector('.nav-item[data-page="agenda"]');
+  openPage('agenda',agendaNav||null);
+
+  // Mantém exatamente o dia que estava sendo analisado em "Horários ociosos".
+  calendarDate=new Date(selectedDate);
+  renderCalendar();
+  renderAppointments();
+  renderCancellationReport();
+  renderAgendaIntelligence();
+
+  requestAnimationFrame(()=>{
+    const agendaPage=document.getElementById('page-agenda');
+    if(agendaPage) agendaPage.scrollIntoView({block:'start',behavior:'auto'});
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+  });
+}
+
 function renderIdleSlots(){
   const slots=buildIdleSlots();
   const container=document.getElementById('idle-slots-list');
@@ -9714,11 +9859,11 @@ function renderIdleSlots(){
     return;
   }
 
-  container.innerHTML=slots.slice(0,4).map(time=>`
+  container.innerHTML=slots.slice(0,4).map(slot=>`
     <div class="intelligence-row">
       <div class="left">
-        <strong>${time}</strong>
-        <span>Horário disponível</span>
+        <strong>${escapeHTML(slot.time)}</strong>
+        <span>${slot.availableProfessionals.length} ${slot.availableProfessionals.length===1?'profissional disponível':'profissionais disponíveis'}</span>
       </div>
       <div class="right">Livre</div>
     </div>
@@ -9726,13 +9871,13 @@ function renderIdleSlots(){
 
   if(slots.length>4){
     container.innerHTML+=`
-      <div class="intelligence-row">
+      <button type="button" class="intelligence-row idle-agenda-link" onclick="openAgendaFromIdleSlots()" style="width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer">
         <div class="left">
           <strong>+${slots.length-4} horários</strong>
           <span>Outras janelas ainda disponíveis</span>
         </div>
-        <div class="right">Ver agenda</div>
-      </div>`;
+        <div class="right">Ver agenda →</div>
+      </button>`;
   }
 }
 
@@ -9820,8 +9965,9 @@ function renderCancellationReport(){
   const month = calendarDate.getMonth();
 
   const monthAppointments = appointments.filter(item=>{
-    const date = parseDateKey(item.date);
-    return date.getFullYear()===year && date.getMonth()===month;
+    if(!item || !/^\d{4}-\d{2}-\d{2}$/.test(String(item.date||''))) return false;
+    const [itemYear,itemMonth] = String(item.date).split('-').map(Number);
+    return itemYear===year && (itemMonth-1)===month;
   });
 
   const cancelledCount = monthAppointments.filter(item=>item.status==='desmarcado').length;
@@ -9845,7 +9991,7 @@ function renderCancellationReport(){
   reading.className = 'cancellation-reading';
 
   if(total===0){
-    reading.textContent = 'Ainda não há agendamentos suficientes neste mês para calcular a taxa de desmarcações.';
+    reading.textContent = 'Ainda não há agendamentos neste mês para calcular a taxa de desmarcações.';
   }else if(rate < 10){
     reading.textContent = 'Índice saudável: poucas desmarcações em relação ao volume total de agendamentos.';
   }else if(rate < 20){
@@ -12041,6 +12187,21 @@ requestAnimationFrame(()=>{
 <script>
 const SUPABASE_URL = 'https://gfdtnjhqamtmxvlaaeoz.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7jBvCxY-xK4BTTAvEY0N9A_d7RqcEnu';
+
+function lockAppForAuth(){
+  document.documentElement.classList.add('auth-locked');
+  document.body.classList.add('auth-locked');
+}
+
+function unlockAppAfterAuth(){
+  document.documentElement.classList.remove('auth-locked');
+  document.body.classList.remove('auth-locked');
+  document.body.style.position='';
+  document.body.style.top='';
+  document.body.style.left='';
+  document.body.style.right='';
+}
+
 const sb = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
@@ -12432,6 +12593,12 @@ document.addEventListener('DOMContentLoaded', function(){
   });
   window.addEventListener('orientationchange',()=>setMobileMenu(false));
 })();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const login=document.getElementById('login-screen');
+  if(login && !login.classList.contains('hidden')) lockAppForAuth();
+});
+
 </script>
 
 </body>
