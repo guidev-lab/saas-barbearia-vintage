@@ -7111,7 +7111,7 @@ a{color:inherit;text-decoration:none}
 <div class="see-all" onclick="openPage('finance', document.querySelector('.nav-item[data-page=&quot;finance&quot;]'))">Detalhes →</div>
 </div>
 <div class="cash-row"><span class="lbl">Faturamento bruto</span><span class="val">R$ 890,00</span></div>
-<div class="cash-row"><span class="lbl">Comissões pagas</span><span class="val">R$ 267,00</span></div>
+<div class="cash-row"><span class="lbl">Comissões lançadas</span><span class="val">R$ 267,00</span></div>
 <div class="cash-row net"><span class="lbl">Lucro líquido</span><span class="val">R$ 623,00</span></div>
 </div>
 </div>
@@ -7743,8 +7743,8 @@ a{color:inherit;text-decoration:none}
 </div>
 <div class="finance-kpi-grid">
 <div class="finance-kpi-card"><div class="label">Faturamento bruto (mês)</div><div class="value" id="finance-gross">—</div><div class="meta">Receita total antes de comissões e despesas</div></div>
-<div class="finance-kpi-card"><div class="label">Lucro líquido</div><div class="value" id="finance-net">—</div><div class="meta" id="finance-margin-meta">Margem líquida —</div></div>
-<div class="finance-kpi-card"><div class="label">Comissões pagas</div><div class="value" id="finance-commissions">—</div><div class="meta" id="finance-commission-meta">— do faturamento</div></div>
+<div class="finance-kpi-card"><div class="label">Lucro estimado</div><div class="value" id="finance-net">—</div><div class="meta" id="finance-margin-meta">Margem estimada —</div></div>
+<div class="finance-kpi-card"><div class="label">Comissões devidas</div><div class="value" id="finance-commissions">—</div><div class="meta" id="finance-commission-meta">— do faturamento</div></div>
 <div class="finance-kpi-card"><div class="label">Ticket médio</div><div class="value" id="finance-ticket">—</div><div class="meta">Média por atendimento no período</div></div>
 </div>
 <div class="finance-top-grid">
@@ -10652,22 +10652,40 @@ function renderFinanceChart(range='week'){
   svg.innerHTML=out;
 }
 function renderFinanceKPIs(){
-  const entries=FINANCE_MOVEMENTS.filter(i=>i.type==='entrada');
-  const outputs=FINANCE_MOVEMENTS.filter(i=>i.type==='saida');
+  const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
+  const monthMovements=FINANCE_MOVEMENTS.filter(i=>String(i.date||'').startsWith(monthPrefix));
+  const entries=monthMovements.filter(i=>i.type==='entrada');
+  const outputs=monthMovements.filter(i=>i.type==='saida');
   const gross=entries.reduce((s,i)=>s+i.value,0);
-  const commissions=outputs.filter(i=>i.category==='Comissões').reduce((s,i)=>s+i.value,0);
-  const otherExpenses=outputs.filter(i=>i.category!=='Comissões').reduce((s,i)=>s+i.value,0);
-  const net=gross-commissions-otherExpenses;
+
+  const completed=getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth())
+    .filter(a=>a.status==='finalizado');
+
+  const commissionDue=completed.reduce((sum,a)=>{
+    const member=TEAM_CATALOG.find(m=>String(m.name)===String(a.professional));
+    const pct=Math.max(0,Math.min(100,Number(member?.commission)||0));
+    return sum+(appointmentPrice(a)*(pct/100));
+  },0);
+
+  const commissionPaid=outputs
+    .filter(i=>String(i.category||'').toLowerCase()==='comissões')
+    .reduce((s,i)=>s+i.value,0);
+
+  const otherExpenses=outputs
+    .filter(i=>String(i.category||'').toLowerCase()!=='comissões')
+    .reduce((s,i)=>s+i.value,0);
+
+  const net=gross-commissionDue-otherExpenses;
   const margin=gross?(net/gross)*100:0;
-  const ticket=entries.length?gross/entries.length:0;
+  const ticket=completed.length?completed.reduce((s,a)=>s+appointmentPrice(a),0)/completed.length:0;
 
   document.getElementById('finance-gross').textContent=money(gross);
   document.getElementById('finance-net').textContent=money(net);
-  document.getElementById('finance-commissions').textContent=money(commissions);
+  document.getElementById('finance-commissions').textContent=money(commissionDue);
   document.getElementById('finance-ticket').textContent=money(ticket);
-  document.getElementById('finance-margin-meta').textContent=`Margem líquida ${margin.toFixed(1).replace('.',',')}%`;
+  document.getElementById('finance-margin-meta').textContent=`Margem estimada ${margin.toFixed(1).replace('.',',')}%`;
   document.getElementById('finance-commission-meta').textContent=
-    gross?`${((commissions/gross)*100).toFixed(1).replace('.',',')}% do faturamento`:'0% do faturamento';
+    `${gross?((commissionDue/gross)*100).toFixed(1).replace('.',','):'0'}% do faturamento · ${money(commissionPaid)} lançadas`;
 }
 function renderFinanceSummary(){
   const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
@@ -10744,7 +10762,7 @@ function renderFinanceProfessionals(){
         <div class="finance-prof-sub">${item.appointments} atendimentos finalizados</div>
       </div>
       <div class="finance-prof-metric"><span>Faturamento</span><strong>${money(item.revenue)}</strong></div>
-      <div class="finance-prof-metric"><span>Comissão</span><strong>${money(item.commission)}</strong></div>
+      <div class="finance-prof-metric"><span>Comissão devida</span><strong>${money(item.commission)}</strong></div>
       <div class="finance-prof-metric"><span>Ticket médio</span><strong>${money(item.appointments?item.revenue/item.appointments:0)}</strong></div>
       <div class="finance-prof-share">
         <span>${total?((item.revenue/total)*100).toFixed(0):0}%</span>
