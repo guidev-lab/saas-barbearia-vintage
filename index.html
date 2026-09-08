@@ -6833,6 +6833,132 @@ button,a,input,select,textarea{max-width:100%}
   .connection-banner{width:calc(100% - 24px);text-align:center}
 }
 
+
+/* ===== CORREÇÃO DE LAYOUT — AGENDA / AÇÕES ===== */
+.agenda-item{
+  display:grid;
+  grid-template-columns:76px minmax(180px,1fr) auto;
+  grid-template-areas:
+    "hour info status"
+    "hour actions actions";
+  gap:10px 16px;
+  align-items:center;
+  width:100%;
+  min-width:0;
+}
+
+.agenda-hour{grid-area:hour}
+.agenda-item > div:nth-child(2){
+  grid-area:info;
+  min-width:0;
+}
+.agenda-status{
+  grid-area:status;
+  justify-self:end;
+  white-space:nowrap;
+}
+.appointment-actions{
+  grid-area:actions;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:7px;
+  min-width:0;
+  width:100%;
+}
+
+.appointment-actions button{
+  flex:0 0 auto;
+  white-space:nowrap;
+  min-height:34px;
+}
+
+.agenda-list-card{
+  min-width:0;
+}
+
+@media (max-width:1180px){
+  .agenda-layout{
+    grid-template-columns:minmax(280px,320px) minmax(0,1fr);
+  }
+
+  .agenda-item{
+    grid-template-columns:64px minmax(0,1fr) auto;
+    grid-template-areas:
+      "hour info status"
+      "hour actions actions";
+    padding:15px 16px;
+    gap:9px 12px;
+  }
+
+  .appointment-actions{
+    justify-content:flex-start;
+  }
+}
+
+@media (max-width:900px){
+  .agenda-layout{
+    grid-template-columns:1fr;
+  }
+
+  .calendar-card{
+    position:relative;
+    top:auto;
+  }
+
+  .agenda-item{
+    grid-template-columns:58px minmax(0,1fr);
+    grid-template-areas:
+      "hour info"
+      "hour status"
+      "actions actions";
+    align-items:start;
+  }
+
+  .agenda-status{
+    justify-self:start;
+  }
+
+  .appointment-actions{
+    justify-content:flex-start;
+  }
+}
+
+@media (max-width:520px){
+  .agenda-item{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "hour"
+      "info"
+      "status"
+      "actions";
+  }
+
+  .agenda-hour{
+    width:auto;
+    text-align:left;
+  }
+
+  .appointment-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .appointment-actions button{
+    width:100%;
+    min-width:0;
+  }
+}
+
+
+/* ===== PERMISSÕES E FINALIZAÇÃO SEGURA ===== */
+.appointment-actions button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  filter:saturate(.5);
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -8176,7 +8302,7 @@ button,a,input,select,textarea{max-width:100%}
 <select id="appt-status">
 <option value="confirmado">Confirmado</option>
 <option value="pendente">Pendente</option>
-<option value="finalizado">Finalizado</option>
+<option value="finalizado" disabled>Finalizado — use o botão Finalizar</option>
 <option value="desmarcado">Desmarcado</option>
 <option value="no-show">Não compareceu</option>
 </select>
@@ -8511,6 +8637,7 @@ const SLOT_MINUTES = 60;
 
 
 async function persistServiceCatalog(){
+  if(!assertPermission('services')) return;
   const payload=SERVICE_CATALOG.map(item=>({
     id:item.id,
     barbershop_id:CURRENT_BARBERSHOP_ID,
@@ -8527,6 +8654,7 @@ async function persistServiceCatalog(){
 }
 
 async function persistTeamCatalog(){
+  if(!assertPermission('team')) return;
   const payload=TEAM_CATALOG.map(item=>({
     id:item.id,
     barbershop_id:CURRENT_BARBERSHOP_ID,
@@ -8586,6 +8714,7 @@ function syncCatalogAcrossApp(){
   }
 }
 async function saveService(event){
+  if(!assertPermission('services')) return;
   event.preventDefault();
   const id=document.getElementById('service-edit-id').value;
   const name=document.getElementById('service-name').value.trim();
@@ -8686,6 +8815,7 @@ function renderServicesAdmin(){
   `).join('');
 }
 async function saveTeamMember(event){
+  if(!assertPermission('team')) return;
   event.preventDefault();
   const id=document.getElementById('team-edit-id').value;
   const name=document.getElementById('team-name').value.trim();
@@ -8864,6 +8994,11 @@ let LOYALTY_REDEMPTIONS=[];
 let CURRENT_BARBERSHOP_ID=null;
 let CURRENT_BARBERSHOP_SLUG=null;
 let CURRENT_BARBERSHOP=null;
+let CURRENT_USER_ROLE='owner';
+let CURRENT_PERMISSIONS={};
+let CURRENT_FINANCE_SETTINGS={};
+let CURRENT_BOOKING_SETTINGS={};
+let CURRENT_WHATSAPP_SETTINGS={};
 
 async function resolveCurrentBarbershop(force=false){
   if(CURRENT_BARBERSHOP_ID && !force) return CURRENT_BARBERSHOP;
@@ -8877,7 +9012,7 @@ async function resolveCurrentBarbershop(force=false){
 
   if(requestedSlug){
     const {data,error}=await sb.from('barbershops')
-      .select('id,name,slug,whatsapp,address,city,state,accent_color,plan,subscription_status,active,features,weekly_hours')
+      .select('id,name,slug,whatsapp,address,city,state,accent_color,plan,subscription_status,active,features,weekly_hours,permission_defaults,finance_settings,booking_settings,whatsapp_settings')
       .eq('slug',requestedSlug)
       .maybeSingle();
     if(error) throw error;
@@ -8894,7 +9029,7 @@ async function resolveCurrentBarbershop(force=false){
 
     if(memberships?.length){
       const {data,error:shopError}=await sb.from('barbershops')
-        .select('id,name,slug,whatsapp,address,city,state,accent_color,plan,subscription_status,active,features,weekly_hours')
+        .select('id,name,slug,whatsapp,address,city,state,accent_color,plan,subscription_status,active,features,weekly_hours,permission_defaults,finance_settings,booking_settings,whatsapp_settings')
         .eq('id',memberships[0].barbershop_id)
         .maybeSingle();
       if(shopError) throw shopError;
@@ -8904,7 +9039,7 @@ async function resolveCurrentBarbershop(force=false){
 
   if(!shop){
     const {data,error}=await sb.from('barbershops')
-      .select('id,name,slug,whatsapp,address,city,state,accent_color,plan,subscription_status,active,features,weekly_hours')
+      .select('id,name,slug,whatsapp,address,city,state,accent_color,plan,subscription_status,active,features,weekly_hours,permission_defaults,finance_settings,booking_settings,whatsapp_settings')
       .order('created_at',{ascending:true})
       .limit(1)
       .maybeSingle();
@@ -8917,14 +9052,94 @@ async function resolveCurrentBarbershop(force=false){
   CURRENT_BARBERSHOP=shop;
   CURRENT_BARBERSHOP_ID=shop.id;
   CURRENT_BARBERSHOP_SLUG=shop.slug;
+
+  const {data:membership,error:membershipError}=await sb.from('barbershop_memberships')
+    .select('role,active')
+    .eq('barbershop_id',shop.id)
+    .eq('user_id',user.id)
+    .eq('active',true)
+    .maybeSingle();
+
+  if(membershipError) throw membershipError;
+
+  // Platform admin may inspect a shop without tenant membership.
+  const {data:isMaster}=await sb.rpc('is_platform_admin');
+  CURRENT_USER_ROLE=membership?.role || (isMaster ? 'owner' : '');
+  if(!CURRENT_USER_ROLE) throw new Error('Este usuário não possui acesso ativo a esta barbearia.');
+
+  CURRENT_PERMISSIONS=shop.permission_defaults||{};
+  CURRENT_FINANCE_SETTINGS=shop.finance_settings||{};
+  CURRENT_BOOKING_SETTINGS=shop.booking_settings||{};
+  CURRENT_WHATSAPP_SETTINGS=shop.whatsapp_settings||{};
+
   document.title=`${shop.name} — Gestão`;
 
   const shopLabel=document.getElementById('current-shop-label');
   if(shopLabel) shopLabel.textContent=shop.name;
+
   applyPlanFeatureAccess();
+  applyRolePermissions();
   return shop;
 }
 
+
+
+function roleCan(feature){
+  if(CURRENT_USER_ROLE==='owner') return true;
+  return CURRENT_PERMISSIONS?.[CURRENT_USER_ROLE]?.[feature]===true;
+}
+
+function pagePermissionFeature(page){
+  const map={
+    agenda:'agenda',
+    radar:'clients',
+    birthdays:'clients',
+    loyalty:'clients',
+    finance:'finance',
+    ranking:'finance',
+    services:'services',
+    team:'team',
+    export:'clients'
+  };
+  return map[page]||null;
+}
+
+function applyRolePermissions(){
+  document.querySelectorAll('.nav-item[data-page]').forEach(el=>{
+    const page=el.dataset.page;
+    const feature=pagePermissionFeature(page);
+    if(!feature) return;
+
+    const planAllowed=CURRENT_BARBERSHOP?.features?.[el.dataset.feature]!==false;
+    const roleAllowed=roleCan(feature);
+    el.style.display=(planAllowed && roleAllowed)?'':'none';
+  });
+
+  // Generic elements can opt into a role permission.
+  document.querySelectorAll('[data-permission]').forEach(el=>{
+    el.style.display=roleCan(el.dataset.permission)?'':'none';
+  });
+
+  // Actions inside pages.
+  const newAppointmentButtons=document.querySelectorAll('[onclick*="newAppointment"],[onclick*="openAppointmentModal(null)"]');
+  newAppointmentButtons.forEach(el=>el.style.display=roleCan('agenda')?'':'none');
+
+  const financeButtons=document.querySelectorAll('[onclick*="openFinanceEntryModal"]');
+  financeButtons.forEach(el=>el.style.display=roleCan('finance')?'':'none');
+
+  const activeNav=document.querySelector('.nav-item.active[data-page]');
+  const activeFeature=activeNav ? pagePermissionFeature(activeNav.dataset.page) : null;
+  if(activeFeature && !roleCan(activeFeature)){
+    const overviewNav=document.querySelector('.nav-item[data-page="overview"]');
+    if(overviewNav) openPage('overview',overviewNav);
+  }
+}
+
+function assertPermission(feature,message='Você não tem permissão para esta ação.'){
+  if(roleCan(feature)) return true;
+  showToast(message);
+  return false;
+}
 
 function applyPlanFeatureAccess(){
   const features=CURRENT_BARBERSHOP?.features||{};
@@ -9015,8 +9230,15 @@ async function hydrateCoreDataFromSupabase(force=false){
     }));
 
     appointments=(data.appointments||[]).map(item=>({
-      id:Number(item.id),date:item.appointment_date,time:String(item.appointment_time||'').slice(0,5),
-      client:item.client_name,service:item.service_name,professional:item.professional_name,status:item.status,
+      id:Number(item.id),
+      date:item.appointment_date,
+      time:String(item.appointment_time||'').slice(0,5),
+      client:item.client_name,
+      serviceId:item.service_id||null,
+      service:item.service_name,
+      professionalId:item.professional_id||null,
+      professional:item.professional_name,
+      status:item.status,
       duration:Number(item.duration_minutes)||getServiceDuration(item.service_name),
       price:Number(item.price_amount)||getServicePrice(item.service_name)
     }));
@@ -9065,6 +9287,7 @@ async function hydrateCoreDataFromSupabase(force=false){
     safeRender('fidelidade',renderLoyalty);
     safeRender('financeiro',renderFinance);
     safeRender('ranking da equipe',renderTeamRanking);
+    safeRender('permissões do perfil',applyRolePermissions);
   })();
 
   try{
@@ -9100,6 +9323,12 @@ function capitalize(text){
 }
 
 function openPage(page,navElement){
+  const permissionFeature=pagePermissionFeature(page);
+  if(permissionFeature && !roleCan(permissionFeature)){
+    showToast('Seu perfil não tem permissão para acessar esta área.');
+    return;
+  }
+
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById(`page-${page}`).classList.add('active');
 
@@ -9303,9 +9532,9 @@ function renderAppointments(){
       </div>
       <div class="appointment-actions">
         <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
-        ${item.status!=='finalizado' ? `${!['finalizado','desmarcado','no-show'].includes(item.status)
-          ? `<button class="btn-small success" onclick="changeAppointmentStatus(${item.id},'finalizado')">Finalizar</button>`
-          : ''}` : ''}
+        ${!['finalizado','desmarcado','no-show'].includes(item.status)
+          ? `<button class="btn-small success" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
+          : ''}
         ${!['desmarcado','no-show'].includes(item.status) ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>` : ''}
       </div>
     </div>
@@ -9337,9 +9566,17 @@ function openAppointmentModal(id=null){
     document.getElementById('appt-time').value=item.time;
     document.getElementById('appt-service').value=item.service;
     document.getElementById('appt-professional').value=item.professional;
-    document.getElementById('appt-status').value=item.status;
+    const statusSelect=document.getElementById('appt-status');
+    statusSelect.value=item.status;
+    statusSelect.disabled=item.status==='finalizado';
+    statusSelect.title=item.status==='finalizado'
+      ? 'Atendimento finalizado. O status financeiro não pode ser reaberto por este formulário.'
+      : '';
   }else{
     title.textContent='Novo Agendamento';
+    const statusSelect=document.getElementById('appt-status');
+    statusSelect.disabled=false;
+    statusSelect.title='';
     deleteBtn.style.display='none';
     saveBtn.textContent='Salvar agendamento';
     document.getElementById('appt-date').value=formatDateKey(selectedDate);
@@ -9361,6 +9598,17 @@ async function saveAppointment(){
   const service=document.getElementById('appt-service').value;
   const professional=document.getElementById('appt-professional').value;
   const status=document.getElementById('appt-status').value;
+
+  if(!assertPermission('agenda')) return;
+
+  const existingAppointment=appointmentEditId!==null
+    ? appointments.find(a=>Number(a.id)===Number(appointmentEditId))
+    : null;
+
+  if(status==='finalizado' && existingAppointment?.status!=='finalizado'){
+    showToast('Para finalizar um atendimento, use o botão Finalizar após o horário agendado.');
+    return;
+  }
 
   if(!client||!date||!time||!service||!professional){
     showToast('Preencha todos os campos do agendamento.');
@@ -9483,13 +9731,43 @@ async function saveAppointment(){
   }
 }
 
+
+function getFortalezaNowLocal(){
+  const parts=new Intl.DateTimeFormat('en-CA',{
+    timeZone:'America/Fortaleza',
+    year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',
+    hourCycle:'h23'
+  }).formatToParts(new Date());
+
+  const val=type=>parts.find(p=>p.type===type)?.value||'00';
+  return `${val('year')}-${val('month')}-${val('day')}T${val('hour')}:${val('minute')}:${val('second')}`;
+}
+
+function canFinalizeAppointmentNow(item){
+  if(!item || ['finalizado','desmarcado','no-show'].includes(item.status)) return false;
+  const appointmentLocal=`${item.date}T${String(item.time||'00:00').slice(0,5)}:00`;
+  return appointmentLocal<=getFortalezaNowLocal();
+}
+
+function finalizationUnavailableReason(item){
+  if(!item) return 'Agendamento inválido.';
+  if(['desmarcado','no-show'].includes(item.status)) return 'Atendimentos desmarcados ou no-show não podem ser finalizados.';
+  if(item.status==='finalizado') return 'Este atendimento já foi finalizado.';
+  if(!canFinalizeAppointmentNow(item)) return 'Este atendimento só pode ser finalizado após o horário agendado.';
+  return '';
+}
+
 async function changeAppointmentStatus(id,status){
   const item=appointments.find(a=>Number(a.id)===Number(id));
   if(!item) return;
 
   if(status==='finalizado'){
-    if(['desmarcado','no-show'].includes(item.status)){
-      showToast('Atendimentos desmarcados ou no-show não podem ser finalizados.');
+    if(!assertPermission('agenda')) return;
+
+    const unavailable=finalizationUnavailableReason(item);
+    if(unavailable){
+      showToast(unavailable);
       return;
     }
 
@@ -9498,7 +9776,16 @@ async function changeAppointmentStatus(id,status){
       const {data,error}=await sb.rpc('finalize_appointment',{p_appointment_id:Number(id)});
 
       if(error){
-        if(error.code==='23505' || error.code==='23P01' || String(error.message||'').includes('slot_conflict')){
+        const msg=String(error.message||'');
+        if(msg.includes('appointment_not_started')){
+          showToast('Este atendimento só pode ser finalizado após o horário agendado.');
+          return;
+        }
+        if(msg.includes('invalid_finalization_status')){
+          showToast('Atendimentos desmarcados ou no-show não podem ser finalizados.');
+          return;
+        }
+        if(error.code==='23505' || error.code==='23P01' || msg.includes('slot_conflict')){
           showToast('Não foi possível finalizar porque existe conflito de horário.');
           return;
         }
@@ -9624,6 +9911,9 @@ async function deleteEditingAppointment(){
 }
 
 function clearAppointmentForm(){
+  const statusSelect=document.getElementById('appt-status');
+  if(statusSelect){statusSelect.disabled=false;statusSelect.title='';}
+
   document.getElementById('appt-client').value='';
   document.getElementById('appt-time').value='';
   document.getElementById('appt-service').value='';
@@ -10652,32 +10942,57 @@ function appointmentInRankingPeriod(a,period){
 }
 
 function professionalRetention(name){
+  const member=TEAM_CATALOG.find(p=>normalizeProfessionalName(p.name)===normalizeProfessionalName(name));
+  if(!member) return 0;
+
   const related=appointments
-    .filter(a=>a.professional===name && a.status==='finalizado')
+    .filter(a=>appointmentBelongsToProfessional(a,member) && a.status==='finalizado')
     .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+
   const counts=new Map();
   related.forEach(a=>{
     const key=normalizeClientName(a.client);
     counts.set(key,(counts.get(key)||0)+1);
   });
+
   const unique=counts.size;
   const repeat=[...counts.values()].filter(v=>v>=2).length;
   return unique ? (repeat/unique)*100 : 0;
 }
 
+
+function normalizeProfessionalName(value){
+  return String(value||'').trim().toLocaleLowerCase('pt-BR');
+}
+
+function appointmentBelongsToProfessional(appointment,member){
+  if(!appointment||!member) return false;
+
+  // Relação principal: ID persistido no banco.
+  if(appointment.professionalId && member.id){
+    return String(appointment.professionalId)===String(member.id);
+  }
+
+  // Fallback apenas para registros antigos que ainda não tenham professional_id.
+  return normalizeProfessionalName(appointment.professional)===normalizeProfessionalName(member.name);
+}
+
 function professionalOccupancy(name,period){
-  const member=TEAM_CATALOG.find(p=>p.name===name);
+  const member=TEAM_CATALOG.find(p=>normalizeProfessionalName(p.name)===normalizeProfessionalName(name));
   if(!member) return 0;
+
   const related=appointments.filter(a=>
-    a.professional===name &&
+    appointmentBelongsToProfessional(a,member) &&
     appointmentInRankingPeriod(a,period) &&
     !['desmarcado','no-show'].includes(a.status)
   );
-  const occupied=related.reduce((s,a)=>s+getServiceDuration(a.service),0);
+
+  const occupied=related.reduce((s,a)=>s+appointmentDuration(a),0);
 
   let days=1;
   if(period==='week') days=7;
-  if(period==='month') days=appToday.getDate();
+  if(period==='month') days=Math.max(1,appToday.getDate());
+
   const capacity=(CLOSING_HOUR-OPENING_HOUR)*60*days;
   return capacity ? Math.min(100,(occupied/capacity)*100) : 0;
 }
@@ -10699,19 +11014,41 @@ function rankingMetricValue(member,key){
 }
 
 function renderTeamRankingKPIs(data){
-  const byRevenue=[...data].sort((a,b)=>b.revenue-a.revenue)[0];
-  const byTicket=[...data].sort((a,b)=>b.ticket-a.ticket)[0];
-  const byRetention=[...data].sort((a,b)=>b.retention-a.retention)[0];
+  const withRevenue=data.filter(x=>x.revenue>0);
+  const withTicket=data.filter(x=>x.appointments>0 && x.ticket>0);
+  const withRetention=data.filter(x=>x.retention>0);
 
-  if(!data.length) return;
-  document.getElementById('ranking-top-revenue').textContent=byRevenue.name;
-  document.getElementById('ranking-top-revenue-meta').textContent=money(byRevenue.revenue);
+  const set=(id,value)=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=value;
+  };
 
-  document.getElementById('ranking-top-ticket').textContent=byTicket.name;
-  document.getElementById('ranking-top-ticket-meta').textContent=money(byTicket.ticket);
+  if(withRevenue.length){
+    const top=[...withRevenue].sort((a,b)=>b.revenue-a.revenue)[0];
+    set('ranking-top-revenue',top.name);
+    set('ranking-top-revenue-meta',money(top.revenue));
+  }else{
+    set('ranking-top-revenue','—');
+    set('ranking-top-revenue-meta','—');
+  }
 
-  document.getElementById('ranking-top-retention').textContent=byRetention.name;
-  document.getElementById('ranking-top-retention-meta').textContent=`${byRetention.retention.toFixed(0)}% de retenção`;
+  if(withTicket.length){
+    const top=[...withTicket].sort((a,b)=>b.ticket-a.ticket)[0];
+    set('ranking-top-ticket',top.name);
+    set('ranking-top-ticket-meta',money(top.ticket));
+  }else{
+    set('ranking-top-ticket','—');
+    set('ranking-top-ticket-meta','—');
+  }
+
+  if(withRetention.length){
+    const top=[...withRetention].sort((a,b)=>b.retention-a.retention)[0];
+    set('ranking-top-retention',top.name);
+    set('ranking-top-retention-meta',`${top.retention.toFixed(0)}% de retenção`);
+  }else{
+    set('ranking-top-retention','—');
+    set('ranking-top-retention-meta','—');
+  }
 }
 
 
@@ -10783,11 +11120,11 @@ function renderTeamRanking(){
 
   const data=activeTeam().map(member=>{
     const related=appointments.filter(a=>
-      a.professional===member.name &&
+      appointmentBelongsToProfessional(a,member) &&
       appointmentInRankingPeriod(a,period) &&
       a.status==='finalizado'
     );
-    const revenue=related.reduce((s,a)=>s+appointmentPrice(a),0);
+    const revenue=related.reduce((s,a)=>s+(Number(a.price)||appointmentPrice(a)||0),0);
     const appointmentsCount=related.length;
     return {
       name:member.name,
@@ -10796,7 +11133,7 @@ function renderTeamRanking(){
       ticket:appointmentsCount?revenue/appointmentsCount:0,
       occupancy:professionalOccupancy(member.name,period),
       retention:professionalRetention(member.name),
-      commission:revenue*((Number(member.commission)||0)/100)
+      commission:CURRENT_FINANCE_SETTINGS?.commission_enabled===false ? 0 : revenue*((Number(member.commission)||0)/100)
     };
   });
 
@@ -10854,11 +11191,11 @@ function renderTeamRanking(){
   const topRetention=[...data].sort((a,b)=>b.retention-a.retention)[0];
 
   document.getElementById('ranking-insight-revenue').textContent=
-    avgRevenue?`${topRevenue.name} está ${revenueDiff.toFixed(0)}% acima da média`:`Ainda sem faturamento finalizado no período`;
+    avgRevenue?`${topRevenue.name} está ${revenueDiff.toFixed(0)}% acima da média`:'—';
   document.getElementById('ranking-insight-ticket').textContent=
-    `${topTicket.name} tem o maior ticket: ${money(topTicket.ticket)}`;
+    topTicket?.appointments>0 ? `${topTicket.name} tem o maior ticket: ${money(topTicket.ticket)}` : '—';
   document.getElementById('ranking-insight-retention').textContent=
-    `${topRetention.name} lidera com ${topRetention.retention.toFixed(0)}%`;
+    topRetention?.retention>0 ? `${topRetention.name} lidera com ${topRetention.retention.toFixed(0)}%` : '—';
 }
 
 
@@ -10988,7 +11325,7 @@ function renderFinanceKPIs(){
 
   const commissionDue=completed.reduce((sum,a)=>{
     const member=TEAM_CATALOG.find(m=>String(m.name)===String(a.professional));
-    const pct=Math.max(0,Math.min(100,Number(member?.commission)||0));
+    const pct=CURRENT_FINANCE_SETTINGS?.commission_enabled===false ? 0 : Math.max(0,Math.min(100,Number(member?.commission)||0));
     return sum+((Number(a.price)||appointmentPrice(a)||0)*(pct/100));
   },0);
 
@@ -11086,7 +11423,7 @@ function renderFinanceProfessionals(){
       name:member.name,
       appointments:related.length,
       revenue,
-      commission:revenue*((Number(member.commission)||0)/100)
+      commission:CURRENT_FINANCE_SETTINGS?.commission_enabled===false ? 0 : revenue*((Number(member.commission)||0)/100)
     };
   });
 
@@ -11193,6 +11530,7 @@ function closeLoyaltyConfigModal(){
   document.getElementById('loyalty-config-modal').classList.remove('open');
 }
 async function saveLoyaltyConfig(){
+  if(!assertPermission('clients')) return;
   const enabled=document.getElementById('loyalty-config-enabled').value==='true';
   const goal=Math.max(1,Number(document.getElementById('loyalty-config-goal').value)||1);
   const reward=document.getElementById('loyalty-config-reward').value.trim();
@@ -11248,6 +11586,7 @@ function closeClientDataModal(){
   document.getElementById('client-data-modal').classList.remove('open');
 }
 async function saveClientData(){
+  if(!assertPermission('clients')) return;
   const id=Number(document.getElementById('client-data-id').value);
   const phone=document.getElementById('client-data-phone').value.trim();
   const birthday=document.getElementById('client-data-birthday').value || null;
@@ -11278,8 +11617,15 @@ async function saveClientData(){
 }
 
 function openFinanceEntryModal(){
+  if(!assertPermission('finance')) return;
+
   setFinanceEntryType('entrada');
   document.getElementById('finance-entry-date').value=formatDateKey(appToday);
+  const defaultPayment=CURRENT_FINANCE_SETTINGS?.default_payment_method;
+  const paymentEl=document.getElementById('finance-entry-payment');
+  if(defaultPayment && paymentEl && [...paymentEl.options].some(o=>o.value===defaultPayment || o.textContent===defaultPayment)){
+    paymentEl.value=[...paymentEl.options].find(o=>o.value===defaultPayment || o.textContent===defaultPayment)?.value || paymentEl.value;
+  }
   document.getElementById('finance-entry-value').value='';
   document.getElementById('finance-entry-description').value='';
   document.getElementById('finance-entry-client').value='';
@@ -11297,6 +11643,7 @@ function closeFinanceEntryModal(){
 }
 
 async function saveFinanceEntry(){
+  if(!assertPermission('finance')) return;
   const date=document.getElementById('finance-entry-date').value;
   const description=document.getElementById('finance-entry-description').value.trim();
   const amount=Number(document.getElementById('finance-entry-value').value);
