@@ -9303,7 +9303,9 @@ function renderAppointments(){
       </div>
       <div class="appointment-actions">
         <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
-        ${item.status!=='finalizado' ? `<button class="appointment-action finish" onclick="changeAppointmentStatus(${item.id},'finalizado')">Finalizar</button>` : ''}
+        ${item.status!=='finalizado' ? `${!['finalizado','desmarcado','no-show'].includes(item.status)
+          ? `<button class="btn-small success" onclick="changeAppointmentStatus(${item.id},'finalizado')">Finalizar</button>`
+          : ''}` : ''}
         ${!['desmarcado','no-show'].includes(item.status) ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>` : ''}
       </div>
     </div>
@@ -9486,6 +9488,11 @@ async function changeAppointmentStatus(id,status){
   if(!item) return;
 
   if(status==='finalizado'){
+    if(['desmarcado','no-show'].includes(item.status)){
+      showToast('Atendimentos desmarcados ou no-show não podem ser finalizados.');
+      return;
+    }
+
     // 1) Primeiro conclui a operação no banco.
     try{
       const {data,error}=await sb.rpc('finalize_appointment',{p_appointment_id:Number(id)});
@@ -10866,14 +10873,16 @@ function finalizedAppointmentsInMonth(year,month){
 }
 
 function realizedServiceRevenueForMonth(year,month){
-  return finalizedAppointmentsInMonth(year,month)
-    .reduce((sum,a)=>sum+appointmentPrice(a),0);
+  const prefix=`${year}-${String(month+1).padStart(2,'0')}`;
+  return appointments
+    .filter(a=>String(a.date||'').startsWith(prefix) && a.status==='finalizado')
+    .reduce((sum,a)=>sum+(Number(a.price)||appointmentPrice(a)||0),0);
 }
 
 function realizedServiceRevenueForDate(dateKey){
   return appointments
-    .filter(a=>a.date===dateKey && a.status==='finalizado')
-    .reduce((sum,a)=>sum+appointmentPrice(a),0);
+    .filter(a=>String(a.date||'')===String(dateKey) && a.status==='finalizado')
+    .reduce((sum,a)=>sum+(Number(a.price)||appointmentPrice(a)||0),0);
 }
 
 function manualRevenueForMonth(year,month){
@@ -10914,13 +10923,23 @@ function buildRevenueSeries(range='week'){
   const {start,end}=getDateRangeForFinance(range);
   const days=[];
   const cursor=new Date(start);
+
   while(cursor<=end){
     const key=formatDateKey(cursor);
-    const value=realizedGrossRevenueForDate(key);
+
+    const serviceValue=appointments
+      .filter(a=>a.date===key && a.status==='finalizado')
+      .reduce((sum,a)=>sum+(Number(a.price)||appointmentPrice(a)||0),0);
+
+    const manualValue=FINANCE_MOVEMENTS
+      .filter(m=>m.type==='entrada' && m.date===key && !m.appointmentId)
+      .reduce((sum,m)=>sum+(Number(m.value)||0),0);
+
     days.push({
       label:cursor.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.',''),
-      value
+      value:serviceValue+manualValue
     });
+
     cursor.setDate(cursor.getDate()+1);
   }
   return days;
@@ -10947,42 +10966,68 @@ function renderFinanceChart(range='week'){
   svg.innerHTML=out;
 }
 function renderFinanceKPIs(){
-  const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
-  const monthMovements=FINANCE_MOVEMENTS.filter(i=>String(i.date||'').startsWith(monthPrefix));
-  const outputs=monthMovements.filter(i=>i.type==='saida');
-  const completed=finalizedAppointmentsInMonth(appToday.getFullYear(),appToday.getMonth());
-  const gross=realizedGrossRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
+  const year=appToday.getFullYear();
+  const month=appToday.getMonth();
+  const monthPrefix=`${year}-${String(month+1).padStart(2,'0')}`;
+
+  const completed=appointments.filter(a=>
+    String(a.date||'').startsWith(monthPrefix) &&
+    a.status==='finalizado'
+  );
+
+  // Faturamento realizado = serviços finalizados + entradas manuais.
+  const servicesRevenue=completed.reduce((sum,a)=>sum+(Number(a.price)||appointmentPrice(a)||0),0);
+  const manualRevenue=FINANCE_MOVEMENTS
+    .filter(i=>i.type==='entrada' && String(i.date||'').startsWith(monthPrefix) && !i.appointmentId)
+    .reduce((sum,i)=>sum+(Number(i.value)||0),0);
+
+  const gross=servicesRevenue+manualRevenue;
+
+  const outputs=FINANCE_MOVEMENTS
+    .filter(i=>i.type==='saida' && String(i.date||'').startsWith(monthPrefix));
 
   const commissionDue=completed.reduce((sum,a)=>{
     const member=TEAM_CATALOG.find(m=>String(m.name)===String(a.professional));
     const pct=Math.max(0,Math.min(100,Number(member?.commission)||0));
-    return sum+(appointmentPrice(a)*(pct/100));
+    return sum+((Number(a.price)||appointmentPrice(a)||0)*(pct/100));
   },0);
 
   const commissionPaid=outputs
     .filter(i=>String(i.category||'').toLowerCase()==='comissões')
-    .reduce((s,i)=>s+i.value,0);
+    .reduce((s,i)=>s+(Number(i.value)||0),0);
 
   const otherExpenses=outputs
     .filter(i=>String(i.category||'').toLowerCase()!=='comissões')
-    .reduce((s,i)=>s+i.value,0);
+    .reduce((s,i)=>s+(Number(i.value)||0),0);
 
   const net=gross-commissionDue-otherExpenses;
   const margin=gross?(net/gross)*100:0;
-  const ticket=completed.length?completed.reduce((s,a)=>s+appointmentPrice(a),0)/completed.length:0;
+  const ticket=completed.length?servicesRevenue/completed.length:0;
 
-  document.getElementById('finance-gross').textContent=money(gross);
-  document.getElementById('finance-net').textContent=money(net);
-  document.getElementById('finance-commissions').textContent=money(commissionDue);
-  document.getElementById('finance-ticket').textContent=money(ticket);
-  document.getElementById('finance-margin-meta').textContent=`Margem estimada ${margin.toFixed(1).replace('.',',')}%`;
-  document.getElementById('finance-commission-meta').textContent=
-    `${gross?((commissionDue/gross)*100).toFixed(1).replace('.',','):'0'}% do faturamento · ${money(commissionPaid)} lançadas`;
+  const set=(id,value)=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=value;
+  };
+
+  set('finance-gross',money(gross));
+  set('finance-net',money(net));
+  set('finance-commissions',money(commissionDue));
+  set('finance-ticket',completed.length?money(ticket):'—');
+
+  const marginEl=document.getElementById('finance-margin-meta');
+  if(marginEl) marginEl.textContent=gross
+    ? `Margem estimada ${margin.toFixed(1).replace('.',',')}%`
+    : 'Margem estimada —';
+
+  const commissionEl=document.getElementById('finance-commission-meta');
+  if(commissionEl) commissionEl.textContent=gross
+    ? `${((commissionDue/gross)*100).toFixed(1).replace('.',',')}% do faturamento · ${money(commissionPaid)} lançadas`
+    : '0% do faturamento · R$ 0,00 lançadas';
 }
 function renderFinanceSummary(){
   const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
   const monthEntries=FINANCE_MOVEMENTS.filter(m=>m.date.startsWith(monthPrefix));
-  const current=realizedGrossRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
+  const current=realizedServiceRevenueForMonth(appToday.getFullYear(),appToday.getMonth()) + manualRevenueForMonth(appToday.getFullYear(),appToday.getMonth());
   const goal=Math.max(0,Number(BUSINESS_SETTINGS.monthly_goal)||0);
   const pct=goal?Math.min(100,(current/goal)*100):0;
 
