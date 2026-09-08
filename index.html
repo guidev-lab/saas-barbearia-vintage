@@ -6960,29 +6960,59 @@ button,a,input,select,textarea{max-width:100%}
 }
 
 
-/* ===== PADRÃO VISUAL DO BOTÃO FINALIZAR ===== */
-.appointment-action.finish{
-  height:30px;
-  padding:0 9px;
-  border-radius:8px;
-  border:1px solid rgba(34,197,94,.18);
-  background:#111827;
-  color:#7DD3A7;
-  font-size:9.5px;
-  font-weight:700;
+
+/* ===== FINALIZAR — PADRÃO DEFINITIVO ===== */
+.appointment-actions .appointment-action,
+.appointment-actions .appointment-action-finish{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  box-sizing:border-box !important;
+  height:30px !important;
+  min-height:30px !important;
+  width:auto !important;
+  min-width:0 !important;
+  padding:0 9px !important;
+  margin:0 !important;
+  border-radius:8px !important;
+  border:1px solid var(--border) !important;
+  background:#111827 !important;
+  font-family:inherit !important;
+  font-size:9.5px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  text-decoration:none !important;
+  box-shadow:none !important;
   cursor:pointer;
 }
-.appointment-action.finish:hover:not(:disabled){
-  border-color:rgba(34,197,94,.38);
-  color:#A7F3D0;
+
+.appointment-actions .appointment-action-finish{
+  color:#7DD3A7 !important;
+  border-color:rgba(34,197,94,.18) !important;
+  background:#111827 !important;
 }
-.appointment-action.finish:disabled{
-  color:#718096;
-  border-color:var(--border);
-  background:#111827;
-  opacity:.6;
-  cursor:not-allowed;
-  filter:none;
+
+.appointment-actions .appointment-action-finish:hover:not(:disabled){
+  color:#A7F3D0 !important;
+  border-color:rgba(34,197,94,.38) !important;
+  background:#111827 !important;
+}
+
+.appointment-actions .appointment-action-finish:disabled{
+  color:#64748B !important;
+  border-color:var(--border) !important;
+  background:#111827 !important;
+  opacity:.62 !important;
+  cursor:not-allowed !important;
+  filter:none !important;
+}
+
+@media(max-width:520px){
+  .appointment-actions .appointment-action,
+  .appointment-actions .appointment-action-finish{
+    width:100% !important;
+    min-height:36px !important;
+    height:36px !important;
+  }
 }
 
 </style>
@@ -9559,7 +9589,7 @@ function renderAppointments(){
       <div class="appointment-actions">
         <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
         ${!['finalizado','desmarcado','no-show'].includes(item.status)
-          ? `<button class="appointment-action finish" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
+          ? `<button class="appointment-action appointment-action-finish" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
           : ''}
         ${!['desmarcado','no-show'].includes(item.status) ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>` : ''}
       </div>
