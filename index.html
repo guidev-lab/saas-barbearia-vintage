@@ -8710,9 +8710,12 @@ function syncCatalogDerived(){
 }
 
 syncCatalogDerived();
-const OPENING_HOUR = 9;
-const CLOSING_HOUR = 19;
-const SLOT_MINUTES = 60;
+
+// Fallbacks usados apenas quando uma barbearia ainda não possui horários configurados.
+// A operação normal usa CURRENT_BARBERSHOP.weekly_hours e booking_settings.slot_interval.
+const FALLBACK_OPENING_HOUR = 9;
+const FALLBACK_CLOSING_HOUR = 19;
+const FALLBACK_SLOT_MINUTES = 30;
 
 
 
@@ -10126,9 +10129,107 @@ function getServiceDuration(serviceName){
   return Math.max(0,Number(service?.duration)||0);
 }
 
-function getDailyCapacityMinutes(){
-  const activeProfessionals=TEAM_CATALOG.filter(item=>item.active!==false).length;
-  const minutesPerProfessional=(CLOSING_HOUR-OPENING_HOUR)*60;
+const BUSINESS_DAY_KEYS=['sun','mon','tue','wed','thu','fri','sat'];
+
+function timeStringToMinutes(value){
+  const match=String(value||'').match(/^(\d{1,2}):(\d{2})/);
+  if(!match) return null;
+  const hours=Number(match[1]);
+  const minutes=Number(match[2]);
+  if(hours<0 || hours>23 || minutes<0 || minutes>59) return null;
+  return hours*60+minutes;
+}
+
+function normalizeBusinessDate(date){
+  if(date instanceof Date) return new Date(date.getFullYear(),date.getMonth(),date.getDate());
+  if(typeof date==='string') return parseDateKey(date);
+  return new Date(appToday.getFullYear(),appToday.getMonth(),appToday.getDate());
+}
+
+function getBusinessHoursForDate(date){
+  const normalized=normalizeBusinessDate(date);
+  const dayKey=BUSINESS_DAY_KEYS[normalized.getDay()];
+  const weekly=CURRENT_BARBERSHOP?.weekly_hours||{};
+  const configured=weekly?.[dayKey];
+
+  // Só usa 09h–19h como fallback quando não há configuração válida alguma.
+  if(!configured){
+    return {
+      dayKey,
+      closed:false,
+      open:`${String(FALLBACK_OPENING_HOUR).padStart(2,'0')}:00`,
+      close:`${String(FALLBACK_CLOSING_HOUR).padStart(2,'0')}:00`,
+      startMinutes:FALLBACK_OPENING_HOUR*60,
+      endMinutes:FALLBACK_CLOSING_HOUR*60,
+      configured:false
+    };
+  }
+
+  if(configured.closed===true){
+    return {
+      dayKey,
+      closed:true,
+      open:configured.open||null,
+      close:configured.close||null,
+      startMinutes:0,
+      endMinutes:0,
+      configured:true
+    };
+  }
+
+  const startMinutes=timeStringToMinutes(configured.open);
+  const endMinutes=timeStringToMinutes(configured.close);
+
+  if(startMinutes===null || endMinutes===null || endMinutes<=startMinutes){
+    return {
+      dayKey,
+      closed:true,
+      open:configured.open||null,
+      close:configured.close||null,
+      startMinutes:0,
+      endMinutes:0,
+      configured:true
+    };
+  }
+
+  return {
+    dayKey,
+    closed:false,
+    open:configured.open,
+    close:configured.close,
+    startMinutes,
+    endMinutes,
+    configured:true
+  };
+}
+
+function getConfiguredSlotMinutes(){
+  const value=Number(
+    CURRENT_BOOKING_SETTINGS?.slot_interval ??
+    CURRENT_BARBERSHOP?.booking_settings?.slot_interval ??
+    FALLBACK_SLOT_MINUTES
+  );
+  return Number.isFinite(value) && value>=5 ? Math.round(value) : FALLBACK_SLOT_MINUTES;
+}
+
+function getDefaultIdleDuration(){
+  const durations=activeServices()
+    .map(service=>Number(service.duration)||0)
+    .filter(duration=>duration>0);
+
+  return durations.length
+    ? Math.min(...durations)
+    : getConfiguredSlotMinutes();
+}
+
+function getDailyCapacityMinutes(date=selectedDate,{perProfessional=false}={}){
+  const hours=getBusinessHoursForDate(date);
+  if(hours.closed) return 0;
+
+  const minutesPerProfessional=Math.max(0,hours.endMinutes-hours.startMinutes);
+  if(perProfessional) return minutesPerProfessional;
+
+  const activeProfessionals=activeTeam().length;
   return activeProfessionals*minutesPerProfessional;
 }
 
@@ -10138,16 +10239,40 @@ function getOccupiedMinutesForDate(date){
     .reduce((sum,item)=>sum+appointmentDuration(item),0);
 }
 
-function getDailyCapacity(){
-  const hours = CLOSING_HOUR-OPENING_HOUR;
-  const slotsPerProfessional = Math.floor((hours*60)/SLOT_MINUTES);
-  return slotsPerProfessional * PROFESSIONALS.length;
+function getDailyCapacity(date=selectedDate){
+  const minutes=getDailyCapacityMinutes(date,{perProfessional:true});
+  const slotsPerProfessional=Math.floor(minutes/getConfiguredSlotMinutes());
+  return slotsPerProfessional*activeTeam().length;
+}
+
+function getRankingPeriodDates(period){
+  const end=new Date(appToday.getFullYear(),appToday.getMonth(),appToday.getDate());
+  let start=new Date(end);
+
+  if(period==='week'){
+    start.setDate(end.getDate()-6);
+  }else if(period==='month'){
+    start=new Date(end.getFullYear(),end.getMonth(),1);
+  }
+
+  const dates=[];
+  const cursor=new Date(start);
+  while(cursor<=end){
+    dates.push(new Date(cursor));
+    cursor.setDate(cursor.getDate()+1);
+  }
+  return dates;
+}
+
+function getProfessionalCapacityForPeriod(period){
+  return getRankingPeriodDates(period)
+    .reduce((sum,date)=>sum+getDailyCapacityMinutes(date,{perProfessional:true}),0);
 }
 
 function renderAgendaKPIs(){
   const dayAppointments = getAppointmentsForDate(selectedDate);
   const active = dayAppointments.filter(item=>!['desmarcado','no-show'].includes(item.status));
-  const totalCapacityMinutes = getDailyCapacityMinutes();
+  const totalCapacityMinutes = getDailyCapacityMinutes(selectedDate);
   const occupiedMinutes = active.reduce((sum,item)=>sum+appointmentDuration(item),0);
   const occupancy = totalCapacityMinutes ? (occupiedMinutes/totalCapacityMinutes)*100 : 0;
 
@@ -10164,10 +10289,14 @@ function renderAgendaKPIs(){
   const occEl = document.getElementById('agenda-occupancy-rate');
   const occMeta = document.getElementById('agenda-occupancy-meta');
 
-  occEl.textContent = `${occupancy.toFixed(0)}%`;
+  const selectedHours=getBusinessHoursForDate(selectedDate);
+  occEl.textContent = selectedHours.closed ? '—' : `${occupancy.toFixed(0)}%`;
   occMeta.className='meta';
 
-  if(occupancy >= 70){
+  if(selectedHours.closed){
+    occMeta.classList.add('warn');
+    occMeta.textContent='Barbearia fechada neste dia conforme os horários configurados';
+  }else if(occupancy >= 70){
     occMeta.classList.add('good');
     occMeta.textContent=`${occupiedMinutes} min ocupados de ${totalCapacityMinutes} min disponíveis`;
   }else if(occupancy >= 40){
@@ -10185,16 +10314,19 @@ function renderAgendaKPIs(){
     `${noShows} ${noShows===1?'cliente não compareceu':'clientes não compareceram'} no mês`;
 }
 
-function buildIdleSlots(slotDuration=60){
-  const dateKey=formatDateKey(selectedDate);
-  const professionals=TEAM_CATALOG.filter(p=>p.active!==false);
+function buildIdleSlots(slotDuration=null,date=selectedDate){
+  const targetDate=normalizeBusinessDate(date);
+  const dateKey=formatDateKey(targetDate);
+  const professionals=activeTeam();
   const result=[];
+  const hours=getBusinessHoursForDate(targetDate);
 
-  const startDay=OPENING_HOUR*60;
-  const endDay=CLOSING_HOUR*60;
-  const step=30;
+  if(hours.closed || !professionals.length) return result;
 
-  for(let start=startDay; start+slotDuration<=endDay; start+=step){
+  const duration=Math.max(5,Number(slotDuration)||getDefaultIdleDuration());
+  const step=getConfiguredSlotMinutes();
+
+  for(let start=hours.startMinutes; start+duration<=hours.endMinutes; start+=step){
     const time=`${String(Math.floor(start/60)).padStart(2,'0')}:${String(start%60).padStart(2,'0')}`;
 
     const freeProfessionals=professionals.filter(prof=>
@@ -10202,13 +10334,14 @@ function buildIdleSlots(slotDuration=60){
         date:dateKey,
         time,
         professional:prof.name,
-        duration:slotDuration
+        duration
       })
     );
 
     if(freeProfessionals.length){
       result.push({
         time,
+        duration,
         availableProfessionals:freeProfessionals.map(p=>p.name)
       });
     }
@@ -10240,13 +10373,20 @@ function renderIdleSlots(){
   const container=document.getElementById('idle-slots-list');
 
   if(!slots.length){
+    const hours=getBusinessHoursForDate(selectedDate);
+    const noTeam=!activeTeam().length;
+
     container.innerHTML=`
       <div class="intelligence-row">
         <div class="left">
-          <strong>Agenda cheia</strong>
-          <span>Sem janelas livres mapeadas</span>
+          <strong>${hours.closed?'Barbearia fechada':noTeam?'Sem equipe ativa':'Agenda cheia'}</strong>
+          <span>${hours.closed
+            ? 'Dia marcado como fechado na configuração de horários'
+            : noTeam
+              ? 'Cadastre ou ative um profissional para abrir horários'
+              : 'Sem janelas livres para o menor serviço disponível'}</span>
         </div>
-        <div class="right">100%</div>
+        <div class="right">${hours.closed||noTeam?'—':'100%'}</div>
       </div>`;
     return;
   }
@@ -11109,19 +11249,18 @@ function professionalOccupancy(name,period){
   const member=TEAM_CATALOG.find(p=>normalizeProfessionalName(p.name)===normalizeProfessionalName(name));
   if(!member) return 0;
 
+  const periodDates=getRankingPeriodDates(period);
+  const validDates=new Set(periodDates.map(formatDateKey));
+
   const related=appointments.filter(a=>
     appointmentBelongsToProfessional(a,member) &&
-    appointmentInRankingPeriod(a,period) &&
+    validDates.has(a.date) &&
     !['desmarcado','no-show'].includes(a.status)
   );
 
-  const occupied=related.reduce((s,a)=>s+appointmentDuration(a),0);
+  const occupied=related.reduce((sum,a)=>sum+appointmentDuration(a),0);
+  const capacity=getProfessionalCapacityForPeriod(period);
 
-  let days=1;
-  if(period==='week') days=7;
-  if(period==='month') days=Math.max(1,appToday.getDate());
-
-  const capacity=(CLOSING_HOUR-OPENING_HOUR)*60*days;
   return capacity ? Math.min(100,(occupied/capacity)*100) : 0;
 }
 
@@ -12531,12 +12670,12 @@ function renderHomeManagement(){
   const forecastRevenue = pendingToday.reduce((sum,item)=>sum+appointmentPrice(item),0);
   const realizedTodayRevenue = finalizedToday.reduce((sum,item)=>sum+appointmentPrice(item),0);
 
-  const capacityMinutes = getDailyCapacityMinutes();
+  const capacityMinutes = getDailyCapacityMinutes(appToday);
   const occupiedMinutes = operational.reduce((sum,item)=>sum+appointmentDuration(item),0);
   const occupancy = capacityMinutes ? (occupiedMinutes/capacityMinutes)*100 : 0;
   const ticket = finalizedToday.length ? realizedTodayRevenue/finalizedToday.length : 0;
 
-  const idleSlots = buildIdleSlots(60).length;
+  const idleSlots = buildIdleSlots(null,appToday).length;
 
   const monthAppointments = getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth());
   const bad = monthAppointments.filter(item=>['desmarcado','no-show'].includes(item.status)).length;
@@ -12559,8 +12698,10 @@ function renderHomeManagement(){
     : 0;
   const paceDiff = currentRevenue - expectedByToday;
 
-  document.getElementById('home-occupancy-top').textContent = `${occupancy.toFixed(0)}%`;
+  const todayHours=getBusinessHoursForDate(appToday);
+  document.getElementById('home-occupancy-top').textContent = todayHours.closed ? '—' : `${occupancy.toFixed(0)}%`;
   document.getElementById('home-occupancy-top-meta').textContent =
+    todayHours.closed ? 'barbearia fechada hoje' :
     occupancy >= 70 ? 'boa ocupação hoje' :
     occupancy >= 40 ? 'ocupação moderada' :
     'agenda com espaço ocioso';
@@ -12571,9 +12712,11 @@ function renderHomeManagement(){
   document.getElementById('home-forecast-revenue').textContent = money(forecastRevenue);
   document.getElementById('home-forecast-close').textContent = money(projectedKnownMonthRevenue);
 
-  document.getElementById('home-idle-count').textContent = idleSlots;
+  document.getElementById('home-idle-count').textContent = todayHours.closed ? '—' : idleSlots;
   document.getElementById('home-idle-meta').textContent =
-    `${idleSlots} ${idleSlots===1?'janela disponível':'janelas disponíveis'} na operação`;
+    todayHours.closed
+      ? 'sem operação prevista para hoje'
+      : `${idleSlots} ${idleSlots===1?'janela disponível':'janelas disponíveis'} na operação`;
 
   document.getElementById('home-loss-rate').textContent = `${lossRate.toFixed(1).replace('.',',')}%`;
   document.getElementById('home-loss-meta').textContent =
