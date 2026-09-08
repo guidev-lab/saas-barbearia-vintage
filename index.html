@@ -6959,6 +6959,32 @@ button,a,input,select,textarea{max-width:100%}
   filter:saturate(.5);
 }
 
+
+/* ===== PADRÃO VISUAL DO BOTÃO FINALIZAR ===== */
+.appointment-action.finish{
+  height:30px;
+  padding:0 9px;
+  border-radius:8px;
+  border:1px solid rgba(34,197,94,.18);
+  background:#111827;
+  color:#7DD3A7;
+  font-size:9.5px;
+  font-weight:700;
+  cursor:pointer;
+}
+.appointment-action.finish:hover:not(:disabled){
+  border-color:rgba(34,197,94,.38);
+  color:#A7F3D0;
+}
+.appointment-action.finish:disabled{
+  color:#718096;
+  border-color:var(--border);
+  background:#111827;
+  opacity:.6;
+  cursor:not-allowed;
+  filter:none;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -9533,7 +9559,7 @@ function renderAppointments(){
       <div class="appointment-actions">
         <button class="appointment-action" onclick="openAppointmentModal(${item.id})">Editar / remarcar</button>
         ${!['finalizado','desmarcado','no-show'].includes(item.status)
-          ? `<button class="btn-small success" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
+          ? `<button class="appointment-action finish" ${canFinalizeAppointmentNow(item)?'':`disabled title="Disponível após ${item.time}"`} onclick="changeAppointmentStatus(${item.id},'finalizado')">${canFinalizeAppointmentNow(item)?'Finalizar':'Aguardando horário'}</button>`
           : ''}
         ${!['desmarcado','no-show'].includes(item.status) ? `<button class="appointment-action cancel" onclick="changeAppointmentStatus(${item.id},'desmarcado')">Cancelar</button>` : ''}
       </div>
