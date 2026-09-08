@@ -7060,7 +7060,7 @@ button,a,input,select,textarea{max-width:100%}
 </div>
 <div class="value" id="home-realized-revenue">—</div>
 <div class="delta" id="home-revenue-delta">dados reais do mês</div>
-<div class="submetric">Previsão de fechamento: <b id="home-forecast-close">—</b></div>
+<div class="submetric">Realizado + receita prevista no mês: <b id="home-forecast-close">—</b></div>
 </div>
 <div class="kpi-card">
 <div class="kpi-top">
@@ -7109,9 +7109,9 @@ button,a,input,select,textarea{max-width:100%}
 </div>
 <div class="home-secondary-grid">
 <div class="home-secondary-card">
-<div class="label">Faturamento previsto hoje</div>
+<div class="label">Receita prevista hoje</div>
 <div class="value" id="home-forecast-revenue">—</div>
-<div class="meta">Se todos os agendamentos ativos forem realizados</div>
+<div class="meta">Somente atendimentos ainda pendentes ou confirmados</div>
 </div>
 <div class="home-secondary-card">
 <div class="label">Horários ociosos</div>
@@ -7159,11 +7159,11 @@ button,a,input,select,textarea{max-width:100%}
 <div class="overview-radar-footer">
 <div class="overview-radar-stat">
 <span class="label">Em risco</span>
-<strong>9 clientes</strong>
+<strong id="overview-risk-count">0 clientes</strong>
 </div>
 <div class="overview-radar-stat">
 <span class="label">Potencial</span>
-<strong>R$ 720,00</strong>
+<strong id="overview-risk-potential">R$ 0,00</strong>
 </div>
 <div class="see-all" onclick="openPage('radar', document.querySelector('.nav-item[data-page=&quot;radar&quot;]'))">Ver todos →</div>
 </div>
@@ -7176,18 +7176,7 @@ button,a,input,select,textarea{max-width:100%}
 <div class="sub">Aniversários e fidelidade</div>
 </div>
 </div>
-<div class="alert-line">
-<span class="alert-dot blue"></span>
-<div class="alert-text"><b>2 clientes</b> fazem aniversário nesta semana.</div>
-</div>
-<div class="alert-line">
-<span class="alert-dot amber"></span>
-<div class="alert-text"><b>Lucas Ferreira</b> está a 1 visita de ganhar uma recompensa.</div>
-</div>
-<div class="alert-line">
-<span class="alert-dot blue"></span>
-<div class="alert-text"><b>1 horário</b> ficou livre hoje após desmarcação.</div>
-</div>
+<div id="overview-quick-alerts"></div>
 </div>
 <div class="card widget compact-widget">
 <div class="widget-head">
@@ -7197,9 +7186,9 @@ button,a,input,select,textarea{max-width:100%}
 </div>
 <div class="see-all" onclick="openPage('finance', document.querySelector('.nav-item[data-page=&quot;finance&quot;]'))">Detalhes →</div>
 </div>
-<div class="cash-row"><span class="lbl">Faturamento bruto</span><span class="val">R$ 890,00</span></div>
-<div class="cash-row"><span class="lbl">Comissões lançadas</span><span class="val">R$ 267,00</span></div>
-<div class="cash-row net"><span class="lbl">Lucro líquido</span><span class="val">R$ 623,00</span></div>
+<div class="cash-row"><span class="lbl">Faturamento bruto</span><span class="val" id="overview-cash-gross">R$ 0,00</span></div>
+<div class="cash-row"><span class="lbl">Comissões devidas</span><span class="val" id="overview-cash-commissions">R$ 0,00</span></div>
+<div class="cash-row net"><span class="lbl">Lucro estimado</span><span class="val" id="overview-cash-net">R$ 0,00</span></div>
 </div>
 </div>
 </div>
@@ -7254,29 +7243,7 @@ button,a,input,select,textarea{max-width:100%}
 <div><h3>Equipe em destaque</h3><div class="sub">Desempenho de hoje</div></div>
 <div class="see-all" onclick="openPage('ranking', document.querySelector('.nav-item[data-page=&quot;ranking&quot;]'))">Ver ranking →</div>
 </div>
-<div class="mini-list compact">
-<div class="mini-row">
-<div>
-<div class="who">Lucas</div>
-<div class="meta">4 atendimentos · R$ 360,00 no dia</div>
-</div>
-<div class="mini-pill">1º</div>
-</div>
-<div class="mini-row">
-<div>
-<div class="who">Rafael</div>
-<div class="meta">3 atendimentos · ticket médio R$ 80,00</div>
-</div>
-<div class="mini-pill">2º</div>
-</div>
-<div class="mini-row">
-<div>
-<div class="who">Diego</div>
-<div class="meta">2 atendimentos · ocupação 60%</div>
-</div>
-<div class="mini-pill">3º</div>
-</div>
-</div>
+<div class="mini-list compact" id="overview-team-highlight"></div>
 </div>
 </div>
 
@@ -7297,8 +7264,8 @@ button,a,input,select,textarea{max-width:100%}
 </div>
 <div class="opportunity-mini">
 <div class="eyebrow">Retenção</div>
-<div class="headline">9 clientes podem ser reconquistados</div>
-<div class="detail">Clientes há 25+ dias sem retornar representam uma oportunidade imediata de recorrência.</div>
+<div class="headline" id="opp-retention-headline">0 clientes para reconquistar</div>
+<div class="detail" id="opp-retention-detail">Nenhuma oportunidade de retenção identificada.</div>
 <div class="action" onclick="openPage('radar', document.querySelector('.nav-item[data-page=&quot;radar&quot;]'))">Ver radar →</div>
 </div>
 <div class="opportunity-mini">
@@ -7364,11 +7331,7 @@ button,a,input,select,textarea{max-width:100%}
 <div class="radar-filter">
 <label>Profissional</label>
 <select id="radar-prof-filter" onchange="renderRadarTable()">
-<option value="all">Todos</option>
-<option>Lucas</option>
-<option>Rafael</option>
-<option>Diego</option>
-</select>
+<option value="all">Todos</option></select>
 </div>
 <div class="radar-filter">
 <label>Ticket médio</label>
@@ -7419,69 +7382,48 @@ button,a,input,select,textarea{max-width:100%}
       <div class="radar-result-grid">
         <div class="radar-result-stat">
           <div class="label">Contatados</div>
-          <div class="value">18</div>
+          <div class="value" id="radar-result-contacted">0</div>
         </div>
         <div class="radar-result-stat">
           <div class="label">Responderam</div>
-          <div class="value">12</div>
+          <div class="value" id="radar-result-responded">—</div>
         </div>
         <div class="radar-result-stat">
           <div class="label">Reagendaram</div>
-          <div class="value">7</div>
+          <div class="value" id="radar-result-returned">0</div>
         </div>
         <div class="radar-result-stat">
           <div class="label">Receita recuperada</div>
-          <div class="value">R$ 630</div>
+          <div class="value" id="radar-result-revenue">R$ 0,00</div>
         </div>
       </div>
 
       <div class="recovery-funnel">
         <div class="recovery-funnel-row">
           <div class="name">Contato</div>
-          <div class="recovery-funnel-bar"><div class="recovery-funnel-fill" style="width:100%"></div></div>
-          <strong>18</strong>
+          <div class="recovery-funnel-bar"><div class="recovery-funnel-fill" style="width:0%"></div></div>
+          <strong id="radar-funnel-contacted">0</strong>
         </div>
         <div class="recovery-funnel-row">
           <div class="name">Resposta</div>
-          <div class="recovery-funnel-bar"><div class="recovery-funnel-fill" style="width:67%"></div></div>
-          <strong>12</strong>
+          <div class="recovery-funnel-bar"><div class="recovery-funnel-fill" style="width:0%"></div></div>
+          <strong id="radar-funnel-responded">—</strong>
         </div>
         <div class="recovery-funnel-row">
           <div class="name">Reagendamento</div>
-          <div class="recovery-funnel-bar"><div class="recovery-funnel-fill" style="width:39%"></div></div>
-          <strong>7</strong>
+          <div class="recovery-funnel-bar"><div class="recovery-funnel-fill" style="width:0%"></div></div>
+          <strong id="radar-funnel-returned">0</strong>
         </div>
       </div>
 
-      <div class="recovery-note">
-        39% dos clientes contatados já voltaram para a agenda. A maior oportunidade está nos clientes de risco alto ainda sem contato.
-      </div>
+      <div class="recovery-note" id="radar-recovery-note">Sem dados suficientes para analisar reconquistas.</div>
     </div>
   </div>
 </div>
 <div class="radar-bottom">
 <div class="card radar-reason-card">
 <h3>Motivos prováveis de perda</h3>
-<div class="reason-row">
-<div class="reason-name">Frequência atrasada</div>
-<div class="reason-bar"><div class="reason-fill" style="width:82%"></div></div>
-<div class="reason-count">9</div>
-</div>
-<div class="reason-row">
-<div class="reason-name">Cancelou e não voltou</div>
-<div class="reason-bar"><div class="reason-fill" style="width:55%"></div></div>
-<div class="reason-count">6</div>
-</div>
-<div class="reason-row">
-<div class="reason-name">No-show</div>
-<div class="reason-bar"><div class="reason-fill" style="width:36%"></div></div>
-<div class="reason-count">4</div>
-</div>
-<div class="reason-row">
-<div class="reason-name">Queda de frequência</div>
-<div class="reason-bar"><div class="reason-fill" style="width:27%"></div></div>
-<div class="reason-count">3</div>
-</div>
+<div id="radar-reasons-list"></div>
 </div>
 <div class="recovery-highlight">
 <h3>Potencial de recuperação</h3>
@@ -7542,11 +7484,7 @@ button,a,input,select,textarea{max-width:100%}
 <div class="birthday-filter">
 <label>Profissional</label>
 <select id="birthday-prof-filter" onchange="renderBirthdayTable()">
-<option value="all">Todos</option>
-<option>Lucas</option>
-<option>Rafael</option>
-<option>Diego</option>
-</select>
+<option value="all">Todos</option></select>
 </div>
 <div class="birthday-filter">
 <label>Ticket médio</label>
@@ -7617,23 +7555,23 @@ button,a,input,select,textarea{max-width:100%}
       <div class="birthday-action-funnel">
         <div class="birthday-funnel-row">
           <div class="name">Geradas</div>
-          <div class="birthday-funnel-bar"><div class="birthday-funnel-fill" style="width:100%"></div></div>
-          <strong id="birthday-funnel-generated">4</strong>
+          <div class="birthday-funnel-bar"><div class="birthday-funnel-fill" style="width:0%"></div></div>
+          <strong id="birthday-funnel-generated">0</strong>
         </div>
         <div class="birthday-funnel-row">
           <div class="name">Contatos</div>
-          <div class="birthday-funnel-bar"><div class="birthday-funnel-fill" style="width:75%"></div></div>
-          <strong id="birthday-funnel-contacted">3</strong>
+          <div class="birthday-funnel-bar"><div class="birthday-funnel-fill" style="width:0%"></div></div>
+          <strong id="birthday-funnel-contacted">0</strong>
         </div>
         <div class="birthday-funnel-row">
           <div class="name">Agendamentos</div>
-          <div class="birthday-funnel-bar"><div class="birthday-funnel-fill" style="width:25%"></div></div>
-          <strong id="birthday-funnel-booked">1</strong>
+          <div class="birthday-funnel-bar"><div class="birthday-funnel-fill" style="width:0%"></div></div>
+          <strong id="birthday-funnel-booked">0</strong>
         </div>
       </div>
 
-      <div class="birthday-results-note">
-        Os melhores resultados vêm dos contatos feitos antes da data do aniversário, especialmente entre clientes recorrentes.
+      <div class="birthday-results-note" id="birthday-results-note">
+        Sem dados suficientes para gerar uma análise das ações de aniversário.
       </div>
     </div>
   </div>
@@ -7713,11 +7651,7 @@ button,a,input,select,textarea{max-width:100%}
 <div class="loyalty-filter">
 <label>Profissional</label>
 <select id="loyalty-prof-filter" onchange="renderLoyaltyTable()">
-<option value="all">Todos</option>
-<option>Lucas</option>
-<option>Rafael</option>
-<option>Diego</option>
-</select>
+<option value="all">Todos</option></select>
 </div>
 <div class="loyalty-filter">
 <label>Status</label>
@@ -7821,6 +7755,7 @@ button,a,input,select,textarea{max-width:100%}
 <div class="topbar">
 <div>
 <h1>Financeiro</h1>
+<p style="margin-top:4px;color:var(--text-muted);font-size:12px">Faturamento realizado considera apenas atendimentos finalizados e outras entradas efetivamente registradas.</p>
 <p>Receita, custos, margem e leitura financeira da operação.</p>
 </div>
 <div class="topbar-actions">
@@ -7875,16 +7810,16 @@ button,a,input,select,textarea{max-width:100%}
 <div class="finance-table-head"><div><h2>Movimentações</h2><p>Entradas e saídas registradas no período.</p></div></div>
 <div class="finance-filters">
 <div class="finance-filter"><label>Buscar</label><input id="finance-search" oninput="renderFinanceMovements()" placeholder="Cliente ou descrição" type="text"/></div>
-<div class="finance-filter"><label>Profissional</label><select id="finance-prof-filter" onchange="renderFinanceMovements()"><option value="all">Todos</option><option>Lucas</option><option>Rafael</option><option>Diego</option></select></div>
+<div class="finance-filter"><label>Profissional</label><select id="finance-prof-filter" onchange="renderFinanceMovements()"><option value="all">Todos</option></select></div>
 <div class="finance-filter"><label>Tipo</label><select id="finance-type-filter" onchange="renderFinanceMovements()"><option value="all">Todos</option><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
 <div class="finance-filter"><label>Pagamento</label><select id="finance-payment-filter" onchange="renderFinanceMovements()"><option value="all">Todos</option><option>Pix</option><option>Cartão</option><option>Dinheiro</option><option>Outro</option></select></div>
 </div>
 <div class="finance-movement-list" id="finance-movements-body"></div>
 </div>
-<div class="finance-insights">
-<div class="finance-insight"><div class="eyebrow">Faturamento</div><div class="headline">8% acima do mês anterior</div><div class="detail">A receita acumulada está crescendo, puxada por maior ocupação nos dias de maior demanda.</div></div>
-<div class="finance-insight"><div class="eyebrow">Ticket médio</div><div class="headline">R$ 7 abaixo dos últimos 15 dias</div><div class="detail">Vale observar mix de serviços e oportunidades de combinação, como Corte + Barba.</div></div>
-<div class="finance-insight"><div class="eyebrow">Equipe</div><div class="headline">Lucas representa 38% do faturamento</div><div class="detail">A distribuição de receita entre profissionais pode ajudar na gestão de agenda e capacidade.</div></div>
+<div class="finance-insights" id="finance-insights">
+<div class="finance-insight"><div class="eyebrow">Faturamento</div><div class="headline" id="finance-insight-revenue">—</div><div class="detail" id="finance-insight-revenue-detail"></div></div>
+<div class="finance-insight"><div class="eyebrow">Ticket médio</div><div class="headline" id="finance-insight-ticket">—</div><div class="detail" id="finance-insight-ticket-detail"></div></div>
+<div class="finance-insight"><div class="eyebrow">Equipe</div><div class="headline" id="finance-insight-team">—</div><div class="detail" id="finance-insight-team-detail"></div></div>
 </div>
 </section>
 <!-- RANKING DA EQUIPE -->
@@ -8545,19 +8480,8 @@ const STORAGE_KEY = 'barbearia-vintage-appointments-v2';
 const SERVICES_STORAGE_KEY = 'barbearia-vintage-services-v1';
 const TEAM_STORAGE_KEY = 'barbearia-vintage-team-v1';
 
-const DEFAULT_SERVICE_CATALOG = [
-  {id:'svc-corte',name:'Corte',price:60,duration:45,active:true},
-  {id:'svc-barba',name:'Barba',price:45,duration:30,active:true},
-  {id:'svc-combo',name:'Corte + Barba',price:90,duration:60,active:true},
-  {id:'svc-pezinho',name:'Pezinho',price:25,duration:20,active:true},
-  {id:'svc-sobrancelha',name:'Sobrancelha',price:20,duration:15,active:true}
-];
-
-const DEFAULT_TEAM_CATALOG = [
-  {id:'team-lucas',name:'Lucas',commission:30,active:true},
-  {id:'team-rafael',name:'Rafael',commission:30,active:true},
-  {id:'team-diego',name:'Diego',commission:30,active:true}
-];
+const DEFAULT_SERVICE_CATALOG = [];
+const DEFAULT_TEAM_CATALOG = [];
 
 function loadCatalog(key, defaults){
   try{
@@ -8569,8 +8493,8 @@ function loadCatalog(key, defaults){
   }
 }
 
-let SERVICE_CATALOG = DEFAULT_SERVICE_CATALOG.map(item=>({...item}));
-let TEAM_CATALOG = DEFAULT_TEAM_CATALOG.map(item=>({...item}));
+let SERVICE_CATALOG = [];
+let TEAM_CATALOG = [];
 let SERVICE_PRICES = {};
 let PROFESSIONALS = [];
 
@@ -9027,129 +8951,120 @@ async function hydrateCoreDataFromSupabase(force=false){
   coreDataHydrating=(async()=>{
     refreshAppToday();
     await resolveCurrentBarbershop();
-    const [servicesRes,teamRes,appointmentsRes,financeRes,clientsRes,settingsRes,redemptionsRes]=await Promise.all([
-      sb.from('services').select('id,name,price,duration,active').eq('barbershop_id',CURRENT_BARBERSHOP_ID).order('created_at',{ascending:true}),
-      sb.from('team_members').select('id,name,commission,active').eq('barbershop_id',CURRENT_BARBERSHOP_ID).order('created_at',{ascending:true}),
-      sb.from('appointments')
+
+    const queries={
+      services:sb.from('services').select('id,name,price,duration,active').eq('barbershop_id',CURRENT_BARBERSHOP_ID).order('created_at',{ascending:true}),
+      team:sb.from('team_members').select('id,name,commission,active').eq('barbershop_id',CURRENT_BARBERSHOP_ID).order('created_at',{ascending:true}),
+      appointments:sb.from('appointments')
         .select('id,appointment_date,appointment_time,client_name,service_id,service_name,professional_id,professional_name,status,duration_minutes,price_amount')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .order('appointment_date',{ascending:true})
         .order('appointment_time',{ascending:true}),
-      sb.from('financial_entries')
+      finance:sb.from('financial_entries')
         .select('id,entry_date,description,client_name,professional_id,professional_name,category,type,payment_method,amount')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .order('entry_date',{ascending:false})
         .order('id',{ascending:false}),
-      sb.from('clients')
+      clients:sb.from('clients')
         .select('id,name,phone,birthday,radar_contacted,birthday_status,created_at,updated_at')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .order('name',{ascending:true}),
-      sb.from('business_settings')
+      settings:sb.from('business_settings')
         .select('monthly_goal,loyalty_enabled,loyalty_visit_goal,loyalty_reward_name')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .maybeSingle(),
-      sb.from('loyalty_redemptions')
+      redemptions:sb.from('loyalty_redemptions')
         .select('id,client_id,client_name,reward_name,redeemed_at,amount_after')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .order('redeemed_at',{ascending:false})
         .order('id',{ascending:false})
-    ]);
+    };
 
-    if(servicesRes.error) throw servicesRes.error;
-    if(teamRes.error) throw teamRes.error;
-    if(appointmentsRes.error) throw appointmentsRes.error;
-    if(financeRes.error) throw financeRes.error;
-    if(clientsRes.error) throw clientsRes.error;
-    if(settingsRes.error) throw settingsRes.error;
-    if(!settingsRes.data){
+    const names=Object.keys(queries);
+    const results=await Promise.all(names.map(name=>queries[name]));
+    const data={};
+    const failures=[];
+
+    names.forEach((name,index)=>{
+      const result=results[index];
+      if(result.error) failures.push({name,error:result.error});
+      else data[name]=result.data;
+    });
+
+    if(failures.length){
+      console.error('Falha real de sincronização com Supabase:',failures);
+      const labels={services:'serviços',team:'equipe',appointments:'agenda',finance:'financeiro',clients:'clientes',settings:'configurações',redemptions:'fidelidade'};
+      throw new Error(`Falha ao carregar: ${failures.map(x=>labels[x.name]||x.name).join(', ')}`);
+    }
+
+    if(!data.settings){
       const {data:newSettings,error:newSettingsError}=await sb.from('business_settings')
         .insert({barbershop_id:CURRENT_BARBERSHOP_ID,monthly_goal:0,loyalty_enabled:true,loyalty_visit_goal:10,loyalty_reward_name:'Corte gratuito'})
         .select('monthly_goal,loyalty_enabled,loyalty_visit_goal,loyalty_reward_name')
         .single();
       if(newSettingsError) throw newSettingsError;
-      settingsRes.data=newSettings;
+      data.settings=newSettings;
     }
-    if(redemptionsRes.error) throw redemptionsRes.error;
 
-    SERVICE_CATALOG=(servicesRes.data||[]).map(item=>({
-      id:item.id,
-      name:item.name,
-      price:Number(item.price)||0,
-      duration:Number(item.duration)||0,
-      active:item.active!==false
+    SERVICE_CATALOG=(data.services||[]).map(item=>({
+      id:item.id,name:item.name,price:Number(item.price)||0,duration:Number(item.duration)||0,active:item.active!==false
     }));
 
-    TEAM_CATALOG=(teamRes.data||[]).map(item=>({
-      id:item.id,
-      name:item.name,
-      commission:Number(item.commission)||0,
-      active:item.active!==false
+    TEAM_CATALOG=(data.team||[]).map(item=>({
+      id:item.id,name:item.name,commission:Number(item.commission)||0,active:item.active!==false
     }));
 
-    appointments=(appointmentsRes.data||[]).map(item=>({
-      id:Number(item.id),
-      date:item.appointment_date,
-      time:String(item.appointment_time||'').slice(0,5),
-      client:item.client_name,
-      service:item.service_name,
-      professional:item.professional_name,
-      status:item.status,
+    appointments=(data.appointments||[]).map(item=>({
+      id:Number(item.id),date:item.appointment_date,time:String(item.appointment_time||'').slice(0,5),
+      client:item.client_name,service:item.service_name,professional:item.professional_name,status:item.status,
       duration:Number(item.duration_minutes)||getServiceDuration(item.service_name),
       price:Number(item.price_amount)||getServicePrice(item.service_name)
     }));
 
-
-    FINANCE_MOVEMENTS=(financeRes.data||[]).map(item=>({
-      id:Number(item.id),
-      date:item.entry_date,
-      description:item.description,
-      client:item.client_name || '—',
-      professional:item.professional_name || '—',
-      professionalId:item.professional_id || '',
-      category:item.category,
-      type:item.type,
-      payment:item.payment_method,
-      value:Number(item.amount)||0
+    FINANCE_MOVEMENTS=(data.finance||[]).map(item=>({
+      id:Number(item.id),date:item.entry_date,description:item.description,client:item.client_name||'—',
+      professional:item.professional_name||'—',professionalId:item.professional_id||'',category:item.category,
+      type:item.type,payment:item.payment_method,value:Number(item.amount)||0
     }));
 
-
-    CLIENTS=(clientsRes.data||[]).map(item=>({
-      id:Number(item.id),
-      name:item.name,
-      phone:item.phone||'',
-      birthday:item.birthday||'',
-      radarContacted:item.radar_contacted===true,
-      birthdayStatus:item.birthday_status||'pendente'
+    CLIENTS=(data.clients||[]).map(item=>({
+      id:Number(item.id),name:item.name,phone:item.phone||'',birthday:item.birthday||'',
+      radarContacted:item.radar_contacted===true,birthdayStatus:item.birthday_status||'pendente'
     }));
 
     BUSINESS_SETTINGS={
-      monthly_goal:Number(settingsRes.data?.monthly_goal)||0,
-      loyalty_enabled:settingsRes.data?.loyalty_enabled!==false,
-      loyalty_visit_goal:Math.max(1,Number(settingsRes.data?.loyalty_visit_goal)||10),
-      loyalty_reward_name:settingsRes.data?.loyalty_reward_name||'Corte gratuito'
+      monthly_goal:Number(data.settings?.monthly_goal)||0,
+      loyalty_enabled:data.settings?.loyalty_enabled!==false,
+      loyalty_visit_goal:Math.max(1,Number(data.settings?.loyalty_visit_goal)||10),
+      loyalty_reward_name:data.settings?.loyalty_reward_name||'Corte gratuito'
     };
 
-    LOYALTY_REDEMPTIONS=(redemptionsRes.data||[]).map(item=>({
-      id:Number(item.id),
-      clientId:item.client_id ? Number(item.client_id) : null,
-      client:item.client_name,
-      reward:item.reward_name,
-      date:item.redeemed_at,
-      spentAfter:Number(item.amount_after)||0
+    LOYALTY_REDEMPTIONS=(data.redemptions||[]).map(item=>({
+      id:Number(item.id),clientId:item.client_id?Number(item.client_id):null,client:item.client_name,
+      reward:item.reward_name,date:item.redeemed_at,spentAfter:Number(item.amount_after)||0
     }));
 
-    rebuildDerivedClientModules();
-    syncCatalogDerived();
-    syncCatalogAcrossApp();
-
-    renderCalendar();
-    renderAppointments();
-    renderCancellationReport();
-    renderAgendaIntelligence();
-    renderOverviewWidgets();
-    renderHomeManagement();
-
     coreDataHydrated=true;
+
+    const safeRender=(name,fn)=>{
+      try{ fn(); }
+      catch(error){ console.error(`Erro ao renderizar ${name}:`,error); }
+    };
+
+    safeRender('módulos derivados',rebuildDerivedClientModules);
+    safeRender('catálogo derivado',syncCatalogDerived);
+    safeRender('catálogo da interface',syncCatalogAcrossApp);
+    safeRender('calendário',renderCalendar);
+    safeRender('agendamentos',renderAppointments);
+    safeRender('taxa de desmarcações',renderCancellationReport);
+    safeRender('inteligência da agenda',renderAgendaIntelligence);
+    safeRender('visão geral',renderOverviewWidgets);
+    safeRender('gestão inicial',renderHomeManagement);
+    safeRender('radar',renderRadar);
+    safeRender('aniversariantes',renderBirthdays);
+    safeRender('fidelidade',renderLoyalty);
+    safeRender('financeiro',renderFinance);
+    safeRender('ranking da equipe',renderTeamRanking);
   })();
 
   try{
@@ -9554,6 +9469,7 @@ async function saveAppointment(){
     renderBirthdays();
     renderLoyalty();
     renderOverviewRetention();
+  renderOverviewRealOnly();
     await hydrateCoreDataFromSupabase(true);
     showToast(wasEditing?'Agendamento atualizado.':'Agendamento salvo com sucesso.');
   }catch(error){
@@ -9569,50 +9485,70 @@ async function changeAppointmentStatus(id,status){
   const item=appointments.find(a=>Number(a.id)===Number(id));
   if(!item) return;
 
-  try{
-    if(status==='finalizado'){
-      const {error}=await sb.rpc('finalize_appointment',{p_appointment_id:Number(id)});
+  if(status==='finalizado'){
+    // 1) Primeiro conclui a operação no banco.
+    try{
+      const {data,error}=await sb.rpc('finalize_appointment',{p_appointment_id:Number(id)});
 
       if(error){
         if(error.code==='23505' || error.code==='23P01' || String(error.message||'').includes('slot_conflict')){
           showToast('Não foi possível finalizar porque existe conflito de horário.');
           return;
         }
-        throw error;
+        console.error('Erro real ao finalizar no banco:',error);
+        showToast('Não foi possível finalizar este atendimento.');
+        return;
       }
 
-      // Atualização visual imediata.
-      item.status='finalizado';
-      renderCalendar();
-      renderAppointments();
-      renderCancellationReport();
-      renderAgendaIntelligence();
-      renderOverviewWidgets();
-      renderHomeManagement();
-      rebuildDerivedClientModules();
-      renderRadar();
-      renderBirthdays();
-      renderLoyalty();
-      renderOverviewRetention();
-      renderTeamRanking();
-      renderFinance();
-
-      // Recarrega os dados definitivos, incluindo financeiro automático.
-      await hydrateCoreDataFromSupabase(true);
-
-      renderCalendar();
-      renderAppointments();
-      renderCancellationReport();
-      renderAgendaIntelligence();
-      renderOverviewWidgets();
-      renderHomeManagement();
-      renderTeamRanking();
-      renderFinance();
-
-      showToast('Atendimento finalizado e financeiro atualizado.');
+      if(data && data.ok===false){
+        console.error('Finalização recusada pelo servidor:',data);
+        showToast('Não foi possível finalizar este atendimento.');
+        return;
+      }
+    }catch(error){
+      console.error('Falha de conexão ao finalizar:',error);
+      showToast(navigator.onLine
+        ? 'Não foi possível finalizar este atendimento.'
+        : 'Sem conexão com a internet. Verifique sua conexão e tente novamente.');
       return;
     }
 
+    // 2) A partir daqui o banco JÁ confirmou a finalização.
+    item.status='finalizado';
+
+    const safeRender=(name,fn)=>{
+      try{ fn(); }
+      catch(error){ console.error(`Erro visual após finalizar (${name}):`,error); }
+    };
+
+    safeRender('calendário',renderCalendar);
+    safeRender('agenda',renderAppointments);
+    safeRender('desmarcações',renderCancellationReport);
+    safeRender('inteligência',renderAgendaIntelligence);
+    safeRender('visão geral',renderOverviewWidgets);
+    safeRender('gestão',renderHomeManagement);
+    safeRender('clientes derivados',rebuildDerivedClientModules);
+    safeRender('radar',renderRadar);
+    safeRender('aniversários',renderBirthdays);
+    safeRender('fidelidade',renderLoyalty);
+    safeRender('retenção',renderOverviewRetention);
+    safeRender('ranking',renderTeamRanking);
+    safeRender('financeiro',renderFinance);
+
+    // 3) Recarrega o estado definitivo do Supabase, incluindo a entrada financeira
+    // criada automaticamente pelo trigger. Falha visual/sincronização posterior
+    // não deve dizer que a finalização falhou.
+    try{
+      await hydrateCoreDataFromSupabase(true);
+    }catch(error){
+      console.error('Atendimento finalizado, mas houve falha ao recarregar a interface:',error);
+    }
+
+    showToast('Atendimento finalizado. Valor incluído no faturamento realizado.');
+    return;
+  }
+
+  try{
     const {error}=await sb.from('appointments')
       .update({status,updated_at:new Date().toISOString()})
       .eq('id',id)
@@ -9620,27 +9556,33 @@ async function changeAppointmentStatus(id,status){
 
     if(error){
       if(error.code==='23505' || error.code==='23P01'){
-        showToast('Não é possível reativar este agendamento porque o período já está ocupado.');
+        showToast('Não é possível alterar este agendamento porque o período está ocupado.');
         return;
       }
       throw error;
     }
 
     item.status=status;
-    renderCalendar();
-    renderAppointments();
-    renderCancellationReport();
-    renderAgendaIntelligence();
-    renderOverviewWidgets();
-    renderHomeManagement();
 
-    await hydrateCoreDataFromSupabase(true);
+    const safeRender=(fn)=>{
+      try{fn()}catch(error){console.error('Erro visual após alterar status:',error)}
+    };
+    safeRender(renderCalendar);
+    safeRender(renderAppointments);
+    safeRender(renderCancellationReport);
+    safeRender(renderAgendaIntelligence);
+    safeRender(renderOverviewWidgets);
+    safeRender(renderHomeManagement);
+
+    try{ await hydrateCoreDataFromSupabase(true); }
+    catch(error){ console.error('Status salvo, mas falhou ao recarregar:',error); }
+
     showToast('Agendamento atualizado.');
   }catch(error){
-    console.error('Falha ao alterar status do agendamento:',error);
-    showToast(status==='finalizado'
-      ? 'Não foi possível finalizar este atendimento.'
-      : 'Não foi possível alterar o status.');
+    console.error('Falha real ao alterar status do agendamento:',error);
+    showToast(navigator.onLine
+      ? 'Não foi possível alterar o status.'
+      : 'Sem conexão com a internet. Verifique sua conexão e tente novamente.');
   }
 }
 
@@ -10586,6 +10528,65 @@ function renderRadar(){
   renderRadarKPIs();
   renderRadarTable();
   renderRadarPriorities();
+  renderRadarResultsReal();
+  renderRadarReasonsReal();
+}
+
+function renderRadarResultsReal(){
+  const contacted=RADAR_CLIENTS.filter(c=>c.contacted);
+  // O banco não possui campo/evento de "respondeu"; não estimamos esse dado.
+  const returned=contacted.filter(c=>c.daysAway<25);
+  const recoveredRevenue=returned.reduce((sum,c)=>sum+(Number(c.ticket)||0),0);
+
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+  set('radar-result-contacted',contacted.length);
+  set('radar-result-responded','—');
+  set('radar-result-returned',returned.length);
+  set('radar-result-revenue',money(recoveredRevenue));
+  set('radar-funnel-contacted',contacted.length);
+  set('radar-funnel-responded','—');
+  set('radar-funnel-returned',returned.length);
+
+  const fills=document.querySelectorAll('#page-radar .recovery-funnel-fill');
+  if(fills.length>=3){
+    fills[0].style.width=contacted.length?'100%':'0%';
+    fills[1].style.width='0%';
+    fills[2].style.width=contacted.length?`${Math.min(100,(returned.length/contacted.length)*100)}%`:'0%';
+  }
+
+  const note=document.getElementById('radar-recovery-note');
+  if(note){
+    if(!contacted.length){
+      note.textContent='Nenhum contato de retenção registrado.';
+    }else if(!returned.length){
+      note.textContent='Há contatos registrados, mas nenhuma reconquista identificada pelos dados disponíveis.';
+    }else{
+      note.textContent=`${returned.length} ${returned.length===1?'cliente contatado voltou':'clientes contatados voltaram'} a agendar. O sistema não registra respostas de WhatsApp separadamente.`;
+    }
+  }
+}
+
+function renderRadarReasonsReal(){
+  const root=document.getElementById('radar-reasons-list');
+  if(!root)return;
+  const risk=RADAR_CLIENTS.filter(c=>c.daysAway>=25);
+  if(!risk.length){
+    root.innerHTML='<div style="padding:14px 0;color:var(--text-muted);font-size:12px">Nenhum motivo de perda identificado.</div>';
+    return;
+  }
+  const counts=new Map();
+  risk.forEach(c=>{
+    const key=c.reason||'Sem classificação';
+    counts.set(key,(counts.get(key)||0)+1);
+  });
+  const rows=[...counts.entries()].sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(...rows.map(x=>x[1]),1);
+  root.innerHTML=rows.map(([name,count])=>`
+    <div class="reason-row">
+      <div class="reason-name">${escapeHTML(name)}</div>
+      <div class="reason-bar"><div class="reason-fill" style="width:${(count/max)*100}%"></div></div>
+      <div class="reason-count">${count}</div>
+    </div>`).join('');
 }
 
 function exportRadarCSV(){
@@ -10701,6 +10702,73 @@ function renderTeamRankingKPIs(data){
   document.getElementById('ranking-top-retention-meta').textContent=`${byRetention.retention.toFixed(0)}% de retenção`;
 }
 
+
+function renderFinanceInsightsReal(){
+  const revEl=document.getElementById('finance-insight-revenue');
+  const revDetail=document.getElementById('finance-insight-revenue-detail');
+  const ticketEl=document.getElementById('finance-insight-ticket');
+  const ticketDetail=document.getElementById('finance-insight-ticket-detail');
+  const teamEl=document.getElementById('finance-insight-team');
+  const teamDetail=document.getElementById('finance-insight-team-detail');
+  if(!revEl||!ticketEl||!teamEl)return;
+
+  const y=appToday.getFullYear(),m=appToday.getMonth();
+  const currentPrefix=`${y}-${String(m+1).padStart(2,'0')}`;
+  const prevDate=new Date(y,m-1,1);
+  const prevPrefix=`${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}`;
+
+  const sumRevenue=prefix=>FINANCE_MOVEMENTS
+    .filter(x=>x.type==='entrada' && String(x.date||'').startsWith(prefix))
+    .reduce((s,x)=>s+(Number(x.value)||0),0);
+
+  const currentRevenue=sumRevenue(currentPrefix);
+  const previousRevenue=sumRevenue(prevPrefix);
+
+  if(currentRevenue<=0 || previousRevenue<=0){
+    revEl.textContent='—';
+    revDetail.textContent='';
+  }else{
+    const diff=((currentRevenue-previousRevenue)/previousRevenue)*100;
+    revEl.textContent=`${Math.abs(diff).toFixed(1).replace('.',',')}% ${diff>=0?'acima':'abaixo'} do mês anterior`;
+    revDetail.textContent=`Atual: ${money(currentRevenue)} · mês anterior: ${money(previousRevenue)}.`;
+  }
+
+  const finalized=getAppointmentsForMonth(y,m).filter(a=>a.status==='finalizado');
+  const currentTicket=finalized.length?finalized.reduce((s,a)=>s+appointmentPrice(a),0)/finalized.length:0;
+  const fifteenAgo=new Date(appToday);fifteenAgo.setDate(fifteenAgo.getDate()-15);
+  const previous15=appointments.filter(a=>{
+    if(a.status!=='finalizado')return false;
+    const d=parseDateKey(a.date);
+    return d>=fifteenAgo && d<appToday;
+  });
+  const ticket15=previous15.length?previous15.reduce((s,a)=>s+appointmentPrice(a),0)/previous15.length:0;
+
+  if(!currentTicket || !ticket15){
+    ticketEl.textContent='—';
+    ticketDetail.textContent='';
+  }else{
+    const diff=currentTicket-ticket15;
+    ticketEl.textContent=`${money(Math.abs(diff))} ${diff>=0?'acima':'abaixo'} dos últimos 15 dias`;
+    ticketDetail.textContent=`Ticket atual: ${money(currentTicket)} · referência: ${money(ticket15)}.`;
+  }
+
+  const perTeam=activeTeam().map(member=>{
+    const related=finalized.filter(a=>a.professional===member.name);
+    return {name:member.name,revenue:related.reduce((s,a)=>s+appointmentPrice(a),0)};
+  }).filter(x=>x.revenue>0);
+  const total=perTeam.reduce((s,x)=>s+x.revenue,0);
+  if(!total || !perTeam.length){
+    teamEl.textContent='—';
+    teamDetail.textContent='';
+  }else{
+    perTeam.sort((a,b)=>b.revenue-a.revenue);
+    const top=perTeam[0];
+    const share=(top.revenue/total)*100;
+    teamEl.textContent=`${top.name} representa ${share.toFixed(0)}% do faturamento`;
+    teamDetail.textContent=`${money(top.revenue)} de ${money(total)} no período.`;
+  }
+}
+
 function renderTeamRanking(){
   const criterion=document.getElementById('ranking-criterion')?.value || 'revenue';
   const period=document.getElementById('ranking-period')?.value || 'month';
@@ -10731,7 +10799,30 @@ function renderTeamRanking(){
   if(!body) return;
 
   if(!sorted.length){
-    body.innerHTML='<div style="padding:24px;color:var(--text-muted)">Nenhum profissional ativo.</div>';
+    body.innerHTML='<div style="padding:24px;color:var(--text-muted)">Nenhum profissional cadastrado.</div>';
+    ['ranking-top-revenue','ranking-top-ticket','ranking-top-retention','ranking-top-revenue-meta','ranking-top-ticket-meta','ranking-top-retention-meta',
+     'ranking-insight-revenue','ranking-insight-ticket','ranking-insight-retention'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.textContent='—';
+    });
+    return;
+  }
+
+  const hasPerformance=data.some(m=>m.appointments>0 || m.revenue>0);
+  if(!hasPerformance){
+    body.innerHTML=data.map(member=>`
+      <div class="rank-team-row">
+        <div class="rank-team-position">—</div>
+        <div><div class="rank-team-name">${escapeHTML(member.name)}</div><div class="rank-team-role">Sem atendimentos finalizados no período</div></div>
+        <div class="rank-team-metric"><div class="label">Faturamento</div><div class="value">${money(0)}</div></div>
+        <div class="rank-team-metric"><div class="label">Atendimentos</div><div class="value">0</div></div>
+        <div class="rank-team-metric"><div class="label">Ticket médio</div><div class="value">—</div></div>
+        <div class="rank-team-metric"><div class="label">Ocupação</div><div class="value">—</div></div>
+        <div class="rank-team-metric"><div class="label">Retenção</div><div class="value">—</div></div>
+      </div>`).join('');
+    ['ranking-top-revenue','ranking-top-ticket','ranking-top-retention','ranking-top-revenue-meta','ranking-top-ticket-meta','ranking-top-retention-meta',
+     'ranking-insight-revenue','ranking-insight-ticket','ranking-insight-retention'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.textContent='—';
+    });
     return;
   }
 
@@ -10920,6 +11011,11 @@ function renderFinanceProfessionals(){
   });
 
   const total=data.reduce((s,m)=>s+m.revenue,0);
+
+  if(!data.length){
+    body.innerHTML='<div class="finance-empty">Nenhum profissional cadastrado.</div>';
+    return;
+  }
 
   body.innerHTML=data.map(item=>`
     <div class="finance-prof-row">
@@ -11181,7 +11277,7 @@ async function saveFinanceEntry(){
   }
 }
 
-function renderFinance(){renderFinanceKPIs();renderFinanceSummary();renderFinanceBreakdowns();renderFinanceProfessionals();renderFinanceMovements();renderFinanceChart('week')}
+function renderFinance(){renderFinanceKPIs();renderFinanceSummary();renderFinanceBreakdowns();renderFinanceProfessionals();renderFinanceMovements();renderFinanceChart('week');renderFinanceInsightsReal()}
 function exportFinanceCSV(){
   const rows=[['Data','Descrição','Cliente','Profissional','Categoria','Tipo','Pagamento','Valor'],...FINANCE_MOVEMENTS.map(i=>[i.date,i.description,i.client,i.professional,i.category,i.type,i.payment,i.value])];
   const csv=rows.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\n');
@@ -11634,9 +11730,16 @@ function renderBirthdayResults(){
 
   const fills=document.querySelectorAll('#page-birthdays .birthday-funnel-fill');
   if(fills.length>=3){
-    fills[0].style.width='100%';
+    fills[0].style.width=generated?'100%':'0%';
     fills[1].style.width=`${generated ? Math.min(100,(contacted/generated)*100) : 0}%`;
     fills[2].style.width=`${generated ? Math.min(100,(booked/generated)*100) : 0}%`;
+  }
+
+  const note=document.getElementById('birthday-results-note');
+  if(note){
+    note.textContent=generated
+      ? `${generated} ${generated===1?'ação gerada':'ações geradas'}, ${contacted} ${contacted===1?'contato registrado':'contatos registrados'} e ${booked} ${booked===1?'agendamento':'agendamentos'}.`
+      : 'Nenhuma ação de aniversário registrada.';
   }
 }
 
@@ -11651,11 +11754,13 @@ function renderBirthdayOpportunity(){
   const atRisk = weekClients.filter(c=>c.risk).length;
   const potential = weekClients.reduce((sum,c)=>sum+c.ticket,0);
 
-  document.getElementById('birthday-opportunity-value').textContent = money(potential);
+  document.getElementById('birthday-opportunity-value').textContent = weekClients.length ? money(potential) : '—';
   document.getElementById('birthday-opportunity-text').textContent =
-    `${weekClients.length} clientes fazem aniversário nos próximos 7 dias. ${notContacted} ainda não foram contatados, com potencial combinado de relacionamento e retorno.`;
+    weekClients.length
+      ? `${weekClients.length} ${weekClients.length===1?'cliente faz':'clientes fazem'} aniversário nos próximos 7 dias. ${notContacted} ainda não ${notContacted===1?'foi contatado':'foram contatados'}.`
+      : 'Nenhum cliente aniversariante nos próximos 7 dias.';
 
-  document.getElementById('birthday-week-ticket').textContent = money(avgTicket);
+  document.getElementById('birthday-week-ticket').textContent = weekClients.length ? money(avgTicket) : '—';
   document.getElementById('birthday-not-contacted').textContent = notContacted;
   document.getElementById('birthday-recurring-count').textContent = recurring;
   document.getElementById('birthday-risk-count').textContent = atRisk;
@@ -11863,13 +11968,18 @@ function renderHomeManagement(){
     .filter(item=>item.date===todayKey)
     .sort((a,b)=>a.time.localeCompare(b.time));
 
-  const active = todayAppointments.filter(item=>!['desmarcado','no-show'].includes(item.status));
-  const forecastRevenue = active.reduce((sum,item)=>sum+getServicePrice(item.service),0);
+  const operational = todayAppointments.filter(item=>!['desmarcado','no-show'].includes(item.status));
+  const finalizedToday = todayAppointments.filter(item=>item.status==='finalizado');
+  const pendingToday = todayAppointments.filter(item=>!['desmarcado','no-show','finalizado'].includes(item.status));
+
+  // Receita prevista é apenas o que ainda NÃO virou faturamento realizado.
+  const forecastRevenue = pendingToday.reduce((sum,item)=>sum+appointmentPrice(item),0);
+  const realizedTodayRevenue = finalizedToday.reduce((sum,item)=>sum+appointmentPrice(item),0);
 
   const capacityMinutes = getDailyCapacityMinutes();
-  const occupiedMinutes = active.reduce((sum,item)=>sum+appointmentDuration(item),0);
+  const occupiedMinutes = operational.reduce((sum,item)=>sum+appointmentDuration(item),0);
   const occupancy = capacityMinutes ? (occupiedMinutes/capacityMinutes)*100 : 0;
-  const ticket = active.length ? forecastRevenue/active.length : 0;
+  const ticket = finalizedToday.length ? realizedTodayRevenue/finalizedToday.length : 0;
 
   const idleSlots = buildIdleSlots(60).length;
 
@@ -11882,6 +11992,11 @@ function renderHomeManagement(){
   const currentRevenue=monthFinance.filter(m=>m.type==='entrada').reduce((s,m)=>s+m.value,0);
   const monthOut=monthFinance.filter(m=>m.type==='saida').reduce((s,m)=>s+m.value,0);
   const netProfit=currentRevenue-monthOut;
+
+  const pendingMonthRevenue=monthAppointments
+    .filter(item=>!['desmarcado','no-show','finalizado'].includes(item.status))
+    .reduce((sum,item)=>sum+appointmentPrice(item),0);
+  const projectedKnownMonthRevenue=currentRevenue+pendingMonthRevenue;
   const monthlyGoal=Math.max(0,Number(BUSINESS_SETTINGS.monthly_goal)||0);
   const daysInMonth = new Date(appToday.getFullYear(),appToday.getMonth()+1,0).getDate();
   const expectedByToday = monthlyGoal>0
@@ -11895,11 +12010,11 @@ function renderHomeManagement(){
     occupancy >= 40 ? 'ocupação moderada' :
     'agenda com espaço ocioso';
 
-  document.getElementById('home-ticket-average').textContent = money(ticket);
-  document.getElementById('home-ticket-meta').textContent = `${active.length} atendimentos considerados`;
+  document.getElementById('home-ticket-average').textContent = finalizedToday.length ? money(ticket) : '—';
+  document.getElementById('home-ticket-meta').textContent = finalizedToday.length ? `${finalizedToday.length} atendimentos finalizados considerados` : 'Sem atendimentos finalizados hoje';
 
   document.getElementById('home-forecast-revenue').textContent = money(forecastRevenue);
-  document.getElementById('home-forecast-close').textContent = money(forecastRevenue);
+  document.getElementById('home-forecast-close').textContent = money(projectedKnownMonthRevenue);
 
   document.getElementById('home-idle-count').textContent = idleSlots;
   document.getElementById('home-idle-meta').textContent =
@@ -11909,7 +12024,7 @@ function renderHomeManagement(){
   document.getElementById('home-loss-meta').textContent =
     `${bad} ${bad===1?'ocorrência':'ocorrências'} no mês`;
 
-  const todayNames=[...new Set(active.map(a=>normalizeClientName(a.client)))];
+  const todayNames=[...new Set(operational.map(a=>normalizeClientName(a.client)))];
   const newClients=todayNames.filter(name=>{
     const all=appointments.filter(a=>normalizeClientName(a.client)===name && !['desmarcado','no-show'].includes(a.status));
     return all.length<=1;
@@ -11962,30 +12077,95 @@ function renderHomeManagement(){
 
   const oppIdleDetail=document.getElementById('opp-idle-detail');
   if(oppIdleDetail){
-    const comboPrice = SERVICE_PRICES['Corte + Barba'] || 0;
+    const activePrices=activeServices().map(s=>Number(s.price)||0).filter(v=>v>0);
+    const referencePrice=activePrices.length?activePrices.reduce((s,v)=>s+v,0)/activePrices.length:0;
     oppIdleDetail.textContent =
-      idleSlots
-        ? `Preenchendo essas janelas com Corte + Barba, há potencial de até ${money(idleSlots*comboPrice)} adicionais.`
-        : 'Não há janelas ociosas dentro da capacidade configurada.';
+      idleSlots && referencePrice
+        ? `Com base no preço médio real dos serviços, essas janelas representam potencial de até ${money(idleSlots*referencePrice)}.`
+        : idleSlots
+          ? 'Há janelas ociosas, mas não existem serviços com preço cadastrado para estimar potencial.'
+          : 'Não há janelas ociosas dentro da capacidade configurada.';
   }
 
   const oppGoalHeadline=document.getElementById('opp-goal-headline');
   if(oppGoalHeadline){
-    oppGoalHeadline.textContent =
-      paceDiff >= 0
+    oppGoalHeadline.textContent = monthlyGoal<=0
+      ? '—'
+      : paceDiff >= 0
         ? `${money(Math.abs(paceDiff))} acima do ritmo da meta`
         : `${money(Math.abs(paceDiff))} abaixo do ritmo da meta`;
   }
 
   const oppGoalDetail=document.getElementById('opp-goal-detail');
   if(oppGoalDetail){
-    oppGoalDetail.textContent =
-      paceDiff >= 0
+    oppGoalDetail.textContent = monthlyGoal<=0
+      ? 'Nenhuma meta mensal configurada.'
+      : paceDiff >= 0
         ? 'O faturamento acumulado está acima do ritmo proporcional esperado para o mês.'
         : 'Há espaço para acelerar ocupação e ticket médio para recuperar o ritmo da meta.';
   }
 }
 
+
+
+function renderOverviewRealOnly(){
+  const todayKey=formatDateKey(appToday);
+  const todayActive=appointments.filter(a=>a.date===todayKey && !['desmarcado','no-show'].includes(a.status));
+  const monthPrefix=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}`;
+  const monthMovements=FINANCE_MOVEMENTS.filter(m=>String(m.date||'').startsWith(monthPrefix));
+  const gross=monthMovements.filter(m=>m.type==='entrada').reduce((s,m)=>s+(Number(m.value)||0),0);
+  const outputs=monthMovements.filter(m=>m.type==='saida').reduce((s,m)=>s+(Number(m.value)||0),0);
+
+  const completed=getAppointmentsForMonth(appToday.getFullYear(),appToday.getMonth()).filter(a=>a.status==='finalizado');
+  const commissions=completed.reduce((sum,a)=>{
+    const member=TEAM_CATALOG.find(m=>m.name===a.professional);
+    return sum+appointmentPrice(a)*(Math.max(0,Math.min(100,Number(member?.commission)||0))/100);
+  },0);
+
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+  set('overview-cash-gross',money(gross));
+  set('overview-cash-commissions',money(commissions));
+  set('overview-cash-net',money(gross-outputs-commissions));
+
+  const risk=RADAR_CLIENTS.filter(c=>c.daysAway>=25);
+  const riskPotential=risk.reduce((s,c)=>s+(Number(c.ticket)||0),0);
+  set('overview-risk-count',`${risk.length} ${risk.length===1?'cliente':'clientes'}`);
+  set('overview-risk-potential',money(riskPotential));
+  set('opp-retention-headline',risk.length?`${risk.length} ${risk.length===1?'cliente pode':'clientes podem'} ser reconquistado${risk.length===1?'':'s'}`:'0 clientes para reconquistar');
+  set('opp-retention-detail',risk.length?'Clientes em risco identificados a partir do histórico real de retornos.':'Nenhuma oportunidade de retenção identificada.');
+
+  const alerts=document.getElementById('overview-quick-alerts');
+  if(alerts){
+    const weekBirthdays=BIRTHDAY_CLIENTS.filter(c=>daysUntilBirthday(c.birthday)<=7);
+    const nearReward=LOYALTY_CLIENTS.filter(c=>c.status==='near');
+    const todayCancelled=appointments.filter(a=>a.date===todayKey && a.status==='desmarcado');
+
+    const items=[];
+    if(weekBirthdays.length) items.push(`<div class="alert-line"><span class="alert-dot blue"></span><div class="alert-text"><b>${weekBirthdays.length} ${weekBirthdays.length===1?'cliente':'clientes'}</b> ${weekBirthdays.length===1?'faz':'fazem'} aniversário nesta semana.</div></div>`);
+    if(nearReward.length) items.push(`<div class="alert-line"><span class="alert-dot amber"></span><div class="alert-text"><b>${escapeHTML(nearReward[0].name)}</b> está próximo de uma recompensa.</div></div>`);
+    if(todayCancelled.length) items.push(`<div class="alert-line"><span class="alert-dot blue"></span><div class="alert-text"><b>${todayCancelled.length} ${todayCancelled.length===1?'horário':'horários'}</b> ${todayCancelled.length===1?'foi liberado':'foram liberados'} hoje após desmarcação.</div></div>`);
+    alerts.innerHTML=items.length?items.join(''):'<div style="padding:10px 0;color:var(--text-muted);font-size:12px">Nenhum alerta no momento.</div>';
+  }
+
+  const teamRoot=document.getElementById('overview-team-highlight');
+  if(teamRoot){
+    if(!activeTeam().length){
+      teamRoot.innerHTML='<div style="padding:12px 0;color:var(--text-muted);font-size:12px">Nenhum profissional cadastrado.</div>';
+    }else{
+      const data=activeTeam().map(member=>{
+        const related=todayActive.filter(a=>a.professional===member.name && a.status==='finalizado');
+        const revenue=related.reduce((s,a)=>s+appointmentPrice(a),0);
+        return {name:member.name,count:related.length,revenue};
+      }).filter(x=>x.count>0).sort((a,b)=>b.revenue-a.revenue || b.count-a.count);
+
+      teamRoot.innerHTML=data.length?data.slice(0,3).map((item,index)=>`
+        <div class="mini-row">
+          <div><div class="who">${escapeHTML(item.name)}</div><div class="meta">${item.count} ${item.count===1?'atendimento finalizado':'atendimentos finalizados'} · ${money(item.revenue)} no dia</div></div>
+          <div class="mini-pill">${index+1}º</div>
+        </div>`).join(''):'<div style="padding:12px 0;color:var(--text-muted);font-size:12px">Nenhum atendimento finalizado hoje.</div>';
+    }
+  }
+}
 
 function renderOverviewWidgets(){
   const todayKey=formatDateKey(appToday);
@@ -12010,6 +12190,8 @@ function renderOverviewWidgets(){
       </div>
     `).join('');
   }
+
+  renderOverviewRealOnly();
 }
 
 function buildOverviewRevenueData(range){
@@ -12356,8 +12538,10 @@ function showDashboard(){
   startDashboardAutoSync();
   hydrateCoreDataFromSupabase()
     .catch(error=>{
-      console.error('Erro ao carregar dados do Supabase:',error);
-      showToast('Não foi possível sincronizar agenda, serviços e equipe.');
+      console.error('Erro real ao sincronizar dados do Supabase:',error);
+      showToast(navigator.onLine
+        ? (error?.message || 'Não foi possível sincronizar os dados do sistema.')
+        : 'Sem conexão com a internet. Verifique sua conexão e tente novamente.');
     });
 }
 
