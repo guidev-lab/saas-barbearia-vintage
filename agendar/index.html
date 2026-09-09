@@ -946,6 +946,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{
   .btn-primary,.btn-ghost{width:100%}
 }
 
+
+.manage-booking-actions{gap:8px;width:100%;margin-top:4px}
+.danger-ghost{color:#EF9A9A!important;border-color:rgba(239,100,100,.22)!important}
+.production-invalid-shop{margin:40px auto;max-width:520px;text-align:center;padding:30px!important}
+
 </style>
 </head>
 <body>
@@ -1066,7 +1071,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.4 2.1L9.1 10.6a16 16 0 0 0 4.3 4.3l1.2-1.2a2 2 0 0 1 2.1-.4c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/></svg>
             <input id="input-whatsapp" type="tel" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="(85) 99999-9999" autocomplete="tel">
           </div>
-          <div class="whatsapp-confirm-note" id="whatsapp-confirm-note">Você receberá a confirmação do seu agendamento pelo WhatsApp.</div>
+          <div class="whatsapp-confirm-note" id="whatsapp-confirm-note">Informe um WhatsApp válido para que a barbearia possa entrar em contato sobre este agendamento.</div>
         </div>
 
         <div class="booking-mini-summary" id="booking-mini-summary"></div>
@@ -1103,6 +1108,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.06-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.18-1.77 1.24-.45.06-1.02.09-1.65-.1-.38-.12-.87-.28-1.5-.55-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.44-1.08-2.74 0-1.3.68-1.94.93-2.2.24-.26.53-.33.7-.33h.5c.16 0 .38-.03.58.44.22.53.75 1.83.82 1.96.07.13.11.29.02.47-.09.18-.13.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.11.53.16.26.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.17 1.35.26.13.42.11.57-.07.16-.18.66-.77.84-1.03.18-.26.35-.22.58-.13.24.09 1.5.71 1.76.84.26.13.44.2.5.31.07.11.07.62-.15 1.24z"/></svg>
           Tirar dúvidas no WhatsApp
         </button>
+        <div id="manage-booking-actions" class="manage-booking-actions" style="display:none">
+          <button class="btn-ghost" id="btn-reschedule-booking" onclick="beginPublicReschedule()">Remarcar este horário</button>
+          <button class="btn-ghost danger-ghost" id="btn-cancel-booking" onclick="cancelPublicBooking()">Cancelar este horário</button>
+        </div>
         <button class="btn-ghost" onclick="resetFlow()">Fazer novo agendamento</button>
       </div>
     </section>
@@ -1156,12 +1165,46 @@ async function rpc(name,payload={}){
   }
 }
 
-const SHOP_SLUG = new URLSearchParams(window.location.search).get('shop') || 'barbearia-vintage';
+
+async function createBookingSecure(payload){
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),12000);
+  try{
+    const response=await fetch(`${SUPABASE_URL}/functions/v1/public-booking-create`,{
+      method:'POST',
+      headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        slug:SHOP_SLUG,
+        client_name:payload.clientName,
+        client_phone:payload.clientPhone,
+        service_id:payload.serviceId,
+        professional_id:payload.professionalId||'any',
+        date:payload.date,
+        time:payload.time,
+        website:''
+      }),
+      signal:controller.signal
+    });
+    let data={};
+    try{data=await response.json()}catch{}
+    if(!response.ok){
+      const err=new Error(data?.error||`Erro ${response.status}`);
+      err.code=data?.error||String(response.status);
+      err.status=response.status;
+      throw err;
+    }
+    return data.booking;
+  }finally{clearTimeout(timeout)}
+}
+
+const SHOP_SLUG = (new URLSearchParams(window.location.search).get('shop')||'').trim().toLowerCase();
+const HAS_VALID_SHOP_SLUG=/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(SHOP_SLUG);
 let SHOP_WHATSAPP = '55859855373909';
 let SHOP_NAME = 'Barbearia';
 let BOOKING_SETTINGS = {};
 let PUBLIC_PAGE_SETTINGS = {};
 let SHOP_WEEKLY_HOURS = {};
+let SHOP_TIMEZONE = 'America/Fortaleza';
 let SHOW_PRICES = true;
 let SHOW_TEAM = true;
 let ALLOW_ANY_PROFESSIONAL = true;
@@ -1176,7 +1219,7 @@ let catalogLoaded=false;
 let availabilityLoading=false;
 let availabilityRequestToken=0;
 
-let state = { serviceId:null, barberId:null, day:null, time:null, name:'', whatsapp:'' };
+let state = { serviceId:null, barberId:null, day:null, time:null, name:'', whatsapp:'', manageToken:null, rescheduleMode:false };
 const STORAGE_KEY = `barbershop_${SHOP_SLUG}_client`;
 
 function toast(message){
@@ -1210,15 +1253,31 @@ function safeStorageGet(key){
 function safeStorageSet(key,value){
   try{if(window.localStorage) window.localStorage.setItem(key,value);return true}catch(e){return false}
 }
+function safeStorageRemove(key){
+  try{if(window.localStorage) window.localStorage.removeItem(key)}catch(e){}
+}
+
 function timeToMinutes(time){
   const [h,m]=String(time||'00:00').split(':').map(Number);
   return (Number(h)||0)*60+(Number(m)||0);
 }
-function isTodayISO(iso){ return iso===localISO(new Date()); }
+function shopNowParts(){
+  const parts=new Intl.DateTimeFormat('en-CA',{
+    timeZone:SHOP_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',hourCycle:'h23'
+  }).formatToParts(new Date());
+  const get=type=>Number(parts.find(p=>p.type===type)?.value||0);
+  return {year:get('year'),month:get('month'),day:get('day'),hour:get('hour'),minute:get('minute')};
+}
+function shopTodayDate(){
+  const p=shopNowParts();
+  return new Date(p.year,p.month-1,p.day);
+}
+function isTodayISO(iso){ return iso===localISO(shopTodayDate()); }
 function isSlotInPast(iso,time){
   if(!isTodayISO(iso)) return false;
-  const now=new Date();
-  return timeToMinutes(time)<=now.getHours()*60+now.getMinutes();
+  const now=shopNowParts();
+  return timeToMinutes(time)<=now.hour*60+now.minute;
 }
 function normalizeDbTime(value){
   return String(value||'').slice(0,5);
@@ -1263,6 +1322,7 @@ async function loadPublicCatalog(){
   BOOKING_SETTINGS=shop.booking_settings||{};
   PUBLIC_PAGE_SETTINGS=shop.public_page_settings||{};
   SHOP_WEEKLY_HOURS=shop.weekly_hours||{};
+  SHOP_TIMEZONE=String(shop.timezone||'America/Fortaleza');
   SHOW_PRICES=PUBLIC_PAGE_SETTINGS.show_prices!==false;
   ALLOW_ANY_PROFESSIONAL=BOOKING_SETTINGS.allow_any_professional!==false;
   SHOW_TEAM=(PUBLIC_PAGE_SETTINGS.show_team!==false) || !ALLOW_ANY_PROFESSIONAL;
@@ -1335,7 +1395,9 @@ async function loadPublicCatalog(){
       id:String(item.id),
       name:String(item.name),
       specialty:`Profissional da ${SHOP_NAME}`,
-      photo:null
+      photo:null,
+      serviceIds:Array.isArray(item.service_ids)?item.service_ids.map(String):[],
+      hasServiceRestrictions:item.has_service_restrictions===true
     }))
   ];
 
@@ -1394,15 +1456,22 @@ function money(v){ return `R$ ${v.toFixed(2).replace('.',',')}`; }
 function loadReturningClient(){
   try{
     const raw=safeStorageGet(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  }catch(e){ return null; }
+    if(!raw) return null;
+    const parsed=JSON.parse(raw);
+    const maxAge=30*24*60*60*1000;
+    if(!parsed?.savedAt || Date.now()-Number(parsed.savedAt)>maxAge){
+      safeStorageRemove(STORAGE_KEY);
+      return null;
+    }
+    return parsed;
+  }catch{
+    safeStorageRemove(STORAGE_KEY);
+    return null;
+  }
 }
 function saveReturningClient(){
-  safeStorageSet(STORAGE_KEY, JSON.stringify({
-    name:state.name,
-    whatsapp:state.whatsapp,
-    lastServiceId:state.serviceId,
-    lastBarberId:state.barberId
+  safeStorageSet(STORAGE_KEY,JSON.stringify({
+    name:state.name,whatsapp:state.whatsapp,savedAt:Date.now()
   }));
 }
 
@@ -1505,18 +1574,23 @@ function renderServiceSelectionSummary(){
 }
 
 function renderBarbers(){
-  document.getElementById('barber-list').innerHTML=barbers.map(b=>`
+  const eligible=barbers.filter(b=>
+    b.id==='any' ||
+    !b.hasServiceRestrictions ||
+    b.serviceIds.includes(String(state.serviceId))
+  );
+  const realEligible=eligible.filter(b=>b.id!=='any');
+  const visible=eligible.filter(b=>b.id!=='any' || (ALLOW_ANY_PROFESSIONAL && realEligible.length>0));
+
+  document.getElementById('barber-list').innerHTML=visible.length?visible.map(b=>`
     <button class="option-card" data-id="${b.id}" onclick="selectBarber('${b.id}')">
       <div class="option-main">
         ${b.photo
           ? `<div class="avatar-sm" style="background-image:url('${b.photo}')"></div>`
           : `<div class="avatar-sm any-barber">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="6" cy="7" r="3"></circle>
-        <circle cx="6" cy="17" r="3"></circle>
-        <path d="M8.6 8.5 20 3"></path>
-        <path d="M8.6 15.5 20 21"></path>
-        <path d="M10 12h4"></path>
+        <circle cx="6" cy="7" r="3"></circle><circle cx="6" cy="17" r="3"></circle>
+        <path d="M8.6 8.5 20 3"></path><path d="M8.6 15.5 20 21"></path><path d="M10 12h4"></path>
       </svg>
     </div>`}
         <div class="option-copy">
@@ -1524,7 +1598,7 @@ function renderBarbers(){
           <div class="meta">${escapeHTML(b.specialty)}</div>
         </div>
       </div>
-    </button>`).join('');
+    </button>`).join(''):`<div class="integration-error"><strong>Nenhum profissional atende este serviço</strong><span>Escolha outro serviço ou fale com a barbearia.</span></div>`;
 }
 
 async function selectBarber(id){
@@ -1554,7 +1628,7 @@ function localISO(d){
 
 function renderDays(){
   const wrap=document.getElementById('day-scroll');
-  const today=new Date();
+  const today=shopTodayDate();
   const allowSameDay=BOOKING_SETTINGS.allow_same_day!==false;
   const maxDays=Math.max(1,Math.min(90,Number(BOOKING_SETTINGS.max_advance_days)||45));
   let first=null,html='';
@@ -1662,6 +1736,11 @@ function selectTime(t){
     document.getElementById('input-whatsapp').value=saved.whatsapp||'';
   }
 
+  if(state.rescheduleMode){
+    requestAnimationFrame(()=>performPublicReschedule());
+    return;
+  }
+
   requestAnimationFrame(()=>goTo('step-contact'));
 }
 
@@ -1745,61 +1824,50 @@ async function confirmBooking(){
   const btn=document.getElementById('btn-confirm');
 
   let invalid=false;
-  if(name.length<2){
-    markFieldError('input-name','Digite um nome válido.');
-    invalid=true;
-  }
-
+  if(name.length<2){markFieldError('input-name','Digite um nome válido.');invalid=true}
   const validBrazilPhone=/^[1-9]{2}(?:9\d{8}|\d{8})$/.test(phone) && !/^(\d)\1+$/.test(phone);
-  if(!validBrazilPhone){
-    markFieldError('input-whatsapp','Digite um WhatsApp brasileiro válido.');
-    invalid=true;
-  }
+  if(!validBrazilPhone){markFieldError('input-whatsapp','Digite um WhatsApp brasileiro válido.');invalid=true}
+  if(invalid){toast('Revise os campos destacados.');return}
 
-  if(invalid){
-    toast('Revise os campos destacados.');
-    return;
-  }
-
-  if(!state.serviceId){ toast('Selecione um serviço.'); goTo('step-service'); return; }
-  if(!state.barberId){ toast('Selecione um profissional.'); goTo('step-barber'); return; }
-  if(!state.day){ toast('Selecione uma data.'); goTo('step-time'); return; }
-  if(!state.time){ toast('Selecione um horário.'); goTo('step-time'); return; }
+  if(!state.serviceId){toast('Selecione um serviço.');goTo('step-service');return}
+  if(!state.barberId){toast('Selecione um profissional.');goTo('step-barber');return}
+  if(!state.day||!state.time){toast('Selecione data e horário.');goTo('step-time');return}
 
   const svc=services.find(s=>s.id===state.serviceId);
-  if(!svc){
-    toast('Esse serviço não está mais disponível.');
-    return;
-  }
+  if(!svc){toast('Esse serviço não está mais disponível.');return}
 
   btn.classList.add('is-loading');
   btn.disabled=true;
-  btn.textContent='Agendando...';
+  btn.textContent=state.rescheduleMode?'Remarcando...':'Agendando...';
 
   try{
-    const result=await rpc('public_create_booking_v2',{
-      p_slug:SHOP_SLUG,
-      p_client_name:name,
-      p_client_phone:phone,
-      p_service_id:state.serviceId,
-      p_professional_id:state.barberId==='any'?null:state.barberId,
-      p_date:state.day,
-      p_time:state.time
-    });
-
-    if(!result || !result.id){
-      throw new Error('Resposta inválida ao criar agendamento.');
+    let result;
+    if(state.rescheduleMode && state.manageToken){
+      result=await rpc('public_reschedule_booking_v2',{
+        p_slug:SHOP_SLUG,p_token:state.manageToken,p_date:state.day,p_time:state.time,
+        p_professional_id:state.barberId==='any'?null:state.barberId
+      });
+      result={...result,service_name:svc.name,price:svc.price,status:'confirmado'};
+      state.rescheduleMode=false;
+    }else{
+      result=await createBookingSecure({
+        clientName:name,clientPhone:phone,serviceId:state.serviceId,
+        professionalId:state.barberId==='any'?'any':state.barberId,date:state.day,time:state.time
+      });
+      state.manageToken=result?.manage_token||null;
+      setManageTokenInUrl(state.manageToken);
     }
 
-    state.name=name;
-    state.whatsapp=whatsapp;
+    if(!result?.id) throw new Error('booking_failed');
+
+    state.name=name; state.whatsapp=whatsapp;
     state.barberId=String(result.professional_id||state.barberId);
     saveReturningClient();
 
     const [y,m,d]=String(result.date||state.day).split('-');
     const time=normalizeDbTime(result.time||state.time);
     const serviceName=result.service_name||svc.name;
-    const professionalName=result.professional_name||'Profissional';
+    const professionalName=result.professional_name||resolvedBarberForSelection()?.name||'Profissional';
     const price=Number(result.price)||svc.price;
 
     document.getElementById('summary-card').innerHTML=`
@@ -1810,58 +1878,171 @@ async function confirmBooking(){
       <div class="summary-row"><span>Horário</span><span>${time}</span></div>
       ${SHOW_PRICES?`<div class="summary-row total"><span>Valor</span><span>${money(price)}</span></div>`:''}`;
 
-    const msg=encodeURIComponent(
-      `Olá! Tenho uma dúvida sobre meu agendamento na ${SHOP_NAME}:\n`+
-      `${serviceName} com ${professionalName}\n${d}/${m}/${y} às ${time}\nNome: ${name}`
-    );
+    const msg=encodeURIComponent(`Olá! Tenho uma dúvida sobre meu agendamento na ${SHOP_NAME}:\n${serviceName} com ${professionalName}\n${d}/${m}/${y} às ${time}\nNome: ${name}`);
+    document.getElementById('btn-whatsapp').onclick=()=>window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${msg}`,'_blank','noopener');
 
-    document.getElementById('btn-whatsapp').onclick=()=>
-      window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${msg}`,'_blank','noopener');
-
-    // invalida os horários desse serviço/data para a próxima consulta
     for(const key of [...availabilityCache.keys()]){
-      if(key.startsWith(`${state.day}|${state.serviceId}|`)){
-        availabilityCache.delete(key);
-      }
+      if(key.startsWith(`${state.day}|${state.serviceId}|`)) availabilityCache.delete(key);
     }
-
     availabilityRows=[];
+    renderPublicManageActions();
     goTo('step-done');
-
   }catch(error){
     console.error('Erro ao confirmar agendamento:',error);
-
-    const code=String(error?.code||'');
-    const message=String(error?.message||'');
-
-    if(code==='23P01' || message.includes('slot_unavailable') || message.includes('professional_unavailable')){
+    const code=String(error?.code||error?.message||'');
+    if(code.includes('rate_limited')){
+      toast('Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.');
+    }else if(code.includes('slot_unavailable')||code.includes('professional_unavailable')||code==='23P01'){
       toast('Esse horário acabou de ser ocupado. Escolha outro horário.');
-      availabilityRows=[];
-      goTo('step-time');
-      try{ await loadAvailability(true); }catch(e){}
-    }else if(message.includes('booking_time_in_past')){
-      toast('Esse horário já passou. Escolha outro.');
-      goTo('step-time');
-      try{ await loadAvailability(true); }catch(e){}
-    }else if(message.includes('service_unavailable')){
-      toast('Esse serviço não está mais disponível.');
-      goTo('step-service');
-      catalogPromise=null;
-      try{ await loadPublicCatalog(); }catch(e){}
+      availabilityRows=[];goTo('step-time');try{await loadAvailability(true)}catch{}
+    }else if(code.includes('service_unavailable')){
+      toast('Esse serviço não está mais disponível.');goTo('step-service');catalogPromise=null;try{await loadPublicCatalog()}catch{}
     }else if(!navigator.onLine){
       toast('Sem conexão com a internet. Verifique sua conexão e tente novamente.');
     }else{
-      toast('Não foi possível concluir o agendamento. Verifique sua conexão e tente novamente.');
+      toast('Não foi possível concluir. Tente novamente.');
     }
   }finally{
-    btn.classList.remove('is-loading');
-    btn.disabled=false;
-    btn.textContent='Confirmar agendamento';
+    btn.classList.remove('is-loading');btn.disabled=false;btn.textContent='Confirmar agendamento';
   }
 }
 
+
+
+function setManageTokenInUrl(token){
+  const url=new URL(location.href);
+  if(token) url.searchParams.set('manage',token);
+  else url.searchParams.delete('manage');
+  history.replaceState({},'',url);
+}
+
+async function loadManagedBookingFromUrl(){
+  const token=(new URLSearchParams(location.search).get('manage')||'').trim();
+  if(!/^[0-9a-f-]{36}$/i.test(token)) return false;
+
+  try{
+    const booking=await rpc('public_get_booking_v2',{p_slug:SHOP_SLUG,p_token:token});
+    if(!booking?.id) return false;
+
+    state.manageToken=token;
+    state.serviceId=String(booking.service_id||'');
+    state.barberId=String(booking.professional_id||'');
+    state.day=String(booking.date||'');
+    state.time=normalizeDbTime(booking.time);
+    state.name=String(booking.client||'');
+    state.rescheduleMode=false;
+
+    const svc=services.find(s=>s.id===state.serviceId);
+    const [y,m,d]=state.day.split('-');
+    document.getElementById('summary-card').innerHTML=`
+      <div class="summary-row"><span>Cliente</span><span>${escapeHTML(state.name)}</span></div>
+      <div class="summary-row"><span>Serviço</span><span>${escapeHTML(booking.service_name||svc?.name||'Serviço')}</span></div>
+      <div class="summary-row"><span>Profissional</span><span>${escapeHTML(booking.professional_name||'Profissional')}</span></div>
+      <div class="summary-row"><span>Data</span><span>${d}/${m}/${y}</span></div>
+      <div class="summary-row"><span>Horário</span><span>${state.time}</span></div>
+      ${SHOW_PRICES?`<div class="summary-row total"><span>Valor</span><span>${money(Number(booking.price)||0)}</span></div>`:''}`;
+
+    const doneTitle=document.querySelector('#step-done .progress-title');
+    const doneH2=document.querySelector('#step-done .confirm-wrap h2');
+    const doneP=document.querySelector('#step-done .confirm-wrap > p');
+    if(booking.status==='desmarcado'){
+      if(doneTitle) doneTitle.textContent='Agendamento cancelado';
+      if(doneH2) doneH2.textContent='Horário cancelado';
+      if(doneP) doneP.textContent='Este agendamento já foi cancelado.';
+      state.manageToken=null;
+    }else if(booking.status==='finalizado'){
+      if(doneTitle) doneTitle.textContent='Atendimento concluído';
+      if(doneH2) doneH2.textContent='Atendimento finalizado';
+      if(doneP) doneP.textContent='Este atendimento já foi concluído pela barbearia.';
+      state.manageToken=null;
+    }
+
+    renderPublicManageActions();
+    goTo('step-done');
+    return true;
+  }catch(error){
+    console.error('Falha ao abrir gerenciamento do agendamento:',error);
+    return false;
+  }
+}
+
+async function performPublicReschedule(){
+  if(!state.manageToken||!state.day||!state.time) return;
+  const selectedTime=state.time;
+  try{
+    const result=await rpc('public_reschedule_booking_v2',{
+      p_slug:SHOP_SLUG,p_token:state.manageToken,p_date:state.day,p_time:selectedTime,
+      p_professional_id:state.barberId==='any'?null:state.barberId
+    });
+    state.barberId=String(result.professional_id||state.barberId);
+    state.rescheduleMode=false;
+    availabilityRows=[];
+    for(const key of [...availabilityCache.keys()]){
+      if(key.startsWith(`${state.day}|${state.serviceId}|`)) availabilityCache.delete(key);
+    }
+    toast('Agendamento remarcado com sucesso.');
+    await loadManagedBookingFromUrl();
+  }catch(error){
+    console.error(error);
+    const message=String(error?.message||'');
+    if(message.includes('slot_unavailable')){
+      toast('Esse horário acabou de ser ocupado. Escolha outro.');
+      state.time=null;
+      try{await loadAvailability(true)}catch{}
+      renderTimeSlots();
+    }else{
+      toast('Não foi possível remarcar. Tente outro horário ou fale com a barbearia.');
+    }
+  }
+}
+
+function renderPublicManageActions(){
+  const root=document.getElementById('manage-booking-actions');
+  if(!root) return;
+  const canCancel=BOOKING_SETTINGS.allow_client_cancel===true && !!state.manageToken;
+  const canReschedule=BOOKING_SETTINGS.allow_client_reschedule===true && !!state.manageToken;
+  document.getElementById('btn-cancel-booking').style.display=canCancel?'':'none';
+  document.getElementById('btn-reschedule-booking').style.display=canReschedule?'':'none';
+  root.style.display=(canCancel||canReschedule)?'grid':'none';
+}
+
+function beginPublicReschedule(){
+  if(!state.manageToken || BOOKING_SETTINGS.allow_client_reschedule!==true){
+    toast('A remarcação online não está disponível para este agendamento.');return;
+  }
+  state.rescheduleMode=true;
+  state.day=null;state.time=null;
+  availabilityRows=[];
+  renderDays();renderTimeSelectionSummary();
+  goTo('step-time');
+  toast('Escolha a nova data e o novo horário.');
+}
+
+async function cancelPublicBooking(){
+  if(!state.manageToken || BOOKING_SETTINGS.allow_client_cancel!==true){
+    toast('O cancelamento online não está disponível para este agendamento.');return;
+  }
+  if(!confirm('Deseja cancelar este agendamento?')) return;
+  const btn=document.getElementById('btn-cancel-booking');
+  btn.disabled=true;const old=btn.textContent;btn.textContent='Cancelando...';
+  try{
+    await rpc('public_cancel_booking_v2',{p_slug:SHOP_SLUG,p_token:state.manageToken});
+    state.manageToken=null;state.rescheduleMode=false;setManageTokenInUrl(null);
+    renderPublicManageActions();
+    document.querySelector('#step-done .progress-title').textContent='Agendamento cancelado';
+    document.querySelector('#step-done .confirm-wrap h2').textContent='Horário cancelado';
+    document.querySelector('#step-done .confirm-wrap > p').textContent='O horário foi liberado. Se precisar, fale com a barbearia pelo WhatsApp.';
+    toast('Agendamento cancelado.');
+  }catch(error){
+    const msg=String(error?.message||'');
+    if(msg.includes('cancellation_window_closed')) toast('O prazo para cancelamento online já encerrou.');
+    else toast('Não foi possível cancelar. Fale com a barbearia.');
+  }finally{btn.disabled=false;btn.textContent=old}
+}
+
 function resetFlow(){
-  state={serviceId:null,barberId:null,day:null,time:null,name:'',whatsapp:''};
+  setManageTokenInUrl(null);
+  state={serviceId:null,barberId:null,day:null,time:null,name:'',whatsapp:'',manageToken:null,rescheduleMode:false};
   availabilityRows=[];
   document.getElementById('input-name').value='';
   document.getElementById('input-whatsapp').value='';
@@ -1882,8 +2063,23 @@ document.addEventListener('visibilitychange',()=>{
 (async function initPublicBooking(){
   const shell=document.querySelector('.booking-shell');
   if(shell) shell.dataset.currentStep='step-service';
+
+  if(!HAS_VALID_SHOP_SLUG){
+    document.querySelector('main').innerHTML=`
+      <section class="screen active">
+        <div class="integration-error production-invalid-shop">
+          <strong>Link de agendamento inválido</strong>
+          <span>Este endereço não identifica uma barbearia. Solicite o link oficial ao estabelecimento.</span>
+        </div>
+      </section>`;
+    document.title='Link de agendamento inválido';
+    return;
+  }
+
   try{
     await loadPublicCatalog();
+    const openedManaged=await loadManagedBookingFromUrl();
+    if(openedManaged) return;
   }catch(error){
     console.error('Erro ao carregar catálogo:',error);
     document.getElementById('service-list').innerHTML=`
