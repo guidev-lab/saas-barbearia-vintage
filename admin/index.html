@@ -347,6 +347,14 @@ button:disabled{
   .skeleton::after,.btn[aria-busy="true"]::before{animation:none!important}
 }
 
+
+.availability-services{display:grid;gap:8px;margin-top:10px}
+.availability-all,.availability-service-item{display:flex;align-items:center;gap:8px;font-size:9px;color:var(--muted)}
+.availability-service-item{padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:#0f1621}
+.availability-service-item span{color:var(--text)}
+.availability-hours input,.availability-hours select{min-width:0}
+@media(max-width:680px){.availability-hours{grid-template-columns:1fr 1fr}.availability-hours span{grid-column:1/-1}}
+
 </style>
 </head>
 <body>
@@ -613,6 +621,7 @@ button:disabled{
     <button class="tab" data-tab="plan" onclick="tab('plan')">Plano e acesso</button>
     <button class="tab" data-tab="hours" onclick="tab('hours')">Horários</button>
     <button class="tab" data-tab="team" onclick="tab('team')">Equipe</button>
+    <button class="tab" data-tab="availability" onclick="tab('availability');renderAvailabilityAdmin()">Disponibilidade</button>
     <button class="tab" data-tab="services" onclick="tab('services')">Serviços</button>
     <button class="tab" data-tab="agenda" onclick="tab('agenda')">Agenda</button>
     <button class="tab" data-tab="finance" onclick="tab('finance')">Financeiro</button>
@@ -644,13 +653,24 @@ button:disabled{
     <div class="field full"><label>Descrição pública</label><textarea id="i-description"></textarea></div>
     <div class="field full"><label>URL da logo</label><input id="i-logo"></div>
     <div class="field"><label for="i-city">Cidade</label><input id="i-city"></div><div class="field"><label for="i-state">Estado</label><input id="i-state"></div>
+    <div class="field"><label for="i-timezone">Fuso horário</label><select id="i-timezone">
+      <option value="America/Fortaleza">Fortaleza / Recife / Salvador</option>
+      <option value="America/Sao_Paulo">São Paulo / Brasília</option>
+      <option value="America/Manaus">Manaus</option>
+      <option value="America/Cuiaba">Cuiabá / Campo Grande</option>
+      <option value="America/Rio_Branco">Rio Branco</option>
+    </select></div>
     <div class="field full"><label>Endereço</label><input id="i-address"></div><div class="field full"><label>Domínio personalizado</label><input id="i-domain"></div>
   </div><div class="save"><button class="btn primary" onclick="saveIdentity(this)">Salvar identidade</button></div></div></div>
 
   <div id="pane-plan" class="pane"><div class="grid2">
     <div class="card"><h3>Plano e assinatura</h3><div class="form2"><div class="field"><label for="pl-plan">Plano</label><select id="pl-plan" onchange="syncSelectedPlanPreview()"><option value="basic">Básico</option><option value="pro">Pro</option><option value="premium">Premium</option></select></div><div class="field"><label for="pl-status">Status</label><select id="pl-status"><option value="trial">Trial</option><option value="active">Ativa</option><option value="past_due">Pagamento pendente</option><option value="suspended">Suspensa</option><option value="cancelled">Cancelada</option></select></div><div class="field"><label for="pl-price">Mensalidade (R$)</label><input id="pl-price" type="number" min="0" step="0.01"></div><div class="field"><label for="pl-trial-end">Fim do trial</label><input id="pl-trial-end" type="date"></div></div>
     <div id="pl-effective-summary" class="plan-effective-summary"></div>
-    <div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="save"><button class="btn primary" onclick="savePlan(this)">Salvar</button></div></div>
+    <div class="setting"><div><strong>Acesso ao sistema</strong><span>Bloqueia ou libera a conta.</span></div><button id="pl-active" class="switch" onclick="toggle(this)"></button></div><div class="card" style="margin-top:12px;background:#101722">
+      <strong style="font-size:10px">Cobrança da assinatura</strong>
+      <p style="font-size:9px;color:var(--muted);line-height:1.5;margin-top:6px">Modo atual: controle manual pelo Master. Nenhum gateway de pagamento está conectado, portanto status como “pagamento pendente” e “suspensa” não são atualizados automaticamente.</p>
+    </div>
+    <div class="save"><button class="btn primary" onclick="savePlan(this)">Salvar</button></div></div>
     <div class="card"><h3>Acesso do proprietário</h3><div class="field"><label for="owner-email">Email</label><input id="owner-email" type="email"></div><div class="field"><label for="owner-password">Senha inicial / nova senha</label><input id="owner-password" type="password"></div><button class="btn primary" onclick="provisionOwner(this)">Salvar acesso</button></div>
   </div></div>
 
@@ -658,7 +678,32 @@ button:disabled{
 
   <div id="pane-team" class="pane"><div class="card"><div class="card-head"><div><h2>Equipe</h2><p>Profissionais desta barbearia.</p></div><button class="btn primary" onclick="openTeam()">+ Profissional</button></div><div id="team-list" class="data"></div></div></div>
 
-  <div id="pane-services" class="pane"><div class="card"><div class="card-head"><div><h2>Serviços</h2><p>Preços, duração e disponibilidade.</p></div><button class="btn primary" onclick="openService()">+ Serviço</button></div><div id="services-list" class="data"></div></div></div>
+  
+  <div id="pane-availability" class="pane">
+    <div class="grid2">
+      <div class="card">
+        <div class="card-head"><div><h2>Agenda por profissional</h2><p>Defina jornada semanal e quais serviços cada profissional executa.</p></div></div>
+        <div class="field"><label for="av-prof">Profissional</label><select id="av-prof" onchange="renderAvailabilityAdmin()"></select></div>
+        <div id="av-weekly"></div>
+        <div style="margin-top:14px;font-family:Sora;font-size:11px">Serviços atendidos</div>
+        <div id="av-services" class="availability-services"></div>
+        <div class="save"><button class="btn primary" onclick="saveAvailabilityAdmin(this)">Salvar disponibilidade</button></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Folgas e bloqueios</h2><p>Férias, almoço, compromissos e fechamentos extraordinários.</p></div></div>
+        <div class="field"><label for="block-prof">Profissional</label><select id="block-prof"></select></div>
+        <div class="form2">
+          <div class="field"><label for="block-start">Início</label><input id="block-start" type="datetime-local"></div>
+          <div class="field"><label for="block-end">Fim</label><input id="block-end" type="datetime-local"></div>
+        </div>
+        <div class="field"><label for="block-reason">Motivo</label><input id="block-reason" placeholder="Ex.: almoço, férias, consulta"></div>
+        <div class="save"><button class="btn primary" onclick="addAvailabilityBlock(this)">Adicionar bloqueio</button></div>
+        <div id="availability-block-list" class="data" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+
+<div id="pane-services" class="pane"><div class="card"><div class="card-head"><div><h2>Serviços</h2><p>Preços, duração e disponibilidade.</p></div><button class="btn primary" onclick="openService()">+ Serviço</button></div><div id="services-list" class="data"></div></div></div>
 
   <div id="pane-agenda" class="pane"><div class="card"><h3>Regras de agendamento</h3><div class="form2">
     <div class="field"><label for="a-min">Antecedência mínima (min)</label><input id="a-min" type="number"></div><div class="field"><label for="a-max">Máximo de dias futuros</label><input id="a-max" type="number"></div>
@@ -676,7 +721,11 @@ button:disabled{
   <div id="pane-loyalty" class="pane"><div class="card"><h3>Programa de fidelidade</h3><div class="setting"><div><strong>Fidelidade ativa</strong></div><button id="l-enabled" class="switch" onclick="toggle(this)"></button></div><div class="form2"><div class="field"><label for="l-goal">Visitas para recompensa</label><input id="l-goal" type="number"></div><div class="field"><label for="l-reward">Recompensa</label><input id="l-reward"></div></div><div class="save"><button class="btn primary" onclick="saveLoyalty(this)">Salvar</button></div></div></div>
 
   <div id="pane-whatsapp" class="pane"><div class="card"><h3>WhatsApp e automações</h3>
-    <div class="setting"><div><strong>Integração ativa</strong></div><button id="w-enabled" class="switch" onclick="toggle(this)"></button></div>
+    <div class="setting"><div><strong>Recursos de WhatsApp habilitados</strong><span>Controla os recursos internos relacionados a WhatsApp.</span></div><button id="w-enabled" class="switch" onclick="toggle(this)"></button></div>
+    <div class="card" style="background:#101722;margin:10px 0 14px">
+      <strong style="font-size:10px">Envio automático ainda não conectado</strong>
+      <p style="font-size:9px;color:var(--muted);line-height:1.5;margin-top:6px">Estas preferências ficam salvas, mas nenhuma mensagem automática será enviada até que um provedor/API de WhatsApp seja conectado ao SaaS.</p>
+    </div>
     <div class="setting"><div><strong>Confirmação de agendamento</strong></div><button id="w-confirm" class="switch" onclick="toggle(this)"></button></div>
     <div class="setting"><div><strong>Lembrete</strong></div><button id="w-reminder" class="switch" onclick="toggle(this)"></button></div>
     <div class="setting"><div><strong>Aniversário</strong></div><button id="w-birthday" class="switch" onclick="toggle(this)"></button></div>
@@ -773,9 +822,9 @@ function createRestClient(baseUrl, apiKey){
     single(){ this.expect='single'; return this; }
     update(obj){ this.method='PATCH'; this.body=obj; return this; }
     insert(obj){ this.method='POST'; this.body=obj; return this; }
-    upsert(obj){
+    upsert(obj,opt={}){
       this.method='POST'; this.body=obj;
-      this.params.set('on_conflict','id');
+      this.params.set('on_conflict',opt.onConflict||'id');
       this.prefer.push('resolution=merge-duplicates');
       return this;
     }
@@ -851,7 +900,7 @@ function createRestClient(baseUrl, apiKey){
 <script>
 const URL='https://gfdtnjhqamtmxvlaaeoz.supabase.co',KEY='sb_publishable_7jBvCxY-xK4BTTAvEY0N9A_d7RqcEnu';
 const sb=createRestClient(URL,KEY);
-let shops=[],shop=null,metrics={},services=[],team=[],biz=null,platformPlans=[],reportData=null;
+let shops=[],shop=null,metrics={},services=[],team=[],biz=null,platformPlans=[],reportData=null,professionalHours=[],professionalServices=[],professionalBlocks=[];
 const days=[['mon','Segunda'],['tue','Terça'],['wed','Quarta'],['thu','Quinta'],['fri','Sexta'],['sat','Sábado'],['sun','Domingo']];
 const MEMBERSHIP_ROLES={
   owner:'Proprietário',
@@ -1604,20 +1653,26 @@ async function loadShopData(options={}){
   if(!options.silent) setLoading(loadingIds,true);
 
   try{
-    const [mRes,sRes,tRes,bRes]=await Promise.all([
+    const [mRes,sRes,tRes,bRes,hRes,psRes,blRes]=await Promise.all([
       sb.rpc('platform_barbershop_metrics',{p_barbershop_id:id}),
       sb.from('services').select('*').eq('barbershop_id',id).order('created_at'),
       sb.from('team_members').select('*').eq('barbershop_id',id).order('created_at'),
-      sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle()
+      sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle(),
+      sb.from('professional_working_hours').select('*').eq('barbershop_id',id),
+      sb.from('professional_services').select('*').eq('barbershop_id',id),
+      sb.rpc('professional_time_blocks_local',{p_barbershop_id:id})
     ]);
 
-    const error=mRes.error||sRes.error||tRes.error||bRes.error;
+    const error=mRes.error||sRes.error||tRes.error||bRes.error||hRes.error||psRes.error||blRes.error;
     if(error) throw error;
     if(shop?.id!==id) return false;
 
     metrics=mRes.data||{};
     services=sRes.data||[];
     team=tRes.data||[];
+    professionalHours=hRes.data||[];
+    professionalServices=psRes.data||[];
+    professionalBlocks=blRes.data||[];
     biz=bRes.data||{monthly_goal:0,loyalty_enabled:true,loyalty_visit_goal:10,loyalty_reward_name:'Corte grátis'};
     renderAll();
     return true;
@@ -1631,8 +1686,8 @@ async function loadShopData(options={}){
     if(!options.silent) setLoading(loadingIds,false);
   }
 }
-function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('m-appts').textContent=metrics.appointments_month??0;$('m-ticket').textContent=money(metrics.avg_ticket);$('m-clients').textContent=metrics.clients??0;$('m-next').textContent=metrics.next_7_days??0;$('m-today').textContent=metrics.appointments_today??0;$('m-team').textContent=metrics.active_team??0;$('m-services').textContent=metrics.active_services??0;$('m-cancelled').textContent=metrics.cancelled_month??0;$('f-in').textContent=money(metrics.revenue_month);$('f-out').textContent=money(metrics.expenses_month);const checks=[shop.name,shop.whatsapp,shop.city,shop.address,services.length,team.length,shop.weekly_hours,Object.keys(shop.booking_settings||{}).length],pct=Math.round(checks.filter(Boolean).length/checks.length*100);$('setup-label').textContent=pct+'% configurado';$('setup').style.width=pct+'%';$('setup-hint').textContent=pct===100?'Principais dados preenchidos.':'Ainda há itens de implantação a completar.';fillForms();renderHours();renderServices();renderTeam();renderPermissions()}
-function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);renderEffectivePlanSummary(shop.plan);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
+function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('m-appts').textContent=metrics.appointments_month??0;$('m-ticket').textContent=money(metrics.avg_ticket);$('m-clients').textContent=metrics.clients??0;$('m-next').textContent=metrics.next_7_days??0;$('m-today').textContent=metrics.appointments_today??0;$('m-team').textContent=metrics.active_team??0;$('m-services').textContent=metrics.active_services??0;$('m-cancelled').textContent=metrics.cancelled_month??0;$('f-in').textContent=money(metrics.revenue_month);$('f-out').textContent=money(metrics.expenses_month);const checks=[shop.name,shop.whatsapp,shop.city,shop.address,services.length,team.length,shop.weekly_hours,Object.keys(shop.booking_settings||{}).length],pct=Math.round(checks.filter(Boolean).length/checks.length*100);$('setup-label').textContent=pct+'% configurado';$('setup').style.width=pct+'%';$('setup-hint').textContent=pct===100?'Principais dados preenchidos.':'Ainda há itens de implantação a completar.';fillForms();renderHours();renderServices();renderTeam();renderAvailabilityAdmin();renderPermissions()}
+function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';if($('i-timezone'))$('i-timezone').value=shop.timezone||'America/Fortaleza';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);renderEffectivePlanSummary(shop.plan);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
 async function updateShop(patch){
   if(!shop?.id) throw new Error('shop_not_selected');
   const {data,error}=await sb.from('barbershops')
@@ -1664,6 +1719,7 @@ async function saveIdentity(trigger=null){
       logo_url:$('i-logo').value.trim()||null,
       city:$('i-city').value.trim()||null,
       state:$('i-state').value.trim().toUpperCase()||null,
+      timezone:$('i-timezone').value||'America/Fortaleza',
       address:$('i-address').value.trim()||null,
       custom_domain:$('i-domain').value.trim()||null
     });
@@ -1827,7 +1883,157 @@ async function deleteService(id,trigger=null){
     safeBackground(loadShopData({silent:true}),'atualização de serviços');
   }
 }
-function renderTeam(){$('team-list').innerHTML=team.length?team.map(t=>`<div class="row team"><strong>${esc(t.name)}</strong><span>Comissão ${Number(t.commission||0)}%</span><span>${t.active?'Ativo':'Inativo'}</span><div class="actions"><button class="btn" onclick="openTeam('${t.id}')">Editar</button><button class="btn danger" onclick="deleteTeam('${t.id}',this)">Excluir</button></div></div>`).join(''):'<div style="padding:20px;color:var(--muted);font-size:9px">Nenhum profissional.</div>'}
+
+const AVAILABILITY_DAYS=[
+  [1,'Segunda'],[2,'Terça'],[3,'Quarta'],[4,'Quinta'],[5,'Sexta'],[6,'Sábado'],[0,'Domingo']
+];
+
+function syncAvailabilityProfessionalSelects(){
+  const options=team.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  ['av-prof','block-prof'].forEach(id=>{
+    const el=$(id); if(!el) return;
+    const old=el.value;
+    el.innerHTML=options||'<option value="">Nenhum profissional</option>';
+    if(team.some(t=>t.id===old)) el.value=old;
+  });
+}
+
+function shopHoursForDow(dow){
+  const key=['sun','mon','tue','wed','thu','fri','sat'][dow];
+  return shop?.weekly_hours?.[key]||{open:'09:00',close:'19:00',closed:dow===0};
+}
+
+function renderAvailabilityAdmin(){
+  if(!$('av-prof')) return;
+  syncAvailabilityProfessionalSelects();
+  const professionalId=$('av-prof').value;
+  if(!professionalId){
+    $('av-weekly').innerHTML='<div style="padding:14px;color:var(--muted);font-size:9px">Cadastre um profissional primeiro.</div>';
+    $('av-services').innerHTML='';
+    $('availability-block-list').innerHTML='';
+    return;
+  }
+
+  $('av-weekly').innerHTML=AVAILABILITY_DAYS.map(([dow,label])=>{
+    const row=professionalHours.find(x=>x.professional_id===professionalId && Number(x.day_of_week)===dow);
+    const base=shopHoursForDow(dow);
+    const closed=row?row.closed:base.closed;
+    const open=(row?.open_time||base.open||'09:00').slice(0,5);
+    const close=(row?.close_time||base.close||'19:00').slice(0,5);
+    return `<div class="hours availability-hours">
+      <span>${label}</span>
+      <input id="av-${dow}-open" type="time" value="${open}" ${closed?'disabled':''}>
+      <input id="av-${dow}-close" type="time" value="${close}" ${closed?'disabled':''}>
+      <select id="av-${dow}-closed" onchange="toggleAvailabilityDay(${dow})">
+        <option value="false" ${!closed?'selected':''}>Trabalha</option>
+        <option value="true" ${closed?'selected':''}>Folga</option>
+      </select>
+    </div>`;
+  }).join('');
+
+  const member=team.find(t=>t.id===professionalId);
+  const restricted=member?.service_restrictions_enabled===true;
+  const selected=new Set(professionalServices.filter(x=>x.professional_id===professionalId).map(x=>x.service_id));
+  $('av-services').innerHTML=`
+    <label class="availability-all"><input id="av-restrict-services" type="checkbox" ${restricted?'checked':''} onchange="renderAvailabilityServiceChecks()"> Restringir os serviços deste profissional</label>
+    <div id="av-service-checks"></div>`;
+  renderAvailabilityServiceChecks();
+  renderAvailabilityBlocks();
+}
+
+function toggleAvailabilityDay(dow){
+  const closed=$(`av-${dow}-closed`).value==='true';
+  $(`av-${dow}-open`).disabled=closed;
+  $(`av-${dow}-close`).disabled=closed;
+}
+
+function renderAvailabilityServiceChecks(){
+  const professionalId=$('av-prof')?.value;
+  const restricted=$('av-restrict-services')?.checked===true;
+  const selected=new Set(professionalServices.filter(x=>x.professional_id===professionalId).map(x=>x.service_id));
+  const root=$('av-service-checks'); if(!root) return;
+  root.innerHTML=services.length?services.map(s=>`
+    <label class="availability-service-item">
+      <input type="checkbox" data-service-id="${esc(s.id)}" ${(!restricted||selected.has(s.id))?'checked':''} ${restricted?'':'disabled'}>
+      <span>${esc(s.name)}</span>
+    </label>`).join(''):'<div style="color:var(--muted);font-size:9px">Nenhum serviço cadastrado.</div>';
+}
+
+async function saveAvailabilityAdmin(trigger=null){
+  const professionalId=$('av-prof').value;
+  if(!professionalId){toast('Selecione um profissional.','warning');return}
+  const restricted=$('av-restrict-services')?.checked===true;
+  const serviceIds=[...document.querySelectorAll('#av-service-checks input[data-service-id]:checked')].map(x=>x.dataset.serviceId);
+
+  const rows=[];
+  for(const [dow] of AVAILABILITY_DAYS){
+    const closed=$(`av-${dow}-closed`).value==='true';
+    const open=$(`av-${dow}-open`).value,close=$(`av-${dow}-close`).value;
+    if(!closed && (!open||!close||open>=close)){toast('Revise os horários do profissional.','warning');return}
+    rows.push({barbershop_id:shop.id,professional_id:professionalId,day_of_week:dow,open_time:open||null,close_time:close||null,closed,updated_at:new Date().toISOString()});
+  }
+
+  const result=await runAdminAction({key:`availability:${professionalId}`,button:trigger,loadingText:'Salvando...',fallbackError:'Não foi possível salvar a disponibilidade.'},async()=>{
+    let r=await sb.from('professional_working_hours').upsert(rows,{onConflict:'barbershop_id,professional_id,day_of_week'}).select();
+    if(r.error) throw r.error;
+
+    r=await sb.from('professional_services').delete().eq('barbershop_id',shop.id).eq('professional_id',professionalId);
+    if(r.error) throw r.error;
+    if(restricted && serviceIds.length){
+      r=await sb.from('professional_services').insert(serviceIds.map(service_id=>({barbershop_id:shop.id,professional_id:professionalId,service_id}))).select();
+      if(r.error) throw r.error;
+    }
+    r=await sb.from('team_members').update({service_restrictions_enabled:restricted,updated_at:new Date().toISOString()}).eq('id',professionalId).eq('barbershop_id',shop.id).select().single();
+    if(r.error) throw r.error;
+
+    const idx=team.findIndex(t=>t.id===professionalId); if(idx>=0) team[idx]=r.data;
+    const [hRes,psRes]=await Promise.all([
+      sb.from('professional_working_hours').select('*').eq('barbershop_id',shop.id),
+      sb.from('professional_services').select('*').eq('barbershop_id',shop.id)
+    ]);
+    if(hRes.error||psRes.error) throw hRes.error||psRes.error;
+    professionalHours=hRes.data||[]; professionalServices=psRes.data||[];
+    renderAvailabilityAdmin();
+  });
+  if(result.ok) toast('Disponibilidade do profissional atualizada.','success');
+}
+
+function renderAvailabilityBlocks(){
+  const professionalId=$('av-prof')?.value;
+  const list=professionalBlocks.filter(x=>x.professional_id===professionalId);
+  $('availability-block-list').innerHTML=list.length?list.map(b=>`
+    <div class="row">
+      <strong>${esc((b.reason||'Bloqueio').trim())}</strong>
+      <span>${String(b.local_start).replace('T',' ').slice(0,16)}</span>
+      <span>até ${String(b.local_end).replace('T',' ').slice(0,16)}</span>
+      <div class="actions"><button class="btn danger" onclick="deleteAvailabilityBlock('${b.id}',this)">Excluir</button></div>
+    </div>`).join(''):'<div style="padding:14px;color:var(--muted);font-size:9px">Nenhuma folga ou bloqueio futuro cadastrado.</div>';
+}
+
+async function addAvailabilityBlock(trigger=null){
+  const professionalId=$('block-prof').value,start=$('block-start').value,end=$('block-end').value,reason=$('block-reason').value.trim();
+  if(!professionalId||!start||!end||start>=end){toast('Preencha um período de bloqueio válido.','warning');return}
+  const result=await runAdminAction({key:`block:${professionalId}`,button:trigger,loadingText:'Adicionando...',fallbackError:'Não foi possível adicionar o bloqueio.'},async()=>{
+    const {error}=await sb.rpc('create_professional_time_block_local',{p_barbershop_id:shop.id,p_professional_id:professionalId,p_local_start:start,p_local_end:end,p_reason:reason||null});
+    if(error) throw error;
+    const res=await sb.rpc('professional_time_blocks_local',{p_barbershop_id:shop.id}); if(res.error) throw res.error;
+    professionalBlocks=res.data||[];
+    $('block-start').value='';$('block-end').value='';$('block-reason').value='';
+    renderAvailabilityAdmin();
+  });
+  if(result.ok) toast('Bloqueio adicionado.','success');
+}
+
+async function deleteAvailabilityBlock(id,trigger=null){
+  if(!confirm('Excluir este bloqueio de agenda?')) return;
+  const result=await runAdminAction({key:`delete-block:${id}`,button:trigger,loadingText:'Excluindo...',fallbackError:'Não foi possível excluir o bloqueio.'},async()=>{
+    const {error}=await sb.from('professional_time_blocks').delete().eq('id',id).eq('barbershop_id',shop.id); if(error) throw error;
+    professionalBlocks=professionalBlocks.filter(x=>x.id!==id); renderAvailabilityAdmin();
+  });
+  if(result.ok) toast('Bloqueio removido.','success');
+}
+
+function renderTeam(){$('team-list').innerHTML=team.length?team.map(t=>`<div class="row team"><strong>${esc(t.name)}</strong><span>Comissão ${Number(t.commission||0)}%</span><span>${t.active?'Ativo':'Inativo'}</span><div class="actions"><button class="btn" onclick="openTeam('${t.id}')">Editar</button><button class="btn" onclick="tab('availability');$('av-prof').value='${t.id}';renderAvailabilityAdmin()">Agenda</button><button class="btn danger" onclick="deleteTeam('${t.id}',this)">Excluir</button></div></div>`).join(''):'<div style="padding:20px;color:var(--muted);font-size:9px">Nenhum profissional.</div>'}
 function openTeam(id){let t=team.find(x=>x.id===id);$('t-id').value=t?.id||'';$('t-name').value=t?.name||'';$('t-commission').value=t?.commission??0;sw('t-active',t?t.active:true);openModal('team-modal')}
 async function saveTeam(trigger=null){
   const id=$('t-id').value||'team_'+crypto.randomUUID().slice(0,8);
@@ -2059,6 +2265,9 @@ async function createShop(trigger=null){
       if(!response.ok){
         let body={};try{body=await response.json()}catch{}
         ownerWarning=body?.error||'provision_failed';
+        const rollback=await sb.from('barbershops').delete().eq('id',id);
+        if(rollback.error) console.error('Falha ao reverter criação incompleta:',rollback.error);
+        throw new Error('owner_provision_failed');
       }
     }
 
@@ -2071,7 +2280,7 @@ async function createShop(trigger=null){
   });
 
   if(result.ok){
-    if(ownerWarning) toast('Barbearia criada, mas o acesso do proprietário precisa ser configurado novamente.','warning',5200);
+    if(ownerWarning) toast('A criação foi revertida porque o acesso do proprietário não pôde ser criado.','error',5200);
     else toast('Barbearia criada com sucesso.','success');
   }
 }
