@@ -7047,6 +7047,421 @@ button,a,input,select,textarea{max-width:100%}
 .team-availability-services label{padding:9px;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text-muted)}
 @media(max-width:700px){.team-availability-day{grid-template-columns:1fr 1fr}.team-availability-day span{grid-column:1/-1}.team-availability-services{grid-template-columns:1fr}}
 
+
+/* ===== CORREÇÃO SIDEBAR — NAVEGAÇÃO CLICÁVEL ===== */
+.sidebar{
+  pointer-events:auto !important;
+}
+.sidebar .nav-item{
+  appearance:none;
+  -webkit-appearance:none;
+  width:100%;
+  border:0;
+  background:transparent;
+  text-align:left;
+  font-family:inherit;
+  position:relative;
+  z-index:4;
+  pointer-events:auto !important;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.sidebar .nav-item:hover{
+  background:rgba(255,255,255,.04);
+}
+.sidebar .nav-item.active{
+  background:rgba(59,130,246,.14);
+}
+.sidebar .nav-item:focus-visible{
+  outline:2px solid var(--accent,#3B82F6);
+  outline-offset:2px;
+}
+
+@media (orientation:portrait) and (max-width:1100px){
+  body.mobile-menu-open .sidebar{
+    pointer-events:auto !important;
+  }
+  body.mobile-menu-open .sidebar .nav-item{
+    pointer-events:auto !important;
+    position:relative !important;
+    z-index:2147483004 !important;
+  }
+  #mobile-sidebar-overlay{
+    z-index:2147483001 !important;
+  }
+  .sidebar{
+    z-index:2147483002 !important;
+  }
+}
+
+
+/* ===== REFINO VISUAL — DISPONIBILIDADE DA EQUIPE ===== */
+.team-availability-card{
+  margin-top:18px;
+  padding:0;
+  overflow:hidden;
+}
+.team-availability-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  padding:24px 24px 20px;
+  border-bottom:1px solid var(--border);
+  background:
+    radial-gradient(circle at 100% 0%,rgba(59,130,246,.08),transparent 34%),
+    linear-gradient(180deg,rgba(20,27,41,.72),rgba(17,24,39,.38));
+}
+.team-availability-kicker{
+  display:block;
+  margin-bottom:7px;
+  color:#6EA8F7;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.team-availability-header h2{
+  margin:0;
+  font-family:'Sora',sans-serif;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.team-availability-header p{
+  max-width:660px;
+  margin-top:7px;
+  color:var(--text-muted);
+  font-size:11px;
+  line-height:1.65;
+}
+.team-availability-summary{
+  min-width:220px;
+  padding:12px 14px;
+  border:1px solid rgba(59,130,246,.14);
+  border-radius:12px;
+  background:rgba(59,130,246,.045);
+}
+.team-availability-summary span,
+.team-availability-summary strong{
+  display:block;
+}
+.team-availability-summary span{
+  color:var(--text-muted);
+  font-size:9px;
+}
+.team-availability-summary strong{
+  margin-top:4px;
+  color:#CFE1FA;
+  font-size:10px;
+}
+
+.team-availability-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:0;
+}
+.team-availability-panel{
+  min-width:0;
+  padding:22px 24px 24px;
+}
+.team-availability-panel + .team-availability-panel{
+  border-left:1px solid var(--border);
+}
+.team-panel-head{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  margin-bottom:20px;
+}
+.team-panel-icon{
+  width:36px;
+  height:36px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(59,130,246,.18);
+  border-radius:10px;
+  background:rgba(59,130,246,.07);
+  color:#7EB1F6;
+}
+.team-panel-icon svg{width:17px;height:17px}
+.team-panel-head h3{
+  margin:0;
+  font-family:'Sora',sans-serif;
+  font-size:13px;
+}
+.team-panel-head p{
+  margin-top:4px;
+  color:var(--text-muted);
+  font-size:9.5px;
+  line-height:1.55;
+}
+
+.team-field{
+  display:grid;
+  gap:6px;
+  margin-bottom:14px;
+}
+.team-field label{
+  color:#8EA4C0;
+  font-size:9.5px;
+  font-weight:600;
+}
+.team-field input,
+.team-field select{
+  width:100%;
+  min-height:42px;
+  padding:0 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+  background:#101827;
+  color:var(--text);
+  font-size:11px;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.team-field input:focus,
+.team-field select:focus{
+  border-color:rgba(59,130,246,.54);
+  box-shadow:0 0 0 3px rgba(59,130,246,.09);
+  background:#121C2C;
+}
+
+.team-subsection{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(36,48,65,.7);
+}
+.team-subsection-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:11px;
+}
+.team-subsection-head strong{
+  display:block;
+  font-size:10.5px;
+}
+.team-subsection-head span{
+  display:block;
+  margin-top:3px;
+  color:var(--text-muted);
+  font-size:8.5px;
+  line-height:1.45;
+}
+
+.team-weekly-list{
+  display:grid;
+  gap:7px;
+}
+.team-availability-day{
+  display:grid;
+  grid-template-columns:82px minmax(90px,1fr) minmax(90px,1fr) 105px;
+  gap:8px;
+  align-items:center;
+  margin:0;
+  padding:8px 9px;
+  border:1px solid rgba(36,48,65,.76);
+  border-radius:10px;
+  background:rgba(11,17,27,.42);
+}
+.team-availability-day span{
+  color:#C5D2E2;
+  font-size:9.5px;
+  font-weight:600;
+}
+.team-availability-day input,
+.team-availability-day select{
+  width:100%;
+  min-width:0;
+  min-height:34px;
+  padding:0 8px;
+  border:1px solid rgba(36,48,65,.9);
+  border-radius:8px;
+  background:#0E1624;
+  color:var(--text);
+  font-size:9.5px;
+}
+
+.team-switch-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  cursor:pointer;
+}
+.team-switch-row strong,
+.team-switch-row span{
+  display:block;
+}
+.team-switch-row strong{
+  font-size:10.5px;
+}
+.team-switch-row span{
+  margin-top:3px;
+  color:var(--text-muted);
+  font-size:8.5px;
+  line-height:1.45;
+}
+.team-switch-row input{
+  appearance:none;
+  -webkit-appearance:none;
+  position:relative;
+  width:40px;
+  height:22px;
+  flex:0 0 auto;
+  border:1px solid #314057;
+  border-radius:999px;
+  background:#182235;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.team-switch-row input::after{
+  content:"";
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#94A3B8;
+  transition:.18s ease;
+}
+.team-switch-row input:checked{
+  border-color:rgba(59,130,246,.55);
+  background:rgba(59,130,246,.28);
+}
+.team-switch-row input:checked::after{
+  left:21px;
+  background:#7FB2F7;
+  box-shadow:0 0 10px rgba(59,130,246,.4);
+}
+
+.team-availability-services{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:10px;
+}
+.team-availability-services label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+  padding:8px 10px;
+  border:1px solid rgba(36,48,65,.82);
+  border-radius:9px;
+  background:rgba(11,17,27,.42);
+  color:#B6C5D7;
+  font-size:9.5px;
+}
+.team-availability-services input{
+  width:14px;
+  height:14px;
+  accent-color:#3B82F6;
+}
+
+.team-block-dates{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.team-panel-actions{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:4px;
+}
+.team-action-button{
+  min-width:190px;
+  min-height:40px;
+  border-radius:10px;
+}
+.btn-secondary-action{
+  min-height:40px;
+  padding:0 15px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border:1px solid rgba(59,130,246,.28);
+  border-radius:10px;
+  background:rgba(59,130,246,.08);
+  color:#AFCFF7;
+  font-size:10px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.btn-secondary-action:hover{
+  border-color:rgba(59,130,246,.5);
+  background:rgba(59,130,246,.13);
+}
+.btn-secondary-action svg{
+  width:14px;
+  height:14px;
+}
+
+.team-blocks-section{
+  margin-top:20px;
+  padding-top:16px;
+  border-top:1px solid rgba(36,48,65,.7);
+}
+.team-block-list{
+  min-height:72px;
+}
+.team-block-list .catalog-note{
+  padding:14px;
+  border:1px dashed rgba(59,130,246,.16);
+  border-radius:10px;
+  background:rgba(59,130,246,.025);
+}
+
+@media(max-width:980px){
+  .team-availability-header{
+    flex-direction:column;
+  }
+  .team-availability-summary{
+    width:100%;
+    min-width:0;
+  }
+  .team-availability-grid{
+    grid-template-columns:1fr;
+  }
+  .team-availability-panel + .team-availability-panel{
+    border-left:0;
+    border-top:1px solid var(--border);
+  }
+}
+@media(max-width:680px){
+  .team-availability-header,
+  .team-availability-panel{
+    padding-left:16px;
+    padding-right:16px;
+  }
+  .team-availability-day{
+    grid-template-columns:1fr 1fr;
+    padding:10px;
+  }
+  .team-availability-day span{
+    grid-column:1/-1;
+  }
+  .team-availability-services{
+    grid-template-columns:1fr;
+  }
+  .team-block-dates{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+  .team-panel-actions{
+    justify-content:stretch;
+  }
+  .team-action-button{
+    width:100%;
+    min-width:0;
+  }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -7208,20 +7623,20 @@ button,a,input,select,textarea{max-width:100%}
 </div>
 <div id="current-shop-label" style="padding:0 14px 12px;color:#C8D5E5;font:700 10px Sora,Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Barbearia</div>
 
-<div class="nav-item active" data-page="overview" onclick="openPage('overview',this)">Visão geral</div>
-<div class="nav-item" data-page="agenda" onclick="openPage('agenda',this)">Agenda do dia</div>
-<div class="nav-item" data-page="radar" data-feature="radar" onclick="openPage('radar',this)">
+<button type="button" class="nav-item active" data-page="overview"  aria-controls="page-overview">Visão geral</button>
+<button type="button" class="nav-item" data-page="agenda"  aria-controls="page-agenda">Agenda do dia</button>
+<button type="button" class="nav-item" data-page="radar" data-feature="radar"  aria-controls="page-radar">
       Clientes <span class="badge-premium">RADAR</span>
-</div>
+</button>
 <div class="nav-section">Premium</div>
-<div class="nav-item" data-page="birthdays" data-feature="birthdays" onclick="openPage('birthdays',this)">Aniversariantes</div>
-<div class="nav-item" data-page="loyalty" data-feature="loyalty" onclick="openPage('loyalty',this)">Fidelidade</div>
-<div class="nav-item" data-page="finance" data-feature="finance" onclick="openPage('finance',this)">Financeiro</div>
-<div class="nav-item" data-page="ranking" data-feature="ranking" onclick="openPage('ranking',this)">Ranking da equipe</div>
-<div class="nav-item" data-feature="exports" onclick="exportCSV()">Exportar base</div>
+<button type="button" class="nav-item" data-page="birthdays" data-feature="birthdays"  aria-controls="page-birthdays">Aniversariantes</button>
+<button type="button" class="nav-item" data-page="loyalty" data-feature="loyalty"  aria-controls="page-loyalty">Fidelidade</button>
+<button type="button" class="nav-item" data-page="finance" data-feature="finance"  aria-controls="page-finance">Financeiro</button>
+<button type="button" class="nav-item" data-page="ranking" data-feature="ranking"  aria-controls="page-ranking">Ranking da equipe</button>
+<button type="button" class="nav-item" data-feature="exports" id="sidebar-export-btn">Exportar base</button>
 <div class="nav-section">Configurações</div>
-<div class="nav-item" data-page="services" data-feature="services" onclick="openPage('services',this)">Serviços</div>
-<div class="nav-item" data-page="team" data-feature="team" onclick="openPage('team',this)">Equipe</div>
+<button type="button" class="nav-item" data-page="services" data-feature="services"  aria-controls="page-services">Serviços</button>
+<button type="button" class="nav-item" data-page="team" data-feature="team"  aria-controls="page-team">Equipe</button>
 
 <button class="sidebar-logout-btn" type="button" onclick="logoutDashboard()">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -8211,45 +8626,127 @@ button,a,input,select,textarea{max-width:100%}
 <div class="catalog-items" id="team-list"></div>
 </div>
 </div>
-</section>
 
-<div class="card" style="margin-top:18px">
-  <div class="catalog-list-head">
+<div class="card team-availability-card">
+  <div class="team-availability-header">
     <div>
+      <span class="team-availability-kicker">Agenda da equipe</span>
       <h2>Disponibilidade da equipe</h2>
-      <p>Defina jornada, serviços atendidos, folgas, almoço, férias e bloqueios extraordinários.</p>
+      <p>Configure a jornada de cada profissional e registre folgas, intervalos e bloqueios sem afetar o restante da agenda.</p>
+    </div>
+    <div class="team-availability-summary">
+      <span>Configuração individual</span>
+      <strong>Horários + serviços + bloqueios</strong>
     </div>
   </div>
-  <div class="catalog-grid" style="margin-top:16px">
-    <div class="catalog-form-card" style="padding:0">
-      <div class="catalog-field">
-        <label>Profissional</label>
+
+  <div class="team-availability-grid">
+    <section class="team-availability-panel">
+      <div class="team-panel-head">
+        <div class="team-panel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+            <path d="M7 3v4M17 3v4M3 10h18"></path>
+          </svg>
+        </div>
+        <div>
+          <h3>Jornada do profissional</h3>
+          <p>Defina dias, horários e os serviços que esse profissional atende.</p>
+        </div>
+      </div>
+
+      <div class="team-field">
+        <label for="team-availability-prof">Profissional</label>
         <select id="team-availability-prof" onchange="renderTeamAvailability()"></select>
       </div>
-      <div id="team-availability-weekly"></div>
-      <div class="catalog-field" style="margin-top:14px">
-        <label><input type="checkbox" id="team-restrict-services" onchange="renderTeamAvailabilityServices()"> Restringir serviços deste profissional</label>
+
+      <div class="team-subsection">
+        <div class="team-subsection-head">
+          <div>
+            <strong>Horários da semana</strong>
+            <span>Os horários individuais respeitam o funcionamento geral da barbearia.</span>
+          </div>
+        </div>
+        <div id="team-availability-weekly" class="team-weekly-list"></div>
       </div>
-      <div id="team-availability-services" class="team-availability-services"></div>
-      <div class="catalog-form-actions" style="margin-top:14px">
-        <button class="btn-primary-action" type="button" onclick="saveTeamAvailability(this)">Salvar disponibilidade</button>
+
+      <div class="team-subsection">
+        <label class="team-switch-row" for="team-restrict-services">
+          <div>
+            <strong>Restringir serviços</strong>
+            <span>Ative para escolher quais serviços esse profissional pode receber.</span>
+          </div>
+          <input type="checkbox" id="team-restrict-services" onchange="renderTeamAvailabilityServices()">
+        </label>
+        <div id="team-availability-services" class="team-availability-services"></div>
       </div>
-    </div>
-    <div class="catalog-list-card" style="padding:0">
-      <div class="catalog-field">
-        <label>Bloquear profissional</label>
+
+      <div class="team-panel-actions">
+        <button class="btn-primary-action team-action-button" type="button" onclick="saveTeamAvailability(this)">
+          Salvar disponibilidade
+        </button>
+      </div>
+    </section>
+
+    <section class="team-availability-panel">
+      <div class="team-panel-head">
+        <div class="team-panel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7v5l3 2"></path>
+          </svg>
+        </div>
+        <div>
+          <h3>Folgas e bloqueios</h3>
+          <p>Bloqueie almoço, férias, compromissos ou qualquer período indisponível.</p>
+        </div>
+      </div>
+
+      <div class="team-field">
+        <label for="team-block-prof">Profissional</label>
         <select id="team-block-prof"></select>
       </div>
-      <div class="catalog-field"><label>Início</label><input id="team-block-start" type="datetime-local"></div>
-      <div class="catalog-field"><label>Fim</label><input id="team-block-end" type="datetime-local"></div>
-      <div class="catalog-field"><label>Motivo</label><input id="team-block-reason" placeholder="Ex.: almoço, férias, consulta"></div>
-      <div class="catalog-form-actions">
-        <button class="btn-primary-action" type="button" onclick="addTeamBlock(this)">Adicionar bloqueio</button>
+
+      <div class="team-block-dates">
+        <div class="team-field">
+          <label for="team-block-start">Início</label>
+          <input id="team-block-start" type="datetime-local">
+        </div>
+        <div class="team-field">
+          <label for="team-block-end">Fim</label>
+          <input id="team-block-end" type="datetime-local">
+        </div>
       </div>
-      <div class="catalog-items" id="team-block-list" style="margin-top:14px"></div>
-    </div>
+
+      <div class="team-field">
+        <label for="team-block-reason">Motivo</label>
+        <input id="team-block-reason" placeholder="Ex.: almoço, férias, consulta">
+      </div>
+
+      <div class="team-panel-actions">
+        <button class="btn-secondary-action team-action-button" type="button" onclick="addTeamBlock(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+          Adicionar bloqueio
+        </button>
+      </div>
+
+      <div class="team-blocks-section">
+        <div class="team-subsection-head">
+          <div>
+            <strong>Bloqueios cadastrados</strong>
+            <span>Períodos futuros indisponíveis para este profissional.</span>
+          </div>
+        </div>
+        <div class="catalog-items team-block-list" id="team-block-list"></div>
+      </div>
+    </section>
   </div>
 </div>
+</section>
+
+
 
 <section class="page" id="page-agenda">
 <div class="topbar">
@@ -9237,6 +9734,8 @@ const defaultAppointments = [];
 
 let appointments = defaultAppointments.map(item=>({...item}));
 
+let CURRENT_TIMEZONE='America/Fortaleza';
+
 function getFortalezaToday(){
   const parts=new Intl.DateTimeFormat('en-CA',{
     timeZone:CURRENT_TIMEZONE||'America/Fortaleza',
@@ -9318,7 +9817,7 @@ let CURRENT_WHATSAPP_SETTINGS={};
 let PROFESSIONAL_HOURS=[];
 let PROFESSIONAL_SERVICES=[];
 let PROFESSIONAL_BLOCKS=[];
-let CURRENT_TIMEZONE='America/Fortaleza';
+
 
 async function resolveCurrentBarbershop(force=false){
   if(CURRENT_BARBERSHOP_ID && !force) return CURRENT_BARBERSHOP;
@@ -9491,9 +9990,16 @@ async function hydrateCoreDataFromSupabase(force=false){
     refreshAppToday();
     await resolveCurrentBarbershop();
 
-    const queries={
-      services:sb.from('services').select('id,name,price,duration,active').eq('barbershop_id',CURRENT_BARBERSHOP_ID).order('created_at',{ascending:true}),
-      team:sb.from('team_members').select('id,name,commission,active,service_restrictions_enabled').eq('barbershop_id',CURRENT_BARBERSHOP_ID).order('created_at',{ascending:true}),
+    // Dados essenciais: se algum deles falhar, aí sim o painel não pode calcular os KPIs corretamente.
+    const coreQueries={
+      services:sb.from('services')
+        .select('id,name,price,duration,active')
+        .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
+        .order('created_at',{ascending:true}),
+      team:sb.from('team_members')
+        .select('id,name,commission,active,service_restrictions_enabled')
+        .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
+        .order('created_at',{ascending:true}),
       appointments:sb.from('appointments')
         .select('id,appointment_date,appointment_time,client_name,service_id,service_name,professional_id,professional_name,status,duration_minutes,price_amount')
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
@@ -9517,34 +10023,42 @@ async function hydrateCoreDataFromSupabase(force=false){
         .eq('barbershop_id',CURRENT_BARBERSHOP_ID)
         .order('redeemed_at',{ascending:false})
         .order('id',{ascending:false})
-,
-      professionalHours:sb.from('professional_working_hours')
-        .select('*').eq('barbershop_id',CURRENT_BARBERSHOP_ID),
-      professionalServices:sb.from('professional_services')
-        .select('*').eq('barbershop_id',CURRENT_BARBERSHOP_ID),
-      professionalBlocks:sb.rpc('professional_time_blocks_local',{p_barbershop_id:CURRENT_BARBERSHOP_ID})
     };
 
-    const names=Object.keys(queries);
-    const results=await Promise.all(names.map(name=>queries[name]));
+    const coreNames=Object.keys(coreQueries);
+    const coreResults=await Promise.all(coreNames.map(name=>coreQueries[name]));
     const data={};
     const failures=[];
 
-    names.forEach((name,index)=>{
-      const result=results[index];
+    coreNames.forEach((name,index)=>{
+      const result=coreResults[index];
       if(result.error) failures.push({name,error:result.error});
       else data[name]=result.data;
     });
 
     if(failures.length){
-      console.error('Falha real de sincronização com Supabase:',failures);
-      const labels={services:'serviços',team:'equipe',appointments:'agenda',finance:'financeiro',clients:'clientes',settings:'configurações',redemptions:'fidelidade',professionalHours:'horários da equipe',professionalServices:'serviços da equipe',professionalBlocks:'bloqueios da equipe'};
+      console.error('Falha de sincronização dos dados principais:',failures);
+      const labels={
+        services:'serviços',
+        team:'equipe',
+        appointments:'agenda',
+        finance:'financeiro',
+        clients:'clientes',
+        settings:'configurações',
+        redemptions:'fidelidade'
+      };
       throw new Error(`Falha ao carregar: ${failures.map(x=>labels[x.name]||x.name).join(', ')}`);
     }
 
     if(!data.settings){
       const {data:newSettings,error:newSettingsError}=await sb.from('business_settings')
-        .insert({barbershop_id:CURRENT_BARBERSHOP_ID,monthly_goal:0,loyalty_enabled:true,loyalty_visit_goal:10,loyalty_reward_name:'Corte gratuito'})
+        .insert({
+          barbershop_id:CURRENT_BARBERSHOP_ID,
+          monthly_goal:0,
+          loyalty_enabled:true,
+          loyalty_visit_goal:10,
+          loyalty_reward_name:'Corte gratuito'
+        })
         .select('monthly_goal,loyalty_enabled,loyalty_visit_goal,loyalty_reward_name')
         .single();
       if(newSettingsError) throw newSettingsError;
@@ -9552,15 +10066,20 @@ async function hydrateCoreDataFromSupabase(force=false){
     }
 
     SERVICE_CATALOG=(data.services||[]).map(item=>({
-      id:item.id,name:item.name,price:Number(item.price)||0,duration:Number(item.duration)||0,active:item.active!==false
+      id:item.id,
+      name:item.name,
+      price:Number(item.price)||0,
+      duration:Number(item.duration)||0,
+      active:item.active!==false
     }));
 
     TEAM_CATALOG=(data.team||[]).map(item=>({
-      id:item.id,name:item.name,commission:Number(item.commission)||0,active:item.active!==false,serviceRestrictionsEnabled:item.service_restrictions_enabled===true
+      id:item.id,
+      name:item.name,
+      commission:Number(item.commission)||0,
+      active:item.active!==false,
+      serviceRestrictionsEnabled:item.service_restrictions_enabled===true
     }));
-    PROFESSIONAL_HOURS=data.professionalHours||[];
-    PROFESSIONAL_SERVICES=data.professionalServices||[];
-    PROFESSIONAL_BLOCKS=data.professionalBlocks||[];
 
     appointments=(data.appointments||[]).map(item=>({
       id:Number(item.id),
@@ -9577,14 +10096,26 @@ async function hydrateCoreDataFromSupabase(force=false){
     }));
 
     FINANCE_MOVEMENTS=(data.finance||[]).map(item=>({
-      id:Number(item.id),date:item.entry_date,description:item.description,client:item.client_name||'—',
-      professional:item.professional_name||'—',professionalId:item.professional_id||'',category:item.category,
-      type:item.type,payment:item.payment_method,value:Number(item.amount)||0,appointmentId:item.appointment_id?Number(item.appointment_id):null
+      id:Number(item.id),
+      date:item.entry_date,
+      description:item.description,
+      client:item.client_name||'—',
+      professional:item.professional_name||'—',
+      professionalId:item.professional_id||'',
+      category:item.category,
+      type:item.type,
+      payment:item.payment_method,
+      value:Number(item.amount)||0,
+      appointmentId:item.appointment_id?Number(item.appointment_id):null
     }));
 
     CLIENTS=(data.clients||[]).map(item=>({
-      id:Number(item.id),name:item.name,phone:item.phone||'',birthday:item.birthday||'',
-      radarContacted:item.radar_contacted===true,birthdayStatus:item.birthday_status||'pendente'
+      id:Number(item.id),
+      name:item.name,
+      phone:item.phone||'',
+      birthday:item.birthday||'',
+      radarContacted:item.radar_contacted===true,
+      birthdayStatus:item.birthday_status||'pendente'
     }));
 
     BUSINESS_SETTINGS={
@@ -9595,10 +10126,15 @@ async function hydrateCoreDataFromSupabase(force=false){
     };
 
     LOYALTY_REDEMPTIONS=(data.redemptions||[]).map(item=>({
-      id:Number(item.id),clientId:item.client_id?Number(item.client_id):null,client:item.client_name,
-      reward:item.reward_name,date:item.redeemed_at,spentAfter:Number(item.amount_after)||0
+      id:Number(item.id),
+      clientId:item.client_id?Number(item.client_id):null,
+      client:item.client_name,
+      reward:item.reward_name,
+      date:item.redeemed_at,
+      spentAfter:Number(item.amount_after)||0
     }));
 
+    // Os dados principais já estão prontos. Renderiza a Visão Geral imediatamente.
     coreDataHydrated=true;
 
     const safeRender=(name,fn)=>{
@@ -9615,12 +10151,50 @@ async function hydrateCoreDataFromSupabase(force=false){
     safeRender('inteligência da agenda',renderAgendaIntelligence);
     safeRender('visão geral',renderOverviewWidgets);
     safeRender('gestão inicial',renderHomeManagement);
+    safeRender('gráfico inicial',()=>renderRevenueChart('7d'));
     safeRender('radar',renderRadar);
     safeRender('aniversariantes',renderBirthdays);
     safeRender('fidelidade',renderLoyalty);
     safeRender('financeiro',renderFinance);
     safeRender('ranking da equipe',renderTeamRanking);
     safeRender('permissões do perfil',applyRolePermissions);
+
+    // Disponibilidade é complementar. Um erro aqui nunca deve zerar KPIs ou gráfico.
+    const optionalResults=await Promise.allSettled([
+      sb.from('professional_working_hours')
+        .select('*')
+        .eq('barbershop_id',CURRENT_BARBERSHOP_ID),
+      sb.from('professional_services')
+        .select('*')
+        .eq('barbershop_id',CURRENT_BARBERSHOP_ID),
+      sb.rpc('professional_time_blocks_local',{
+        p_barbershop_id:CURRENT_BARBERSHOP_ID
+      })
+    ]);
+
+    const unwrapOptional=(settled,label)=>{
+      if(settled.status==='rejected'){
+        console.warn(`${label} indisponível:`,settled.reason);
+        return [];
+      }
+      if(settled.value?.error){
+        console.warn(`${label} indisponível:`,settled.value.error);
+        return [];
+      }
+      return settled.value?.data||[];
+    };
+
+    PROFESSIONAL_HOURS=unwrapOptional(optionalResults[0],'Horários da equipe');
+    PROFESSIONAL_SERVICES=unwrapOptional(optionalResults[1],'Serviços por profissional');
+    PROFESSIONAL_BLOCKS=unwrapOptional(optionalResults[2],'Bloqueios da equipe');
+
+    // Recalcula apenas os componentes que podem ganhar precisão com a disponibilidade individual.
+    safeRender('catálogo após disponibilidade',syncCatalogAcrossApp);
+    safeRender('inteligência da agenda após disponibilidade',renderAgendaIntelligence);
+    safeRender('visão geral após disponibilidade',renderOverviewWidgets);
+    safeRender('gestão após disponibilidade',renderHomeManagement);
+    safeRender('gráfico após disponibilidade',()=>renderRevenueChart('7d'));
+    safeRender('ranking após disponibilidade',renderTeamRanking);
   })();
 
   try{
@@ -9659,11 +10233,18 @@ function openPage(page,navElement){
   const permissionFeature=pagePermissionFeature(page);
   if(permissionFeature && !roleCan(permissionFeature)){
     showToast('Seu perfil não tem permissão para acessar esta área.');
-    return;
+    return false;
+  }
+
+  const targetPage=document.getElementById(`page-${page}`);
+  if(!targetPage){
+    console.error('Página não encontrada:',page);
+    showToast('Não foi possível abrir esta área.');
+    return false;
   }
 
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.getElementById(`page-${page}`).classList.add('active');
+  targetPage.classList.add('active');
 
   document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.classList.remove('active'));
 
@@ -9712,6 +10293,12 @@ function openPage(page,navElement){
     renderOverviewWidgets();
     renderHomeManagement();
     requestAnimationFrame(()=>renderRevenueChart('7d'));
+
+    if(!coreDataHydrated && document.body.classList.contains('authenticated')){
+      hydrateCoreDataFromSupabase()
+        .then(()=>requestAnimationFrame(()=>renderRevenueChart('7d')))
+        .catch(error=>console.error('Falha ao atualizar Visão Geral:',error));
+    }
   }
 
   // Sempre abre qualquer aba no topo.
@@ -9726,7 +10313,35 @@ function openPage(page,navElement){
     const content=document.querySelector('.content-shell');
     if(content) content.scrollTop=0;
   });
+
+  // A própria navegação fecha o drawer no mobile.
+  if(typeof window.toggleMobileMenu==='function'){
+    window.toggleMobileMenu(false);
+  }else{
+    document.body.classList.remove('mobile-menu-open');
+  }
+
+  return true;
 }
+
+// Navegação única e robusta da sidebar.
+document.addEventListener('click',function(event){
+  const navButton=event.target.closest('.sidebar .nav-item[data-page]');
+  if(navButton){
+    event.preventDefault();
+    event.stopPropagation();
+    openPage(navButton.dataset.page,navButton);
+    return;
+  }
+
+  const exportButton=event.target.closest('#sidebar-export-btn');
+  if(exportButton){
+    event.preventDefault();
+    event.stopPropagation();
+    exportCSV();
+    if(typeof window.toggleMobileMenu==='function') window.toggleMobileMenu(false);
+  }
+},true);
 
 function goToTab(label){
   const routes={
@@ -13722,11 +14337,6 @@ document.addEventListener('DOMContentLoaded', function(){
       setMobileMenu(false);
     });
 
-    sidebar?.addEventListener('click',e=>{
-      if(e.target.closest('.nav-item') && isMobileNav()){
-        setTimeout(()=>setMobileMenu(false),80);
-      }
-    });
   });
 
   document.addEventListener('keydown',e=>{
