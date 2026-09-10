@@ -1653,40 +1653,91 @@ async function loadShopData(options={}){
   if(!options.silent) setLoading(loadingIds,true);
 
   try{
-    const [mRes,sRes,tRes,bRes,hRes,psRes,blRes]=await Promise.all([
+    // Núcleo da Visão Geral: estas consultas são obrigatórias.
+    const [mRes,sRes,tRes,bRes]=await Promise.all([
       sb.rpc('platform_barbershop_metrics',{p_barbershop_id:id}),
       sb.from('services').select('*').eq('barbershop_id',id).order('created_at'),
       sb.from('team_members').select('*').eq('barbershop_id',id).order('created_at'),
-      sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle(),
-      sb.from('professional_working_hours').select('*').eq('barbershop_id',id),
-      sb.from('professional_services').select('*').eq('barbershop_id',id),
-      sb.rpc('professional_time_blocks_local',{p_barbershop_id:id})
+      sb.from('business_settings').select('*').eq('barbershop_id',id).maybeSingle()
     ]);
 
-    const error=mRes.error||sRes.error||tRes.error||bRes.error||hRes.error||psRes.error||blRes.error;
-    if(error) throw error;
+    const coreError=mRes.error||sRes.error||tRes.error||bRes.error;
+    if(coreError) throw coreError;
     if(shop?.id!==id) return false;
 
     metrics=mRes.data||{};
     services=sRes.data||[];
     team=tRes.data||[];
-    professionalHours=hRes.data||[];
-    professionalServices=psRes.data||[];
-    professionalBlocks=blRes.data||[];
-    biz=bRes.data||{monthly_goal:0,loyalty_enabled:true,loyalty_visit_goal:10,loyalty_reward_name:'Corte grátis'};
+    biz=bRes.data||{
+      monthly_goal:0,
+      loyalty_enabled:true,
+      loyalty_visit_goal:10,
+      loyalty_reward_name:'Corte grátis'
+    };
+
+    // Renderiza a Visão Geral assim que os dados essenciais chegam.
     renderAll();
+
+    // Disponibilidade é um módulo auxiliar. Falha nele NÃO pode derrubar a Visão Geral.
+    const availabilityResults=await Promise.allSettled([
+      sb.from('professional_working_hours').select('*').eq('barbershop_id',id),
+      sb.from('professional_services').select('*').eq('barbershop_id',id),
+      sb.rpc('professional_time_blocks_local',{p_barbershop_id:id})
+    ]);
+
+    if(shop?.id!==id) return true;
+
+    const [hoursSettled,servicesSettled,blocksSettled]=availabilityResults;
+
+    if(hoursSettled.status==='fulfilled' && !hoursSettled.value?.error){
+      professionalHours=hoursSettled.value.data||[];
+    }else{
+      professionalHours=[];
+      console.warn('Não foi possível carregar horários dos profissionais.',
+        hoursSettled.status==='fulfilled'?hoursSettled.value?.error:hoursSettled.reason);
+    }
+
+    if(servicesSettled.status==='fulfilled' && !servicesSettled.value?.error){
+      professionalServices=servicesSettled.value.data||[];
+    }else{
+      professionalServices=[];
+      console.warn('Não foi possível carregar serviços por profissional.',
+        servicesSettled.status==='fulfilled'?servicesSettled.value?.error:servicesSettled.reason);
+    }
+
+    if(blocksSettled.status==='fulfilled' && !blocksSettled.value?.error){
+      professionalBlocks=blocksSettled.value.data||[];
+    }else{
+      professionalBlocks=[];
+      console.warn('Não foi possível carregar bloqueios dos profissionais.',
+        blocksSettled.status==='fulfilled'?blocksSettled.value?.error:blocksSettled.reason);
+    }
+
+    try{
+      renderAvailabilityAdmin();
+    }catch(error){
+      console.warn('Falha ao renderizar disponibilidade, sem afetar a Visão Geral:',error);
+    }
+
     return true;
   }catch(error){
-    console.error('Erro ao carregar dados da barbearia:',error);
+    console.error('Erro ao carregar dados principais da barbearia:',error);
     if(!options.silent) setMetricError(loadingIds);
-    if(isSessionError(error)){await expireAdminSession();return false}
-    if(!options.silent) toast(apiMessage(error,'Não foi possível carregar os dados da barbearia.'),'error',4600);
+    if(isSessionError(error)){
+      await expireAdminSession();
+      return false;
+    }
+    if(!options.silent){
+      toast(apiMessage(error,'Não foi possível carregar os dados principais da barbearia.'),'error',4600);
+    }
     return false;
   }finally{
     if(!options.silent) setLoading(loadingIds,false);
   }
 }
-function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('m-appts').textContent=metrics.appointments_month??0;$('m-ticket').textContent=money(metrics.avg_ticket);$('m-clients').textContent=metrics.clients??0;$('m-next').textContent=metrics.next_7_days??0;$('m-today').textContent=metrics.appointments_today??0;$('m-team').textContent=metrics.active_team??0;$('m-services').textContent=metrics.active_services??0;$('m-cancelled').textContent=metrics.cancelled_month??0;$('f-in').textContent=money(metrics.revenue_month);$('f-out').textContent=money(metrics.expenses_month);const checks=[shop.name,shop.whatsapp,shop.city,shop.address,services.length,team.length,shop.weekly_hours,Object.keys(shop.booking_settings||{}).length],pct=Math.round(checks.filter(Boolean).length/checks.length*100);$('setup-label').textContent=pct+'% configurado';$('setup').style.width=pct+'%';$('setup-hint').textContent=pct===100?'Principais dados preenchidos.':'Ainda há itens de implantação a completar.';fillForms();renderHours();renderServices();renderTeam();renderAvailabilityAdmin();renderPermissions()}
+function renderAll(){$('m-revenue').textContent=money(metrics.revenue_month);$('m-appts').textContent=metrics.appointments_month??0;$('m-ticket').textContent=money(metrics.avg_ticket);$('m-clients').textContent=metrics.clients??0;$('m-next').textContent=metrics.next_7_days??0;$('m-today').textContent=metrics.appointments_today??0;$('m-team').textContent=metrics.active_team??0;$('m-services').textContent=metrics.active_services??0;$('m-cancelled').textContent=metrics.cancelled_month??0;$('f-in').textContent=money(metrics.revenue_month);$('f-out').textContent=money(metrics.expenses_month);const checks=[shop.name,shop.whatsapp,shop.city,shop.address,services.length,team.length,shop.weekly_hours,Object.keys(shop.booking_settings||{}).length],pct=Math.round(checks.filter(Boolean).length/checks.length*100);$('setup-label').textContent=pct+'% configurado';$('setup').style.width=pct+'%';$('setup-hint').textContent=pct===100?'Principais dados preenchidos.':'Ainda há itens de implantação a completar.';fillForms();renderHours();renderServices();renderTeam();
+try{renderAvailabilityAdmin()}catch(error){console.warn('Disponibilidade indisponível:',error)}
+renderPermissions()}
 function fillForms(){$('i-name').value=shop.name||'';$('i-slug').value=shop.slug||'';$('i-phone').value=shop.phone||'';$('i-whatsapp').value=shop.whatsapp||'';$('i-instagram').value=shop.instagram||'';$('i-color').value=shop.accent_color||'#3B82F6';$('i-description').value=shop.public_description||'';$('i-logo').value=shop.logo_url||'';$('i-city').value=shop.city||'';$('i-state').value=shop.state||'';if($('i-timezone'))$('i-timezone').value=shop.timezone||'America/Fortaleza';$('i-address').value=shop.address||'';$('i-domain').value=shop.custom_domain||'';$('pl-plan').value=shop.plan||'pro';$('pl-status').value=shop.subscription_status||'active';$('pl-price').value=shop.subscription_price??0;$('pl-trial-end').value=shop.trial_ends_at||'';sw('pl-active',shop.active);renderEffectivePlanSummary(shop.plan);let a=shop.booking_settings||{};$('a-min').value=a.min_advance_minutes??60;$('a-max').value=a.max_advance_days??45;$('a-slot').value=a.slot_interval??30;$('a-cancel-hours').value=a.cancellation_limit_hours??4;sw('a-any',a.allow_any_professional!==false);sw('a-sameday',a.allow_same_day!==false);sw('a-cancel',!!a.allow_client_cancel);sw('a-reschedule',!!a.allow_client_reschedule);sw('a-confirm',!!a.require_confirmation);let f=shop.finance_settings||{};$('f-goal').value=biz.monthly_goal??0;sw('f-commission',f.commission_enabled!==false);sw('f-show',!!f.show_revenue_to_team);$('f-payment').value=f.default_payment_method||'Outro';sw('l-enabled',biz.loyalty_enabled!==false);$('l-goal').value=biz.loyalty_visit_goal??10;$('l-reward').value=biz.loyalty_reward_name||'Corte grátis';let w=shop.whatsapp_settings||{};sw('w-enabled',w.enabled!==false);sw('w-confirm',w.confirmation!==false);sw('w-reminder',!!w.reminder);sw('w-birthday',!!w.birthday);sw('w-post',!!w.post_service);$('w-hours').value=w.reminder_hours??24;let p=shop.public_page_settings||{};$('pub-title').value=p.hero_title||'Agende seu horário';$('pub-subtitle').value=p.hero_subtitle||'Escolha o serviço, profissional e melhor horário.';sw('pub-prices',p.show_prices!==false);sw('pub-team',p.show_team!==false);sw('pub-address',p.show_address!==false);sw('pub-instagram',p.show_instagram!==false)}
 async function updateShop(patch){
   if(!shop?.id) throw new Error('shop_not_selected');
