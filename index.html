@@ -8248,6 +8248,175 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-single-continuous-background-fix">
+/* ==========================================================
+   CORREÇÃO — FUNDO ÚNICO E CONTEÚDO ESQUERDO PRESERVADO
+   ========================================================== */
+
+/* Um único degradê percorre a tela toda.
+   As colunas deixam de ter fundos independentes. */
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  position:relative;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  background:
+    linear-gradient(
+      90deg,
+      #10261d 0%,
+      #10241b 25%,
+      #0f2119 39%,
+      #0d1d16 49%,
+      #0b1812 59%,
+      #09130f 70%,
+      #070e0b 83%,
+      #060b09 100%
+    ) !important;
+}
+
+/* Nenhuma coluna recebe cor própria: isso elimina a emenda. */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual,
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel,
+#auth-gate .auth-card-wrap,
+#password-reset-gate .auth-card-wrap{
+  background:transparent !important;
+  border-left:0 !important;
+  border-right:0 !important;
+}
+
+/* Remove a camada central criada na tentativa anterior. */
+#auth-gate .auth-layout::after,
+#password-reset-gate .auth-layout::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Mantém apenas uma luz ambiente discreta na área visual. */
+#auth-gate .auth-visual::before,
+#password-reset-gate .auth-visual::before{
+  opacity:.42;
+}
+
+#auth-gate .auth-visual::after,
+#password-reset-gate .auth-visual::after{
+  border-color:rgba(125,132,70,.24);
+  box-shadow:
+    0 0 0 60px rgba(125,132,70,.035),
+    0 0 0 120px rgba(16,38,29,.10);
+}
+
+/* Garante que o conteúdo da metade esquerda não desapareça
+   nem seja deslocado pela composição de fundo. */
+#auth-gate .auth-visual-content,
+#password-reset-gate .auth-visual-content{
+  position:relative;
+  z-index:5;
+  min-height:100dvh;
+  height:100%;
+  box-sizing:border-box;
+  padding:46px 54px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+}
+
+/* Logo continua no topo. */
+#auth-gate .auth-logo-lockup,
+#password-reset-gate .auth-logo-lockup{
+  position:relative;
+  flex:0 0 auto;
+  margin:0;
+  align-self:flex-start;
+}
+
+/* Hero ocupa o centro visual da coluna. */
+#auth-gate .auth-hero-copy,
+#password-reset-gate .auth-hero-copy{
+  display:block;
+  position:relative;
+  z-index:6;
+  margin:auto 0;
+  padding:42px 0;
+  max-width:620px;
+  opacity:1;
+  visibility:visible;
+}
+
+/* Reforça a legibilidade das informações da esquerda. */
+#auth-gate .auth-kicker,
+#auth-gate .auth-hero-copy h1,
+#auth-gate .auth-hero-copy p,
+#password-reset-gate .auth-kicker,
+#password-reset-gate .auth-hero-copy h1,
+#password-reset-gate .auth-hero-copy p{
+  opacity:1;
+  visibility:visible;
+}
+
+#auth-gate .auth-kicker,
+#password-reset-gate .auth-kicker{
+  color:#F2F4EE;
+}
+
+#auth-gate .auth-kicker::before,
+#password-reset-gate .auth-kicker::before{
+  background:#F2F4EE;
+}
+
+#auth-gate .auth-hero-copy h1,
+#password-reset-gate .auth-hero-copy h1{
+  color:#F2F4EE;
+}
+
+#auth-gate .auth-hero-copy p,
+#password-reset-gate .auth-hero-copy p{
+  color:rgba(242,244,238,.78);
+}
+
+/* Os cards antigos continuam ocultos, sem deixar espaço no rodapé. */
+#auth-gate .auth-visual-stats,
+#password-reset-gate .auth-visual-stats{
+  display:none !important;
+}
+
+/* Marca d'água permanece atrás de todo o conteúdo. */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  z-index:1 !important;
+  opacity:.055 !important;
+}
+
+/* Painel direito continua acima do fundo compartilhado. */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
+  position:relative;
+  z-index:4;
+}
+
+/* Mobile vira uma coluna naturalmente. */
+@media(max-width:768px){
+  #auth-gate .auth-layout,
+  #password-reset-gate .auth-layout{
+    grid-template-columns:1fr;
+    background:
+      linear-gradient(
+        180deg,
+        #10261d 0%,
+        #0c1b15 42%,
+        #060b09 100%
+      ) !important;
+  }
+
+  #auth-gate .auth-visual-content,
+  #password-reset-gate .auth-visual-content{
+    min-height:auto;
+    padding:28px 24px;
+  }
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
