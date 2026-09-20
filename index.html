@@ -8156,6 +8156,98 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-center-transition-soft">
+/* ==========================================================
+   TRANSIÇÃO SUAVE ENTRE AS DUAS METADES DO LOGIN
+   ========================================================== */
+
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  position:relative;
+  isolation:isolate;
+  background:#07110d;
+}
+
+/* Remove qualquer corte/borda entre as colunas */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
+  border-left:0 !important;
+}
+
+/* A metade esquerda se aproxima gradualmente do tom da direita */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual{
+  background:
+    radial-gradient(
+      circle at 72% 45%,
+      rgba(125,132,70,.10),
+      transparent 34%
+    ),
+    linear-gradient(
+      90deg,
+      #10261d 0%,
+      #10231b 58%,
+      #0d1d16 76%,
+      #0a1711 90%,
+      #08120e 100%
+    ) !important;
+}
+
+/* A metade direita começa mais próxima do tom da esquerda */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
+  background:
+    linear-gradient(
+      90deg,
+      #08120e 0%,
+      #08100c 18%,
+      #070d0a 42%,
+      #060b09 100%
+    ) !important;
+}
+
+/* Camada central ampla que mistura as duas áreas */
+#auth-gate .auth-layout::after,
+#password-reset-gate .auth-layout::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:190px;
+  transform:translateX(-50%);
+  pointer-events:none;
+  z-index:3;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(16,38,29,0) 0%,
+      rgba(13,29,22,.22) 24%,
+      rgba(10,23,17,.44) 50%,
+      rgba(8,18,14,.24) 76%,
+      rgba(6,11,9,0) 100%
+    );
+  filter:blur(20px);
+}
+
+/* Mantém o conteúdo acima da camada de transição */
+#auth-gate .auth-visual > *,
+#auth-gate .auth-panel > *,
+#password-reset-gate .auth-visual > *,
+#password-reset-gate .auth-panel > *{
+  position:relative;
+  z-index:4;
+}
+
+@media(max-width:768px){
+  #auth-gate .auth-layout::after,
+  #password-reset-gate .auth-layout::after{
+    display:none;
+  }
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
