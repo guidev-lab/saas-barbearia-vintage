@@ -8908,5 +8908,55 @@ window.addEventListener('online',updateConnectionState);
 window.addEventListener('offline',updateConnectionState);
 document.addEventListener('DOMContentLoaded',updateConnectionState);
 </script>
+<style id="auth-right-green-test-and-label-fix">
+/* Teste de fundo verde escuro na metade do formulário */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
+  background:
+    radial-gradient(circle at 0% 20%, rgba(125,132,70,.10) 0%, transparent 28%),
+    linear-gradient(180deg, #0b1611 0%, #09120e 48%, #060b09 100%) !important;
+  border-left:1px solid rgba(242,244,238,.05);
+}
+
+/* Ajuste fino de espaçamento e enquadramento dos labels */
+#auth-gate .auth-form .auth-field,
+#password-reset-gate .auth-form .auth-field{
+  margin-bottom:20px;
+}
+
+#auth-gate .auth-field > label,
+#auth-gate .auth-label-row label,
+#password-reset-gate .auth-field > label,
+#password-reset-gate .auth-label-row label{
+  display:block;
+  margin:0 0 8px 0;
+  font-size:13px;
+  line-height:1.2;
+  letter-spacing:.01em;
+  color:rgba(242,244,238,.96);
+}
+
+#auth-gate .auth-label-row,
+#password-reset-gate .auth-label-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  column-gap:12px;
+  row-gap:0;
+  margin-bottom:8px;
+}
+
+#auth-gate .auth-forgot-link,
+#password-reset-gate .auth-forgot-link{
+  align-self:end;
+  line-height:1.2;
+  white-space:nowrap;
+}
+
+#auth-gate .auth-card-sub,
+#password-reset-gate .auth-card-sub{
+  margin-bottom:30px;
+}
+</style>
 </body>
 </html>
