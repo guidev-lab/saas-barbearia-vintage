@@ -8085,6 +8085,31 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-left-cleanup">
+/* Corrige as duas molduras no fim da metade esquerda */
+#auth-gate .auth-visual-stats,
+#password-reset-gate .auth-visual-stats{
+  display:none;
+}
+
+/* Dá o mesmo contraste das letras grandes aos textos solicitados */
+#auth-gate .auth-kicker,
+#password-reset-gate .auth-kicker,
+#auth-gate .auth-hero-copy p,
+#password-reset-gate .auth-hero-copy p{
+  color:var(--auth-white);
+  opacity:1;
+}
+
+/* Régua do kicker acompanha o branco */
+#auth-gate .auth-kicker::before,
+#password-reset-gate .auth-kicker::before{
+  background:var(--auth-white);
+  opacity:.9;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
