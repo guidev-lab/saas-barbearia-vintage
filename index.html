@@ -7986,6 +7986,105 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-left-half-green-refinement">
+/* ==========================================================
+   REFINO — METADE ESQUERDA DA TELA INICIAL
+   ========================================================== */
+
+/* Divide a tela exatamente ao meio */
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+}
+
+/* Mantém a metade esquerda dentro da nova identidade */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual{
+  background:
+    radial-gradient(
+      circle at 72% 45%,
+      color-mix(in srgb,var(--auth-olive) 11%,transparent),
+      transparent 32%
+    ),
+    linear-gradient(
+      100deg,
+      var(--auth-green) 0%,
+      color-mix(in srgb,var(--auth-green) 92%,var(--auth-black) 8%) 62%,
+      var(--auth-black) 100%
+    ) !important;
+}
+
+/* Logo principal:
+   - dissolve o fundo azul-marinho no fundo da tela
+   - troca os detalhes azuis por oliva
+   - preserva branco/prata */
+#auth-gate .auth-real-logo,
+#password-reset-gate .auth-real-logo,
+#auth-gate .auth-mobile-real-logo,
+#password-reset-gate .auth-mobile-real-logo{
+  border-radius:0 !important;
+  box-shadow:none !important;
+  mix-blend-mode:lighten;
+  filter:
+    hue-rotate(214deg)
+    saturate(.72)
+    brightness(.96)
+    contrast(1.06)
+    drop-shadow(0 10px 24px rgba(0,0,0,.12)) !important;
+}
+
+/* Marca d'água:
+   mesma identidade da logo, porém bem discreta */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  mix-blend-mode:lighten;
+  opacity:.075 !important;
+  filter:
+    hue-rotate(214deg)
+    saturate(.62)
+    brightness(.82)
+    contrast(1.03) !important;
+}
+
+/* Círculo decorativo em oliva, sem azul residual */
+#auth-gate .auth-visual::after,
+#password-reset-gate .auth-visual::after{
+  border-color:color-mix(in srgb,var(--auth-olive) 30%,transparent);
+  box-shadow:
+    0 0 0 60px color-mix(in srgb,var(--auth-olive) 5%,transparent),
+    0 0 0 120px color-mix(in srgb,var(--auth-green) 12%,transparent);
+}
+
+/* Kicker solicitado em verde escuro */
+#auth-gate .auth-kicker,
+#password-reset-gate .auth-kicker{
+  color:#315A46;
+}
+
+#auth-gate .auth-kicker::before,
+#password-reset-gate .auth-kicker::before{
+  background:#315A46;
+}
+
+/* Evita qualquer contorno/cartão em volta da logo */
+#auth-gate .auth-logo-lockup,
+#password-reset-gate .auth-logo-lockup{
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
+/* Mantém a composição responsiva.
+   No mobile a tela deixa naturalmente de ser duas colunas. */
+@media(max-width:768px){
+  #auth-gate .auth-layout,
+  #password-reset-gate .auth-layout{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
