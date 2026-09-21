@@ -5771,37 +5771,6 @@ a{color:inherit;text-decoration:none}
   line-height:1.7;
 }
 
-.auth-visual-stats{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-  max-width:530px;
-}
-
-.auth-stat-card{
-  min-height:72px;
-  padding:15px 16px;
-  border-radius:13px;
-  border:1px solid color-mix(in srgb,var(--text) 5.5%,transparent);
-  background:color-mix(in srgb,var(--text) 1.8%,transparent);
-  backdrop-filter:blur(8px);
-}
-
-.auth-stat-label{
-  display:block;
-  margin-bottom:7px;
-  color:var(--text-muted);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.11em;
-}
-
-.auth-stat-card strong{
-  color:var(--silver);
-  font-size:12px;
-  font-weight:600;
-}
-
 .auth-panel{
   min-height:100dvh;
   display:flex;
@@ -8941,12 +8910,6 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 
 /* auth-left-cleanup */
-/* Corrige as duas molduras no fim da metade esquerda */
-#auth-gate .auth-visual-stats,
-#password-reset-gate .auth-visual-stats{
-  display:none;
-}
-
 /* Dá o mesmo contraste das letras grandes aos textos solicitados */
 #auth-gate .auth-kicker,
 #password-reset-gate .auth-kicker,
@@ -9289,6 +9252,36 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 
 </style>
+
+<style id="issue-05-auth-copy-canonical">
+/* ==========================================================
+   ISSUE 5 — HERO / COPY CANÔNICA DO LOGIN
+   Copy aprovada preservada. Sem stats promocionais.
+   ========================================================== */
+
+#auth-gate .auth-hero-copy,
+#password-reset-gate .auth-hero-copy{
+  position:relative;
+  z-index:3;
+  max-width:620px;
+}
+
+#auth-gate .auth-hero-copy h1,
+#password-reset-gate .auth-hero-copy h1{
+  max-width:620px;
+}
+
+#auth-gate .auth-hero-copy p,
+#password-reset-gate .auth-hero-copy p{
+  max-width:560px;
+}
+
+#auth-gate .auth-card h2,
+#password-reset-gate .auth-card h2{
+  margin-bottom:28px;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
@@ -9376,17 +9369,6 @@ body{font-family:'IBM Plex Sans',sans-serif}
       <div class="auth-hero-copy">
 <h1>Cadeira cheia.<br>Agenda em dia.</h1>
         <p>Quem corta, quem marca e quanto entrou no caixa hoje. Tudo na mesma tela.</p>
-      </div>
-
-      <div class="auth-visual-stats">
-        <div class="auth-stat-card">
-          <span class="auth-stat-label">Visão completa</span>
-          <strong>Operação em tempo real</strong>
-        </div>
-        <div class="auth-stat-card">
-          <span class="auth-stat-label">Acesso seguro</span>
-          <strong>Protegido por Supabase</strong>
-        </div>
       </div>
     </div>
   </div>
