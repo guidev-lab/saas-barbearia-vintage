@@ -8321,79 +8321,85 @@ body{font-family:'IBM Plex Sans',sans-serif}
 </style>
 
 
-<style id="owner-panel-green-palette">
+
+<style id="owner-panel-olive-palette-final">
 /* ==========================================================
-   PAINEL DO DONO — NOVA IDENTIDADE VERDE / OLIVA
-   Escopo restrito ao conteúdo autenticado.
-   O login não é alterado por este bloco.
+   PAINEL DO DONO — PALETA VERDE OLIVA DEFINITIVA
+   Escopo: somente painel autenticado
    ========================================================== */
 
 #protected-app-mount{
-  /* superfícies */
-  --bg:#07100C;
-  --surface-1:#0B1711;
-  --surface-2:#101C15;
-  --surface-3:#17241B;
+  --bg:#0A0F0A;
+  --surface-1:#101710;
+  --surface-2:#151D14;
+  --surface-3:#1B2518;
 
-  /* linhas */
-  --line:#223026;
-  --line-strong:#304336;
+  --line:#2C3527;
+  --line-strong:#3A4631;
 
-  /* marca */
-  --accent:#737B3C;
-  --accent-press:#606832;
-  --accent-tint:rgba(115,123,60,.12);
-  --silver:#D8DDD4;
+  --accent:#7C8646;
+  --accent-press:#69753A;
+  --accent-tint:rgba(124,134,70,.16);
+  --silver:#E1E4DA;
 
-  /* texto */
-  --text:#EEF1EB;
-  --text-muted:#A4AFA5;
-  --text-faint:#758177;
+  --text:#F2F4EE;
+  --text-muted:#B0B8A8;
+  --text-faint:#7E8978;
 
-  /* estados */
   --ok:#6F9F76;
   --warn:#C2A45A;
   --danger:#C96F67;
 
-  color-scheme:dark;
-  background:var(--bg);
-  color:var(--text);
+  background:#0A0F0A !important;
+  color:var(--text) !important;
 }
 
-/* Garante que a estrutura principal use a nova base */
+/* Fundo geral sem azul */
+#protected-app-mount,
 #protected-app-mount .app,
-#protected-app-mount .main{
-  background:var(--bg);
-  color:var(--text);
+#protected-app-mount .main,
+#protected-app-mount .content-shell{
+  background:#0A0F0A !important;
+  color:var(--text) !important;
 }
 
-/* Sidebar */
+/* Sidebar oliva escura */
 #protected-app-mount .sidebar{
-  background:var(--surface-1);
-  border-right-color:var(--line);
-  box-shadow:none;
+  background:#101710 !important;
+  border-right:1px solid #2C3527 !important;
+  box-shadow:none !important;
 }
 
-/* navegação */
+/* Navegação */
 #protected-app-mount .nav-item{
-  color:var(--silver);
+  color:#DDE2D5 !important;
 }
 
 #protected-app-mount .nav-item:hover{
-  background:rgba(238,241,235,.035);
-  color:var(--text);
+  background:rgba(124,134,70,.08) !important;
+  color:#F2F4EE !important;
 }
 
 #protected-app-mount .nav-item.active{
-  background:var(--accent-tint);
-  color:var(--silver);
+  background:rgba(124,134,70,.20) !important;
+  color:#F2F4EE !important;
+  border-color:transparent !important;
 }
 
 #protected-app-mount .nav-item.active::before{
-  background:var(--accent);
+  background:#7C8646 !important;
 }
 
-/* Cards / blocos */
+/* seções e labels */
+#protected-app-mount .nav-section,
+#protected-app-mount .topbar p,
+#protected-app-mount .label,
+#protected-app-mount .meta,
+#protected-app-mount .sub{
+  color:#A8B19F !important;
+}
+
+/* Cards / superfícies */
 #protected-app-mount .card,
 #protected-app-mount .kpi-card,
 #protected-app-mount .home-secondary-card,
@@ -8407,73 +8413,80 @@ body{font-family:'IBM Plex Sans',sans-serif}
 #protected-app-mount .rank-team-insight,
 #protected-app-mount .opportunity-mini,
 #protected-app-mount .catalog-form-card,
-#protected-app-mount .catalog-list-card{
-  background:var(--surface-2);
-  border-color:var(--line);
+#protected-app-mount .catalog-list-card,
+#protected-app-mount .calendar-card,
+#protected-app-mount .agenda-list-card,
+#protected-app-mount .chart-card,
+#protected-app-mount .widget,
+#protected-app-mount .finance-chart-card,
+#protected-app-mount .finance-summary-card,
+#protected-app-mount .finance-card{
+  background:#151D14 !important;
+  border-color:#2C3527 !important;
+  box-shadow:none !important;
 }
 
-/* inputs e filtros */
-#protected-app-mount input,
-#protected-app-mount select,
-#protected-app-mount textarea{
-  background:var(--surface-1);
-  color:var(--text);
-  border-color:var(--line);
+/* cabeçalhos internos */
+#protected-app-mount .topbar h1,
+#protected-app-mount h1,
+#protected-app-mount h2,
+#protected-app-mount h3{
+  color:#F2F4EE !important;
 }
 
-#protected-app-mount input:focus,
-#protected-app-mount select:focus,
-#protected-app-mount textarea:focus{
-  border-color:var(--accent);
+/* Botão principal */
+#protected-app-mount .btn-primary-action{
+  background:#7C8646 !important;
+  color:#F7F8F3 !important;
+  box-shadow:0 6px 18px rgba(124,134,70,.18) !important;
 }
 
-/* botões principais */
-#protected-app-mount .btn-primary-action,
+#protected-app-mount .btn-primary-action:hover{
+  background:#89934F !important;
+  filter:none !important;
+}
+
+/* Botões e pills ativos */
 #protected-app-mount .period-pill.active,
 #protected-app-mount .finance-period-pill.active,
 #protected-app-mount .calendar-day.selected,
 #protected-app-mount .btn-birthday-ai{
-  background:var(--accent-press);
-  color:var(--text);
-  box-shadow:none;
+  background:#69753A !important;
+  color:#F7F8F3 !important;
 }
 
-#protected-app-mount .btn-primary-action:hover,
-#protected-app-mount .period-pill.active:hover,
-#protected-app-mount .finance-period-pill.active:hover{
-  background:var(--accent);
-}
-
-/* botões outline */
+/* outlines */
 #protected-app-mount .btn-outline,
 #protected-app-mount .catalog-btn,
 #protected-app-mount .radar-quick-btn,
 #protected-app-mount .birthday-quick-btn,
 #protected-app-mount .btn-radar-mark,
 #protected-app-mount .btn-birthday-mark{
-  border-color:var(--line-strong);
-  color:var(--silver);
-  background:var(--surface-1);
+  background:#101710 !important;
+  border-color:#35402E !important;
+  color:#DDE2D5 !important;
 }
 
 #protected-app-mount .btn-outline:hover,
 #protected-app-mount .catalog-btn:hover,
 #protected-app-mount .radar-quick-btn:hover,
 #protected-app-mount .birthday-quick-btn:hover{
-  border-color:var(--accent);
-  color:var(--text);
+  border-color:#7C8646 !important;
 }
 
-/* indicadores que ainda tinham visual azul forte */
+/* Ícones azuis/violetas -> oliva */
 #protected-app-mount .kpi-icon.blue,
-#protected-app-mount .kpi-icon.violet{
-  background:var(--accent-tint);
-  color:var(--accent);
+#protected-app-mount .kpi-icon.violet,
+#protected-app-mount .mini-pill{
+  background:rgba(124,134,70,.16) !important;
+  color:#909B53 !important;
+  border-color:rgba(124,134,70,.26) !important;
 }
 
+/* Links, números e contadores antes azuis */
+#protected-app-mount .see-all,
 #protected-app-mount .appt-time,
 #protected-app-mount .agenda-hour,
-#protected-app-mount .see-all,
 #protected-app-mount .goal-pct,
 #protected-app-mount .opportunity-highlight,
 #protected-app-mount .rank-team-highlight,
@@ -8483,11 +8496,24 @@ body{font-family:'IBM Plex Sans',sans-serif}
 #protected-app-mount .catalog-count,
 #protected-app-mount .radar-count,
 #protected-app-mount .birthday-count,
-#protected-app-mount .loyalty-count{
-  color:var(--accent);
+#protected-app-mount .loyalty-count,
+#protected-app-mount .opportunity-mini .action{
+  color:#909B53 !important;
 }
 
-/* barras e progressos */
+/* barras/progresso */
+#protected-app-mount .goal-bar,
+#protected-app-mount .reason-bar,
+#protected-app-mount .loyalty-progress-bar,
+#protected-app-mount .loyalty-progress-track,
+#protected-app-mount .finance-goal-bar,
+#protected-app-mount .finance-bar,
+#protected-app-mount .finance-share-track,
+#protected-app-mount .recovery-funnel-bar,
+#protected-app-mount .birthday-funnel-bar{
+  background:#1B2518 !important;
+}
+
 #protected-app-mount .goal-bar-fill,
 #protected-app-mount .reason-fill,
 #protected-app-mount .loyalty-progress-fill,
@@ -8497,42 +8523,59 @@ body{font-family:'IBM Plex Sans',sans-serif}
 #protected-app-mount .finance-share-fill,
 #protected-app-mount .recovery-funnel-fill,
 #protected-app-mount .birthday-funnel-fill{
-  background:var(--accent);
+  background:linear-gradient(90deg,#69753A,#8C9750) !important;
 }
 
-/* status que antes usavam azul */
+/* status que usavam azul */
 #protected-app-mount .status-finalizado,
 #protected-app-mount .loyalty-status.active,
 #protected-app-mount .birthday-status.generated,
 #protected-app-mount .birthday-status.contacted{
-  color:var(--accent);
-  background:var(--accent-tint);
+  color:#909B53 !important;
+  background:rgba(124,134,70,.14) !important;
 }
 
-/* oportunidades / inteligência — elimina azul/violeta decorativo */
+/* tabelas/listas */
+#protected-app-mount .agenda-item,
+#protected-app-mount .radar-client-card,
+#protected-app-mount .birthday-client-card,
+#protected-app-mount .loyalty-client-card,
+#protected-app-mount .finance-prof-row,
+#protected-app-mount .finance-movement-row{
+  border-color:#2C3527 !important;
+}
+
+#protected-app-mount .agenda-item:hover,
+#protected-app-mount .radar-client-card:hover,
+#protected-app-mount .birthday-client-card:hover,
+#protected-app-mount .loyalty-client-card:hover{
+  background:rgba(124,134,70,.045) !important;
+}
+
+/* inputs/filtros */
+#protected-app-mount input,
+#protected-app-mount select,
+#protected-app-mount textarea{
+  background:#101710 !important;
+  color:#F2F4EE !important;
+  border-color:#2C3527 !important;
+}
+
+#protected-app-mount input:focus,
+#protected-app-mount select:focus,
+#protected-app-mount textarea:focus{
+  border-color:#7C8646 !important;
+  outline:none !important;
+}
+
+/* cards especiais */
 #protected-app-mount .opportunity-card,
 #protected-app-mount .birthday-opportunity-card,
 #protected-app-mount .loyalty-opportunity-card,
 #protected-app-mount .ai-context-box,
 #protected-app-mount .catalog-note{
-  background:rgba(115,123,60,.07);
-  border-color:rgba(115,123,60,.20);
-}
-
-/* modais e toast */
-#protected-app-mount .modal{
-  background:var(--surface-2);
-  border-color:var(--line-strong);
-}
-
-#protected-app-mount .modal-overlay{
-  background:rgba(7,16,12,.72);
-}
-
-#protected-app-mount .toast{
-  background:var(--surface-2);
-  border-color:var(--accent);
-  color:var(--text);
+  background:rgba(124,134,70,.07) !important;
+  border-color:rgba(124,134,70,.20) !important;
 }
 
 /* mobile */
@@ -8540,20 +8583,27 @@ body{font-family:'IBM Plex Sans',sans-serif}
 #protected-app-mount #mobile-bottom-menu-btn,
 #protected-app-mount .mobile-menu-btn,
 #protected-app-mount .mobile-sidebar-close{
-  background:var(--surface-1);
-  color:var(--text);
-  border-color:var(--line);
+  background:#101710 !important;
+  color:#F2F4EE !important;
+  border-color:#2C3527 !important;
 }
 
 #protected-app-mount .mobile-sidebar-overlay{
-  background:rgba(7,16,12,.72);
+  background:rgba(10,15,10,.78) !important;
 }
 
-/* WhatsApp permanece verde, mas harmonizado */
-#protected-app-mount .whatsapp-support-btn{
-  color:var(--ok);
-  border-color:rgba(111,159,118,.28);
-  background:rgba(111,159,118,.08);
+/* Remove sombras azuladas residuais */
+#protected-app-mount *{
+  --tw-shadow-color:transparent;
+}
+
+/* Força elementos literais ainda azuis a uma leitura oliva */
+#protected-app-mount [style*="#4C86E8"],
+#protected-app-mount [style*="#3A72D4"],
+#protected-app-mount [style*="76,134,232"],
+#protected-app-mount [style*="58,114,212"]{
+  color:#909B53 !important;
+  border-color:#7C8646 !important;
 }
 </style>
 
