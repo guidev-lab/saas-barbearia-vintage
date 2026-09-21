@@ -10271,6 +10271,164 @@ textarea{
 }
 </style>
 
+
+<style id="bv-mobile-menu-bugs-and-card-titles">
+/* ==========================================================
+   CORREÇÕES FINAIS
+   1. Drawer mobile sem controlador/overlay duplicado
+   2. Botão X limpo e funcional
+   3. Hierarquia visual dos títulos de cards
+   ========================================================== */
+
+/* O overlay antigo deixa de existir visualmente.
+   A navegação canônica usa somente .mobile-menu-backdrop. */
+#mobile-sidebar-overlay,
+.mobile-sidebar-overlay,
+.mobile-sidebar-close{
+  display:none !important;
+}
+
+/* ---------- TÍTULOS DOS CARDS: DESKTOP + MOBILE ---------- */
+#protected-app-mount .bv-card-title{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-top:0;
+  color:var(--text) !important;
+  font-weight:700 !important;
+  letter-spacing:-.01em;
+  line-height:1.25;
+}
+
+#protected-app-mount .bv-card-title::before{
+  content:"";
+  width:3px;
+  height:16px;
+  flex:0 0 3px;
+  border-radius:999px;
+  background:var(--accent);
+  box-shadow:0 0 14px color-mix(in srgb,var(--accent) 30%,transparent);
+}
+
+#protected-app-mount h2.bv-card-title{
+  font-size:15px;
+}
+
+#protected-app-mount h3.bv-card-title{
+  font-size:14px;
+}
+
+/* Mantém títulos com links/ações bem separados visualmente */
+#protected-app-mount .chart-card-head,
+#protected-app-mount .widget-head,
+#protected-app-mount .agenda-list-header,
+#protected-app-mount .section-head,
+#protected-app-mount [class*="card-header"],
+#protected-app-mount [class*="section-header"]{
+  min-width:0;
+}
+
+@media(max-width:1023px){
+
+  /* Backdrop canônico: escurece sem borrar a interface inteira */
+  .mobile-menu-backdrop{
+    background:rgba(3,8,5,.66) !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+  }
+
+  /* Drawer sempre acima do backdrop */
+  #protected-app-mount .sidebar{
+    z-index:2147483002 !important;
+  }
+
+  #protected-app-mount .sidebar.open,
+  #protected-app-mount .sidebar.mobile-open,
+  #protected-app-mount .sidebar.is-open{
+    transform:translate3d(0,0,0) !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+
+  /* X canônico */
+  #protected-app-mount .sidebar-mobile-close{
+    -webkit-appearance:none !important;
+    appearance:none !important;
+    position:absolute !important;
+    top:12px !important;
+    right:12px !important;
+    z-index:2147483004 !important;
+
+    display:grid !important;
+    place-items:center !important;
+
+    width:36px !important;
+    height:36px !important;
+    min-width:36px !important;
+    min-height:36px !important;
+    padding:0 !important;
+    margin:0 !important;
+
+    border:1px solid color-mix(in srgb,var(--accent) 34%,transparent) !important;
+    border-radius:10px !important;
+    outline:0 !important;
+
+    background:#0d1f17 !important;
+    color:#efeadb !important;
+    box-shadow:none !important;
+
+    font-family:"Manrope",Arial,sans-serif !important;
+    font-size:0 !important;
+    line-height:1 !important;
+    cursor:pointer !important;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  #protected-app-mount .sidebar-mobile-close::before,
+  #protected-app-mount .sidebar-mobile-close::after{
+    content:"";
+    position:absolute;
+    width:15px;
+    height:1.5px;
+    border-radius:999px;
+    background:currentColor;
+    pointer-events:none;
+  }
+
+  #protected-app-mount .sidebar-mobile-close::before{
+    transform:rotate(45deg);
+  }
+
+  #protected-app-mount .sidebar-mobile-close::after{
+    transform:rotate(-45deg);
+  }
+
+  #protected-app-mount .sidebar-mobile-close:hover,
+  #protected-app-mount .sidebar-mobile-close:active{
+    background:#14301f !important;
+    border-color:#737b3c !important;
+  }
+
+  #protected-app-mount .sidebar-mobile-close:focus-visible{
+    outline:2px solid #a3ab5c !important;
+    outline-offset:2px !important;
+  }
+
+  #protected-app-mount .bv-card-title::before{
+    height:15px;
+  }
+
+  #protected-app-mount h2.bv-card-title{
+    font-size:15px !important;
+  }
+
+  #protected-app-mount h3.bv-card-title{
+    font-size:13px !important;
+  }
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
@@ -10948,16 +11106,23 @@ function bvSetMobileMenu(open){
   const sidebar=document.querySelector('#protected-app-mount .sidebar');
   if(!sidebar || !bvIsMobileNav()) return;
 
+  const shouldOpen=!!open;
   const backdrop=bvEnsureMobileBackdrop();
   const menuBtn=document.querySelector('#mobile-menu-btn');
 
-  sidebar.classList.toggle('open',!!open);
-  sidebar.classList.toggle('mobile-open',!!open);
-  backdrop.hidden=!open;
-  document.body.classList.toggle('bv-mobile-menu-open',!!open);
+  /* Todas as classes de estado são sincronizadas por uma única função. */
+  sidebar.classList.toggle('open',shouldOpen);
+  sidebar.classList.toggle('mobile-open',shouldOpen);
+  sidebar.classList.toggle('is-open',shouldOpen);
+
+  document.body.classList.remove('mobile-menu-open');
+  document.body.classList.toggle('bv-mobile-menu-open',shouldOpen);
+
+  backdrop.hidden=!shouldOpen;
+  backdrop.setAttribute('aria-hidden',shouldOpen?'false':'true');
 
   if(menuBtn){
-    menuBtn.setAttribute('aria-expanded',open?'true':'false');
+    menuBtn.setAttribute('aria-expanded',shouldOpen?'true':'false');
   }
 }
 
@@ -10965,7 +11130,13 @@ function bvSetupCanonicalMobileNav(){
   const sidebar=document.querySelector('#protected-app-mount .sidebar');
   if(!sidebar) return;
 
+  /* A abertura sempre começa em um estado conhecido. */
+  sidebar.classList.remove('open','mobile-open','is-open');
+  document.body.classList.remove('mobile-menu-open','bv-mobile-menu-open');
+
   const backdrop=bvEnsureMobileBackdrop();
+  backdrop.hidden=true;
+  backdrop.setAttribute('aria-hidden','true');
   const menuBtn=document.querySelector('#mobile-menu-btn');
 
   if(menuBtn && !menuBtn.dataset.bvCanonicalBound){
@@ -10982,19 +11153,27 @@ function bvSetupCanonicalMobileNav(){
 
   if(!sidebar.id) sidebar.id='protected-app-sidebar';
 
+  /* Remove qualquer X da implementação antiga para não haver dois controles. */
+  sidebar.querySelectorAll('.mobile-sidebar-close').forEach(el=>el.remove());
+
   let closeBtn=sidebar.querySelector('.sidebar-mobile-close');
   if(!closeBtn){
     closeBtn=document.createElement('button');
     closeBtn.type='button';
     closeBtn.className='sidebar-mobile-close';
     closeBtn.setAttribute('aria-label','Fechar menu');
-    closeBtn.innerHTML='×';
     sidebar.appendChild(closeBtn);
+  }else{
+    closeBtn.textContent='';
   }
 
   if(!closeBtn.dataset.bvCanonicalBound){
     closeBtn.dataset.bvCanonicalBound='1';
-    closeBtn.addEventListener('click',()=>bvSetMobileMenu(false));
+    closeBtn.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      bvSetMobileMenu(false);
+    });
   }
 
   if(!backdrop.dataset.bvCanonicalBound){
@@ -11038,6 +11217,37 @@ function bvSetupCanonicalMobileNav(){
   }
 }
 
+
+
+function bvEnhanceCardTitles(){
+  const root=document.querySelector('#protected-app-mount');
+  if(!root) return;
+
+  const knownHeaders=root.querySelectorAll([
+    '.chart-card-head h2',
+    '.chart-card-head h3',
+    '.widget-head h2',
+    '.widget-head h3',
+    '.agenda-list-header h2',
+    '.agenda-list-header h3',
+    '.section-head h2',
+    '.section-head h3',
+    '.page-head h2',
+    '.page-head h3',
+    '[class*="card-header"] h2',
+    '[class*="card-header"] h3',
+    '[class*="section-header"] h2',
+    '[class*="section-header"] h3'
+  ].join(','));
+
+  knownHeaders.forEach(title=>title.classList.add('bv-card-title'));
+
+  /* Cards que possuem título direto, mas não usam header próprio. */
+  root.querySelectorAll('.card, .widget, [class$="-card"]').forEach(card=>{
+    const directTitle=Array.from(card.children).find(el=>el.matches?.('h2,h3'));
+    if(directTitle) directTitle.classList.add('bv-card-title');
+  });
+}
 
 function upgradeVintageSidebar(){
   const sidebar=document.querySelector('#protected-app-mount .sidebar');
@@ -11406,12 +11616,14 @@ async function loadProtectedDashboard(){
 
   protectedAppMount.innerHTML=bundle.html;
   upgradeVintageSidebar();
+  bvEnhanceCardTitles();
 
   const script=document.createElement('script');
   script.type='text/javascript';
   script.text=bundle.js;
   script.dataset.protectedDashboard='true';
   document.body.appendChild(script);
+  requestAnimationFrame(()=>bvEnhanceCardTitles());
 
   dashboardApp=document.getElementById('dashboard-app');
   if(!dashboardApp){
@@ -11668,61 +11880,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 <script>
-(function(){
-  const MOBILE_QUERY='(max-width: 1023px)';
-
-  function isMobileNav(){
-    return window.matchMedia(MOBILE_QUERY).matches;
-  }
-
-  function setMobileMenu(open){
-    const shouldOpen=Boolean(open) && isMobileNav();
-    document.body.classList.toggle('mobile-menu-open',shouldOpen);
-    const btn=document.getElementById('mobile-menu-btn');
-    if(btn) btn.setAttribute('aria-expanded',shouldOpen?'true':'false');
-  }
-
-  window.toggleMobileMenu=function(force){
-    const next=typeof force==='boolean'
-      ? force
-      : !document.body.classList.contains('mobile-menu-open');
-    setMobileMenu(next);
-  };
-
-  document.addEventListener('DOMContentLoaded',function(){
-    const topBtn=document.getElementById('mobile-menu-btn');
-    const bottomBtn=document.getElementById('mobile-bottom-menu-btn');
-    const overlay=document.getElementById('mobile-sidebar-overlay');
-    const closeBtn=document.querySelector('.mobile-sidebar-close');
-    const sidebar=document.querySelector('.sidebar');
-
-    [topBtn,bottomBtn].forEach(btn=>{
-      if(!btn) return;
-      btn.addEventListener('click',e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        setMobileMenu(true);
-      });
-    });
-
-    overlay?.addEventListener('click',()=>setMobileMenu(false));
-    closeBtn?.addEventListener('click',e=>{
-      e.preventDefault();
-      setMobileMenu(false);
-    });
-
-  });
-
-  document.addEventListener('keydown',e=>{
-    if(e.key==='Escape') setMobileMenu(false);
-  });
-
-  window.addEventListener('resize',()=>{
-    if(!isMobileNav()) setMobileMenu(false);
-  });
-  window.addEventListener('orientationchange',()=>setMobileMenu(false));
-})();
-
 document.addEventListener('DOMContentLoaded',()=>{
   const login=document.getElementById('login-screen');
   if(login && !login.classList.contains('hidden')) lockAppForAuth();
