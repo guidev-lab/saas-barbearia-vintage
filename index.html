@@ -8278,6 +8278,48 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-field-spacing-final-fix">
+/* Padroniza o espaçamento entre rótulo e campo no login */
+#auth-gate .auth-form{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+#auth-gate .auth-field{
+  margin:0 !important;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+#auth-gate .auth-field > label{
+  margin:0 !important;
+  padding:0 2px;
+  line-height:1.2;
+}
+
+#auth-gate .auth-label-row{
+  margin:0 !important;
+  padding:0 2px;
+  min-height:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+#auth-gate .auth-label-row label{
+  margin:0 !important;
+  line-height:1.2;
+}
+
+#auth-gate .auth-input-wrap{
+  margin:0 !important;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
