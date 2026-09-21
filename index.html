@@ -8200,6 +8200,65 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-label-spacing-fix">
+/* Espaçamento consistente entre rótulos e molduras dos campos */
+.auth-field{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.auth-field > label,
+.auth-label-row{
+  margin:0 !important;
+  padding:0 2px !important;
+  min-height:20px;
+  display:flex;
+  align-items:flex-end;
+}
+
+.auth-field > label,
+.auth-label-row label{
+  line-height:1.2;
+}
+
+.auth-label-row{
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:0 !important;
+}
+
+.auth-input-wrap{
+  margin-top:0 !important;
+}
+</style>
+
+
+<style id="auth-remove-blue-accents">
+/* Remove os últimos acentos azuis da tela inicial */
+#auth-gate .auth-status-pill,
+#password-reset-gate .auth-status-pill{
+  color:#A5AD67 !important;
+}
+
+#auth-gate .auth-status-dot,
+#password-reset-gate .auth-status-dot{
+  background:#A5AD67 !important;
+  box-shadow:none !important;
+}
+
+#auth-gate .auth-forgot-link,
+#password-reset-gate .auth-forgot-link{
+  color:#9CA45F !important;
+}
+
+#auth-gate .auth-forgot-link:hover,
+#password-reset-gate .auth-forgot-link:hover{
+  color:#BBC27A !important;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
