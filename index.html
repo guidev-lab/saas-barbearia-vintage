@@ -9282,6 +9282,73 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="issue-06-login-states">
+/* ==========================================================
+   ISSUE 6 — LOGIN: LOADING, ERRO E AUTOFILL
+   Mantém identidade visual e fluxo Supabase existentes.
+   ========================================================== */
+
+#auth-gate .auth-form{ position:relative; }
+
+#auth-gate .auth-field.has-error .auth-input-wrap input{
+  border-color:var(--danger) !important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 10%,transparent) !important;
+}
+
+#auth-gate .auth-error{ margin:0 0 2px; }
+#auth-gate .auth-error.is-visible{ display:block; }
+
+#auth-gate .auth-submit.is-loading{
+  opacity:1 !important;
+  filter:none !important;
+}
+
+#auth-gate .auth-submit.is-loading:hover{
+  transform:none !important;
+  filter:none !important;
+}
+
+#auth-gate .auth-submit.is-loading span{ opacity:1; }
+
+#auth-gate .auth-form.is-loading .auth-field input{
+  color:var(--auth-white) !important;
+  -webkit-text-fill-color:var(--auth-white) !important;
+}
+
+#auth-gate input:-webkit-autofill,
+#auth-gate input:-webkit-autofill:hover,
+#auth-gate input:-webkit-autofill:focus,
+#auth-gate input:-webkit-autofill:active{
+  -webkit-text-fill-color:var(--auth-white) !important;
+  caret-color:var(--auth-white) !important;
+  -webkit-box-shadow:0 0 0 1000px color-mix(in srgb,var(--auth-green) 34%,var(--auth-black) 66%) inset !important;
+  box-shadow:0 0 0 1000px color-mix(in srgb,var(--auth-green) 34%,var(--auth-black) 66%) inset !important;
+  transition:background-color 9999s ease-out 0s;
+}
+
+#auth-gate input:autofill{
+  color:var(--auth-white) !important;
+  caret-color:var(--auth-white) !important;
+  box-shadow:0 0 0 1000px color-mix(in srgb,var(--auth-green) 34%,var(--auth-black) 66%) inset !important;
+}
+
+#auth-gate .auth-submit:focus-visible,
+#auth-gate .auth-eye-btn:focus-visible,
+#auth-gate .auth-forgot-link:focus-visible{
+  outline:2px solid var(--auth-olive);
+  outline-offset:3px;
+}
+
+#auth-gate .auth-field input{
+  transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease,color .16s ease;
+}
+
+@media(prefers-reduced-motion:reduce){
+  #auth-gate .auth-field input{ transition:none; }
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
@@ -9461,7 +9528,7 @@ body{font-family:'IBM Plex Sans',sans-serif}
             </div>
           </div>
 
-          <div id="login-error" class="auth-error" role="alert"></div>
+          <div id="login-error" class="auth-error" role="alert" aria-live="polite" aria-atomic="true"></div>
 
           <button id="login-submit" class="auth-submit" type="submit">
             <span>Entrar</span>
@@ -9604,15 +9671,25 @@ async function submitNewPassword(){
 }
 window.submitNewPassword=submitNewPassword;
 
+function setLoginFieldErrorState(hasError){
+  [loginEmail,loginPassword].forEach((input)=>{
+    if(!input) return;
+    input.setAttribute('aria-invalid',hasError?'true':'false');
+    input.closest('.auth-field')?.classList.toggle('has-error',hasError);
+  });
+}
+
 function setLoginError(message){
   if(!loginError) return;
-  if(message){
+  const hasError=!!message;
+  if(hasError){
     loginError.textContent = message;
     loginError.classList.add('is-visible');
   }else{
     loginError.textContent = '';
     loginError.classList.remove('is-visible');
   }
+  setLoginFieldErrorState(hasError);
 }
 
 
@@ -10096,6 +10173,12 @@ async function validateCurrentSession(){
   }
 }
 
+[loginEmail,loginPassword].forEach((input)=>{
+  input?.addEventListener('input',()=>{
+    if(loginError?.classList.contains('is-visible')) setLoginError('');
+  });
+});
+
 if(loginForm){
   loginForm.addEventListener('submit', async function(event){
     event.preventDefault();
@@ -10106,6 +10189,8 @@ if(loginForm){
 
     if(!email || !password){
       setLoginError('Preencha seu email e sua senha.');
+      if(!email) loginEmail?.focus();
+      else loginPassword?.focus();
       return;
     }
 
@@ -10120,6 +10205,7 @@ if(loginForm){
 
       if(error){
         setLoginError('Email ou senha inválidos.');
+        loginPassword?.focus();
         return;
       }
 
