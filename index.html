@@ -7647,6 +7647,38 @@ body{font-family:'IBM Plex Sans',sans-serif}
 </style>
 
 
+<style id="only-soft-blue-gradient">
+/* ÚNICA alteração: suavizar a passagem entre os dois fundos */
+.auth-visual{
+  background:
+    linear-gradient(
+      90deg,
+      var(--surface-1) 0%,
+      color-mix(in srgb,var(--surface-1) 94%,var(--accent) 6%) 62%,
+      color-mix(in srgb,var(--surface-1) 97%,var(--accent) 3%) 82%,
+      var(--bg) 100%
+    )!important;
+}
+
+.auth-card-wrap{
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb,var(--surface-1) 94%,var(--accent) 6%) 0%,
+      var(--bg) 18%,
+      var(--bg) 100%
+    )!important;
+}
+
+/* garante que nenhuma borda crie uma linha dura no meio */
+.auth-visual,
+.auth-card-wrap{
+  border-left:0!important;
+  border-right:0!important;
+}
+</style>
+
+
 <style id="remove-login-card-frame">
 /* Remove somente a caixa externa do formulário de login */
 .auth-card{
@@ -7695,6 +7727,361 @@ body{font-family:'IBM Plex Sans',sans-serif}
 .auth-input-wrap:focus-within{
   border-color:var(--accent)!important;
   box-shadow:none!important;
+}
+</style>
+
+
+<style id="issue-02-auth-contrast-correction">
+/* Ajuste visual da Issue 2: fundo natural + contraste */
+.auth-panel{
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb,var(--surface-1) 94%,var(--accent) 6%) 0%,
+      var(--bg) 24%,
+      var(--bg) 100%
+    );
+}
+
+.auth-card h2,
+.auth-field > label,
+.auth-label-row label{
+  color:var(--text);
+}
+
+.auth-card-sub,
+.auth-secure-note,
+.auth-panel-footer,
+.auth-hero-copy p{
+  color:var(--text-muted);
+}
+
+.auth-status-pill,
+.auth-forgot-link,
+.auth-eye-btn,
+.auth-kicker{
+  color:var(--accent);
+}
+
+.auth-input-wrap{
+  background:var(--surface-2)!important;
+  border-color:var(--line-strong)!important;
+}
+
+.auth-field input{
+  color:var(--text)!important;
+  background:transparent!important;
+}
+
+.auth-field input::placeholder{
+  color:var(--text-muted);
+}
+
+.auth-submit{
+  background:var(--accent)!important;
+  color:var(--bg)!important;
+}
+</style>
+
+
+<style id="auth-visual-identity-green">
+/* ==========================================================
+   NOVA IDENTIDADE VISUAL — TELA INICIAL / LOGIN
+   Paleta: verde escuro, verde oliva, preto e branco
+   Escopo restrito à autenticação
+   ========================================================== */
+
+#auth-gate,
+#password-reset-gate{
+  --auth-black:#050706;
+  --auth-green:#10261D;
+  --auth-olive:#737C3F;
+  --auth-white:#F2F4EE;
+}
+
+/* Fundo geral */
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  background:var(--auth-black);
+}
+
+/* Lado visual */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual{
+  background:
+    radial-gradient(
+      circle at 72% 42%,
+      color-mix(in srgb,var(--auth-olive) 16%,transparent),
+      transparent 34%
+    ),
+    linear-gradient(
+      100deg,
+      var(--auth-green) 0%,
+      color-mix(in srgb,var(--auth-green) 90%,var(--auth-black) 10%) 58%,
+      var(--auth-black) 100%
+    ) !important;
+}
+
+/* Dissolve a transição entre os dois lados sem criar faixa */
+#auth-gate .auth-card-wrap,
+#password-reset-gate .auth-card-wrap{
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb,var(--auth-green) 28%,var(--auth-black) 72%) 0%,
+      var(--auth-black) 22%,
+      var(--auth-black) 100%
+    ) !important;
+}
+
+/* Marca d'água, mantendo discreta */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  opacity:.045;
+  filter:grayscale(1) brightness(1.6);
+}
+
+/* Textos principais */
+#auth-gate .auth-hero-copy h1,
+#auth-gate .auth-card h2,
+#password-reset-gate .auth-card h2{
+  color:var(--auth-white);
+}
+
+#auth-gate .auth-hero-copy p,
+#auth-gate .auth-card-sub,
+#auth-gate .auth-secure-note,
+#auth-gate .auth-panel-footer,
+#password-reset-gate .auth-card-sub,
+#password-reset-gate .auth-secure-note,
+#password-reset-gate .auth-panel-footer{
+  color:color-mix(in srgb,var(--auth-white) 62%,var(--auth-green) 38%);
+}
+
+/* Kicker e detalhes */
+#auth-gate .auth-kicker,
+#auth-gate .auth-status-pill,
+#auth-gate .auth-forgot-link,
+#auth-gate .auth-eye-btn,
+#password-reset-gate .auth-kicker,
+#password-reset-gate .auth-status-pill,
+#password-reset-gate .auth-forgot-link,
+#password-reset-gate .auth-eye-btn{
+  color:var(--auth-olive);
+}
+
+#auth-gate .auth-kicker::before,
+#password-reset-gate .auth-kicker::before{
+  background:var(--auth-olive);
+}
+
+/* Pill superior */
+#auth-gate .auth-status-pill,
+#password-reset-gate .auth-status-pill{
+  border-color:color-mix(in srgb,var(--auth-olive) 42%,var(--auth-green) 58%);
+  background:color-mix(in srgb,var(--auth-olive) 9%,var(--auth-black) 91%);
+}
+
+/* Labels */
+#auth-gate .auth-field > label,
+#auth-gate .auth-label-row label,
+#password-reset-gate .auth-field > label,
+#password-reset-gate .auth-label-row label{
+  color:var(--auth-white);
+}
+
+/* Campos */
+#auth-gate .auth-input-wrap,
+#password-reset-gate .auth-input-wrap{
+  background:color-mix(in srgb,var(--auth-green) 34%,var(--auth-black) 66%) !important;
+  border-color:color-mix(in srgb,var(--auth-white) 15%,var(--auth-green) 85%) !important;
+  box-shadow:none !important;
+}
+
+#auth-gate .auth-field input,
+#password-reset-gate .auth-field input{
+  color:var(--auth-white) !important;
+  background:transparent !important;
+}
+
+#auth-gate .auth-field input::placeholder,
+#password-reset-gate .auth-field input::placeholder{
+  color:color-mix(in srgb,var(--auth-white) 48%,var(--auth-green) 52%);
+}
+
+/* Foco oliva */
+#auth-gate .auth-input-wrap:focus-within,
+#password-reset-gate .auth-input-wrap:focus-within{
+  border-color:var(--auth-olive) !important;
+  box-shadow:none !important;
+  outline:2px solid color-mix(in srgb,var(--auth-olive) 68%,var(--auth-white) 32%);
+  outline-offset:2px;
+}
+
+/* Ícones */
+#auth-gate .auth-input-wrap svg,
+#auth-gate .auth-eye-btn svg,
+#password-reset-gate .auth-input-wrap svg,
+#password-reset-gate .auth-eye-btn svg{
+  color:color-mix(in srgb,var(--auth-white) 50%,var(--auth-green) 50%);
+}
+
+/* Botão principal */
+#auth-gate .auth-submit,
+#password-reset-gate .auth-submit{
+  background:var(--auth-olive) !important;
+  color:var(--auth-white) !important;
+  border:1px solid var(--auth-olive);
+  box-shadow:none !important;
+}
+
+#auth-gate .auth-submit:hover,
+#password-reset-gate .auth-submit:hover{
+  background:color-mix(in srgb,var(--auth-olive) 84%,var(--auth-green) 16%) !important;
+}
+
+#auth-gate .auth-submit:active,
+#password-reset-gate .auth-submit:active{
+  background:color-mix(in srgb,var(--auth-olive) 76%,var(--auth-black) 24%) !important;
+}
+
+/* Linha divisória e rodapé */
+#auth-gate .auth-divider,
+#password-reset-gate .auth-divider{
+  background:color-mix(in srgb,var(--auth-white) 9%,var(--auth-black) 91%);
+}
+
+/* Autofill coerente */
+#auth-gate input:-webkit-autofill,
+#auth-gate input:-webkit-autofill:hover,
+#auth-gate input:-webkit-autofill:focus,
+#password-reset-gate input:-webkit-autofill,
+#password-reset-gate input:-webkit-autofill:hover,
+#password-reset-gate input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--auth-white);
+  box-shadow:inset 0 0 0 1000px color-mix(in srgb,var(--auth-green) 34%,var(--auth-black) 66%);
+  caret-color:var(--auth-white);
+}
+
+/* Evita qualquer azul residual na tela inicial */
+#auth-gate a,
+#auth-gate button,
+#password-reset-gate a,
+#password-reset-gate button{
+  accent-color:var(--auth-olive);
+}
+
+/* Mobile mantém a mesma identidade */
+@media(max-width:768px){
+  #auth-gate .auth-layout,
+  #password-reset-gate .auth-layout{
+    background:
+      linear-gradient(
+        180deg,
+        var(--auth-green) 0%,
+        var(--auth-black) 46%,
+        var(--auth-black) 100%
+      );
+  }
+}
+</style>
+
+
+<style id="auth-left-half-green-refinement">
+/* ==========================================================
+   REFINO — METADE ESQUERDA DA TELA INICIAL
+   ========================================================== */
+
+/* Divide a tela exatamente ao meio */
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+}
+
+/* Mantém a metade esquerda dentro da nova identidade */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual{
+  background:
+    radial-gradient(
+      circle at 72% 45%,
+      color-mix(in srgb,var(--auth-olive) 11%,transparent),
+      transparent 32%
+    ),
+    linear-gradient(
+      100deg,
+      var(--auth-green) 0%,
+      color-mix(in srgb,var(--auth-green) 92%,var(--auth-black) 8%) 62%,
+      var(--auth-black) 100%
+    ) !important;
+}
+
+/* Logo principal:
+   - dissolve o fundo azul-marinho no fundo da tela
+   - troca os detalhes azuis por oliva
+   - preserva branco/prata */
+#auth-gate .auth-real-logo,
+#password-reset-gate .auth-real-logo,
+#auth-gate .auth-mobile-real-logo,
+#password-reset-gate .auth-mobile-real-logo{
+  border-radius:0 !important;
+  box-shadow:none !important;
+  mix-blend-mode:lighten;
+  filter:
+    hue-rotate(214deg)
+    saturate(.72)
+    brightness(.96)
+    contrast(1.06)
+    drop-shadow(0 10px 24px rgba(0,0,0,.12)) !important;
+}
+
+/* Marca d'água:
+   mesma identidade da logo, porém bem discreta */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  mix-blend-mode:lighten;
+  opacity:.075 !important;
+  filter:
+    hue-rotate(214deg)
+    saturate(.62)
+    brightness(.82)
+    contrast(1.03) !important;
+}
+
+/* Círculo decorativo em oliva, sem azul residual */
+#auth-gate .auth-visual::after,
+#password-reset-gate .auth-visual::after{
+  border-color:color-mix(in srgb,var(--auth-olive) 30%,transparent);
+  box-shadow:
+    0 0 0 60px color-mix(in srgb,var(--auth-olive) 5%,transparent),
+    0 0 0 120px color-mix(in srgb,var(--auth-green) 12%,transparent);
+}
+
+/* Kicker solicitado em verde escuro */
+#auth-gate .auth-kicker,
+#password-reset-gate .auth-kicker{
+  color:#315A46;
+}
+
+#auth-gate .auth-kicker::before,
+#password-reset-gate .auth-kicker::before{
+  background:#315A46;
+}
+
+/* Evita qualquer contorno/cartão em volta da logo */
+#auth-gate .auth-logo-lockup,
+#password-reset-gate .auth-logo-lockup{
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
+/* Mantém a composição responsiva.
+   No mobile a tela deixa naturalmente de ser duas colunas. */
+@media(max-width:768px){
+  #auth-gate .auth-layout,
+  #password-reset-gate .auth-layout{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 
@@ -7766,6 +8153,50 @@ body{font-family:'IBM Plex Sans',sans-serif}
   background:transparent;
   border:0;
   box-shadow:none;
+}
+</style>
+
+
+<style id="seam-only-no-color-change">
+/* ==========================================================
+   SOMENTE A EMENDA ENTRE AS DUAS METADES
+   Mantém a identidade/cor anterior.
+   ========================================================== */
+
+/* A esquerda mantém o mesmo verde; apenas os últimos ~18%
+   caminham para o MESMO tom em que a direita já começa. */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual{
+  background:
+    radial-gradient(
+      circle at 72% 45%,
+      color-mix(in srgb,var(--auth-olive) 11%,transparent),
+      transparent 32%
+    ),
+    linear-gradient(
+      100deg,
+      var(--auth-green) 0%,
+      color-mix(in srgb,var(--auth-green) 92%,var(--auth-black) 8%) 62%,
+      #102119 78%,
+      #0d1b15 90%,
+      #0b1611 100%
+    ) !important;
+}
+
+/* Direita continua com as mesmas cores da versão aprovada. */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
+  background:
+    radial-gradient(circle at 0% 20%, rgba(125,132,70,.10) 0%, transparent 28%),
+    linear-gradient(180deg, #0b1611 0%, #09120e 48%, #060b09 100%) !important;
+  border-left:0 !important;
+}
+
+/* Nada de faixa extra, blur ou overlay no centro. */
+#auth-gate .auth-layout::after,
+#password-reset-gate .auth-layout::after{
+  content:none !important;
+  display:none !important;
 }
 </style>
 
@@ -7890,6 +8321,100 @@ body{font-family:'IBM Plex Sans',sans-serif}
 </style>
 
 
+<style id="auth-old-green-decor-restored">
+/* Retorno ao visual anterior: grid + círculo + logo fantasma em verde */
+#auth-gate,
+#password-reset-gate{
+  --auth-black:#050706;
+  --auth-green:#10261D;
+  --auth-olive:#737C3F;
+  --auth-white:#F2F4EE;
+}
+
+/* Lado esquerdo com verde, grid e profundidade */
+#auth-gate .auth-visual,
+#password-reset-gate .auth-visual{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(rgba(115,124,63,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(115,124,63,.035) 1px, transparent 1px),
+    radial-gradient(circle at 62% 44%, rgba(115,124,63,.08), transparent 34%),
+    linear-gradient(100deg,#10261D 0%,#0D1E17 64%,#08110D 100%) !important;
+  background-size:32px 32px,32px 32px,auto,auto !important;
+}
+
+/* Círculo decorativo */
+#auth-gate .auth-visual::after,
+#password-reset-gate .auth-visual::after{
+  content:"";
+  display:block;
+  position:absolute;
+  width:420px;
+  height:420px;
+  right:-120px;
+  top:50%;
+  transform:translateY(-50%);
+  border:1px solid rgba(115,124,63,.25);
+  border-radius:50%;
+  box-shadow:
+    0 0 0 58px rgba(115,124,63,.035),
+    0 0 0 116px rgba(16,38,29,.10);
+  pointer-events:none;
+  z-index:1;
+}
+
+/* Marca d'água de fundo volta a aparecer */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  display:block !important;
+  position:absolute;
+  opacity:.055 !important;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+  z-index:1 !important;
+}
+
+/* Conteúdo sempre acima dos decorativos */
+#auth-gate .auth-visual-content,
+#password-reset-gate .auth-visual-content,
+#auth-gate .auth-logo-lockup,
+#password-reset-gate .auth-logo-lockup,
+#auth-gate .auth-hero-copy,
+#password-reset-gate .auth-hero-copy{
+  position:relative;
+  z-index:3;
+}
+
+/* Lado direito mantém o verde escuro já aprovado */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
+  background:
+    radial-gradient(circle at 0% 20%, rgba(115,124,63,.10) 0%, transparent 28%),
+    linear-gradient(180deg,#0B1611 0%,#09120E 48%,#060B09 100%) !important;
+  border-left:0 !important;
+}
+
+/* Mantém o layout em duas metades */
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+}
+
+@media(max-width:768px){
+  #auth-gate .auth-layout,
+  #password-reset-gate .auth-layout{
+    grid-template-columns:1fr;
+  }
+
+  #auth-gate .auth-visual::after,
+  #password-reset-gate .auth-visual::after{
+    width:320px;
+    height:320px;
+    right:-120px;
+  }
+}
+</style>
 
 </head>
 <body class="auth-locked">
@@ -8630,148 +9155,55 @@ window.addEventListener('online',updateConnectionState);
 window.addEventListener('offline',updateConnectionState);
 document.addEventListener('DOMContentLoaded',updateConnectionState);
 </script>
-
-<style id="auth-background-authoritative-final">
-/* ÚNICO FUNDO AUTORITATIVO DO LOGIN — colocado no fim do documento */
-#auth-gate,
-#password-reset-gate{
-  --bg-deep:#08110c;
-  --bg-base:#0d1f17;
-  --bg-mid:#14301f;
-  --bg-glow:#2b3d1f;
-  --accent:#737b3c;
-  --grain-opacity:.15;
-}
-
-body #auth-gate .auth-layout,
-body #password-reset-gate .auth-layout{
-  position:relative !important;
-  isolation:isolate !important;
-  min-height:100vh !important;
-  min-height:100dvh !important;
-  overflow:hidden !important;
+<style id="auth-right-green-test-and-label-fix">
+/* Teste de fundo verde escuro na metade do formulário */
+#auth-gate .auth-panel,
+#password-reset-gate .auth-panel{
   background:
-    radial-gradient(
-      ellipse 60% 70% at 25% 60%,
-      color-mix(in srgb,var(--bg-glow) 60%,transparent) 0%,
-      transparent 70%
-    ),
-    linear-gradient(
-      100deg,
-      var(--bg-mid) 0%,
-      color-mix(in srgb,var(--bg-mid) 76%,var(--bg-base) 24%) 18%,
-      var(--bg-base) 34%,
-      color-mix(in srgb,var(--bg-base) 96%,var(--bg-deep) 4%) 50%,
-      color-mix(in srgb,var(--bg-base) 82%,var(--bg-deep) 18%) 62%,
-      color-mix(in srgb,var(--bg-base) 58%,var(--bg-deep) 42%) 76%,
-      color-mix(in srgb,var(--bg-base) 28%,var(--bg-deep) 72%) 90%,
-      var(--bg-deep) 100%
-    ) !important;
+    radial-gradient(circle at 0% 20%, rgba(125,132,70,.10) 0%, transparent 28%),
+    linear-gradient(180deg, #0b1611 0%, #09120e 48%, #060b09 100%) !important;
+  border-left:1px solid rgba(242,244,238,.05);
 }
 
-/* Granulação perceptível nos dois lados */
-body #auth-gate .auth-layout::before,
-body #password-reset-gate .auth-layout::before{
-  content:"" !important;
-  display:block !important;
-  position:fixed !important;
-  inset:0 !important;
-  z-index:0 !important;
-  pointer-events:none !important;
-  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%0A%20%20%3Cfilter%20id%3D%22grain%22%3E%0A%20%20%20%20%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.8%22%20numOctaves%3D%223%22%20seed%3D%2212%22%20stitchTiles%3D%22stitch%22/%3E%0A%20%20%20%20%3CfeColorMatrix%20type%3D%22matrix%22%0A%20%20%20%20%20%20values%3D%22%0A%20%20%20%20%20%20%20%200.22%200%20%20%20%200%20%20%20%200%200.06%0A%20%20%20%20%20%20%20%200%20%20%20%200.28%200%20%20%20%200%200.08%0A%20%20%20%20%20%20%20%200%20%20%20%200%20%20%20%200.07%200%200.025%0A%20%20%20%20%20%20%20%200%20%20%20%200%20%20%20%200%20%20%20%200.80%200%22/%3E%0A%20%20%3C/filter%3E%0A%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url%28%23grain%29%22/%3E%0A%3C/svg%3E") !important;
-  background-repeat:repeat !important;
-  background-size:160px 160px !important;
-  opacity:var(--grain-opacity) !important;
-  mix-blend-mode:overlay !important;
+/* Ajuste fino de espaçamento e enquadramento dos labels */
+#auth-gate .auth-form .auth-field,
+#password-reset-gate .auth-form .auth-field{
+  margin-bottom:20px;
 }
 
-/* Vinheta quente/verde */
-body #auth-gate .auth-layout::after,
-body #password-reset-gate .auth-layout::after{
-  content:"" !important;
-  display:block !important;
-  position:fixed !important;
-  inset:0 !important;
-  z-index:0 !important;
-  pointer-events:none !important;
-  background:
-    radial-gradient(
-      ellipse at center,
-      transparent 55%,
-      rgba(8,17,12,.55) 100%
-    ) !important;
+#auth-gate .auth-field > label,
+#auth-gate .auth-label-row label,
+#password-reset-gate .auth-field > label,
+#password-reset-gate .auth-label-row label{
+  display:block;
+  margin:0 0 8px 0;
+  font-size:13px;
+  line-height:1.2;
+  letter-spacing:.01em;
+  color:rgba(242,244,238,.96);
 }
 
-/* Nenhuma metade pode ter fundo próprio */
-body #auth-gate .auth-visual,
-body #auth-gate .auth-panel,
-body #auth-gate .auth-card-wrap,
-body #password-reset-gate .auth-visual,
-body #password-reset-gate .auth-panel,
-body #password-reset-gate .auth-card-wrap{
-  background:none !important;
-  background-color:transparent !important;
-  background-image:none !important;
-  border-left:0 !important;
-  border-right:0 !important;
-  box-shadow:none !important;
+#auth-gate .auth-label-row,
+#password-reset-gate .auth-label-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  column-gap:12px;
+  row-gap:0;
+  margin-bottom:8px;
 }
 
-/* Remove decorativos antigos */
-body #auth-gate .auth-background-logo,
-body #password-reset-gate .auth-background-logo{
-  display:none !important;
+#auth-gate .auth-forgot-link,
+#password-reset-gate .auth-forgot-link{
+  align-self:end;
+  line-height:1.2;
+  white-space:nowrap;
 }
 
-body #auth-gate .auth-visual::before,
-body #auth-gate .auth-visual::after,
-body #password-reset-gate .auth-visual::before,
-body #password-reset-gate .auth-visual::after{
-  content:none !important;
-  display:none !important;
-  background:none !important;
-  box-shadow:none !important;
-  border:0 !important;
-}
-
-/* Conteúdo acima do fundo */
-body #auth-gate .auth-visual,
-body #auth-gate .auth-panel,
-body #password-reset-gate .auth-visual,
-body #password-reset-gate .auth-panel{
-  position:relative !important;
-  z-index:1 !important;
-}
-
-body #auth-gate .auth-visual > *,
-body #auth-gate .auth-panel > *,
-body #password-reset-gate .auth-visual > *,
-body #password-reset-gate .auth-panel > *{
-  position:relative !important;
-  z-index:2 !important;
-}
-
-@media(max-width:768px){
-  body #auth-gate .auth-layout,
-  body #password-reset-gate .auth-layout{
-    background:
-      radial-gradient(
-        ellipse 80% 48% at 50% 22%,
-        color-mix(in srgb,var(--bg-glow) 60%,transparent) 0%,
-        transparent 70%
-      ),
-      linear-gradient(
-        180deg,
-        var(--bg-mid) 0%,
-        color-mix(in srgb,var(--bg-mid) 74%,var(--bg-base) 26%) 20%,
-        var(--bg-base) 38%,
-        color-mix(in srgb,var(--bg-base) 88%,var(--bg-deep) 12%) 56%,
-        color-mix(in srgb,var(--bg-base) 56%,var(--bg-deep) 44%) 76%,
-        var(--bg-deep) 100%
-      ) !important;
-  }
+#auth-gate .auth-card-sub,
+#password-reset-gate .auth-card-sub{
+  margin-bottom:30px;
 }
 </style>
-
 </body>
 </html>
