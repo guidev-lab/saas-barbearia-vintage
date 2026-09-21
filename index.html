@@ -9353,6 +9353,15 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="bv-search-filter-fix">
+/* Faz o atributo hidden vencer o display:grid !important dos itens */
+#protected-app-mount .bv-side-nav .nav-item[hidden],
+#protected-app-mount .bv-side-nav .nav-section[hidden]{
+  display:none !important;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
