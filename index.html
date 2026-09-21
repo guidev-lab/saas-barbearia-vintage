@@ -8320,6 +8320,146 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-continuous-background-refinement">
+/* ==========================================================
+   LOGIN — FUNDO ÚNICO, TEXTURA E TRANSIÇÃO CONTÍNUA
+   ========================================================== */
+
+#auth-gate,
+#password-reset-gate{
+  --bg-base:#0B1A14;
+  --bg-left-glow:#1A2A1D;
+  --bg-mid:#0D1712;
+  --bg-right:#060D0A;
+  --grain-opacity:.07;
+}
+
+/* Fundo único atrás das duas metades */
+#auth-gate .auth-layout,
+#password-reset-gate .auth-layout{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(
+      circle at 28% 46%,
+      color-mix(in srgb,var(--bg-left-glow) 72%,transparent) 0%,
+      color-mix(in srgb,var(--bg-left-glow) 24%,transparent) 24%,
+      transparent 44%
+    ),
+    linear-gradient(
+      90deg,
+      var(--bg-base) 0%,
+      color-mix(in srgb,var(--bg-base) 86%,var(--bg-mid) 14%) 35%,
+      color-mix(in srgb,var(--bg-base) 58%,var(--bg-mid) 42%) 46%,
+      color-mix(in srgb,var(--bg-mid) 70%,var(--bg-right) 30%) 58%,
+      color-mix(in srgb,var(--bg-mid) 38%,var(--bg-right) 62%) 68%,
+      var(--bg-right) 75%,
+      var(--bg-right) 100%
+    ) !important;
+}
+
+/* Textura contínua de couro/papel */
+#auth-gate .auth-layout::before,
+#password-reset-gate .auth-layout::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22180%22%20height%3D%22180%22%20viewBox%3D%220%200%20180%20180%22%3E%0A%20%20%3Cfilter%20id%3D%22grain%22%3E%0A%20%20%20%20%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.78%22%20numOctaves%3D%223%22%20seed%3D%227%22%20stitchTiles%3D%22stitch%22/%3E%0A%20%20%20%20%3CfeColorMatrix%20type%3D%22saturate%22%20values%3D%220%22/%3E%0A%20%20%20%20%3CfeComponentTransfer%3E%0A%20%20%20%20%20%20%3CfeFuncA%20type%3D%22table%22%20tableValues%3D%220%200.55%22/%3E%0A%20%20%20%20%3C/feComponentTransfer%3E%0A%20%20%3C/filter%3E%0A%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url%28%23grain%29%22%20opacity%3D%220.62%22/%3E%0A%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:180px 180px;
+  opacity:var(--grain-opacity);
+  mix-blend-mode:soft-light;
+}
+
+/* Vinheta leve */
+#auth-gate .auth-layout::after,
+#password-reset-gate .auth-layout::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0,0,0,0) 48%,
+      rgba(3,8,6,.08) 72%,
+      rgba(3,8,6,.18) 100%
+    );
+}
+
+/* As duas colunas passam a compartilhar o mesmo material */
+#auth-gate .auth-visual,
+#auth-gate .auth-panel,
+#auth-gate .auth-card-wrap,
+#password-reset-gate .auth-visual,
+#password-reset-gate .auth-panel,
+#password-reset-gate .auth-card-wrap{
+  background:transparent !important;
+  border-left:0 !important;
+  border-right:0 !important;
+  box-shadow:none !important;
+}
+
+/* Remove integralmente os elementos decorativos antigos */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  display:none !important;
+}
+
+#auth-gate .auth-visual::before,
+#auth-gate .auth-visual::after,
+#password-reset-gate .auth-visual::before,
+#password-reset-gate .auth-visual::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Conteúdo acima do fundo/textura */
+#auth-gate .auth-visual,
+#auth-gate .auth-panel,
+#password-reset-gate .auth-visual,
+#password-reset-gate .auth-panel{
+  position:relative;
+  z-index:2;
+}
+
+#auth-gate .auth-visual > *,
+#auth-gate .auth-panel > *,
+#password-reset-gate .auth-visual > *,
+#password-reset-gate .auth-panel > *{
+  position:relative;
+  z-index:3;
+}
+
+/* Mobile: fundo continua único, agora em progressão vertical */
+@media(max-width:768px){
+  #auth-gate .auth-layout,
+  #password-reset-gate .auth-layout{
+    background:
+      radial-gradient(
+        circle at 50% 24%,
+        color-mix(in srgb,var(--bg-left-glow) 68%,transparent) 0%,
+        color-mix(in srgb,var(--bg-left-glow) 22%,transparent) 22%,
+        transparent 42%
+      ),
+      linear-gradient(
+        180deg,
+        var(--bg-base) 0%,
+        color-mix(in srgb,var(--bg-base) 82%,var(--bg-mid) 18%) 34%,
+        color-mix(in srgb,var(--bg-base) 55%,var(--bg-mid) 45%) 48%,
+        color-mix(in srgb,var(--bg-mid) 62%,var(--bg-right) 38%) 62%,
+        color-mix(in srgb,var(--bg-mid) 34%,var(--bg-right) 66%) 76%,
+        var(--bg-right) 100%
+      ) !important;
+  }
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
