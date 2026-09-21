@@ -8259,6 +8259,25 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="auth-copy-spacing-refinement">
+#auth-gate .auth-card h2{
+  margin-bottom:28px;
+}
+
+#auth-gate .auth-hero-copy h1{
+  max-width:620px;
+}
+
+#auth-gate .auth-hero-copy p{
+  max-width:560px;
+}
+
+#auth-gate .auth-panel-footer{
+  margin-top:28px;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
@@ -8344,9 +8363,8 @@ body{font-family:'IBM Plex Sans',sans-serif}
       </div>
 
       <div class="auth-hero-copy">
-        <span class="auth-kicker">PAINEL DE GESTÃO</span>
-        <h1>Mais controle.<br>Mais crescimento.</h1>
-        <p>Agenda, clientes, retenção, fidelidade e financeiro em um único lugar.</p>
+<h1>Cadeira cheia.<br>Agenda em dia.</h1>
+        <p>Quem corta, quem marca e quanto entrou no caixa hoje. Tudo na mesma tela.</p>
       </div>
 
       <div class="auth-visual-stats">
@@ -8419,12 +8437,10 @@ body{font-family:'IBM Plex Sans',sans-serif}
           Área da barbearia
         </div>
 
-        <h2>Entre para tocar a operação</h2>
-        <p class="auth-card-sub">Agenda, clientes, equipe e caixa ficam daqui pra dentro.</p>
-
-        <form id="login-form" class="auth-form">
+        <h2>Bora abrir a barbearia</h2>
+<form id="login-form" class="auth-form">
           <div class="auth-field">
-            <label for="login-email">Email</label>
+            <label for="login-email">E-mail</label>
             <div class="auth-input-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16v16H4z"></path>
@@ -8437,7 +8453,7 @@ body{font-family:'IBM Plex Sans',sans-serif}
           <div class="auth-field">
             <div class="auth-label-row">
               <label for="login-password">Senha</label>
-              <button id="forgot-password" class="auth-forgot-link" type="button">Esqueci minha senha</button>
+              <button id="forgot-password" class="auth-forgot-link" type="button">Esqueci a senha</button>
             </div>
 
             <div class="auth-input-wrap auth-password-wrap">
@@ -8445,7 +8461,7 @@ body{font-family:'IBM Plex Sans',sans-serif}
                 <rect x="5" y="10" width="14" height="10" rx="2"></rect>
                 <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
               </svg>
-              <input id="login-password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required>
+              <input id="login-password" type="password" autocomplete="current-password" placeholder="Sua senha" required>
               <button class="auth-eye-btn" type="button" id="toggle-password" aria-label="Mostrar senha">
                 Mostrar
               </button>
@@ -8462,19 +8478,9 @@ body{font-family:'IBM Plex Sans',sans-serif}
             </svg>
           </button>
         </form>
+</div>
 
-        <div class="auth-secure-note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3 5 6v5c0 4.6 2.8 8.3 7 10 4.2-1.7 7-5.4 7-10V6l-7-3z"></path>
-            <path d="m9 12 2 2 4-4"></path>
-          </svg>
-          <span>Seu acesso fica protegido. Se algo der errado, a gente avisa aqui.</span>
-        </div>
-      </div>
-
-      <div class="auth-panel-footer">
-        © 2026 Barbearia Vintage
-      </div>
+      <div class="auth-panel-footer">© 2026 Barbearia Vintage</div>
     </div>
   </div>
 </div>
@@ -8884,7 +8890,7 @@ if(forgotPasswordBtn){
       setLoginError('Não foi possível enviar o email de recuperação.');
     }finally{
       forgotPasswordBtn.disabled = false;
-      forgotPasswordBtn.textContent = 'Esqueci minha senha';
+      forgotPasswordBtn.textContent = 'Esqueci a senha';
     }
   });
 }
