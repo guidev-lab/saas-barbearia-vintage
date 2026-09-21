@@ -5729,59 +5729,6 @@ a{color:inherit;text-decoration:none}
   gap:13px;
 }
 
-.auth-logo-mark{
-  width:50px;
-  height:50px;
-  position:relative;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  background:linear-gradient(145deg,var(--surface-3),var(--surface-2));
-  border:1px solid color-mix(in srgb,var(--accent) 24.0%,transparent);
-  box-shadow:0 15px 34px color-mix(in srgb,var(--bg) 25.0%,transparent);
-  font-family:'Cormorant Garamond',serif;
-  font-size:14px;
-  font-weight:600;
-  color:var(--accent);
-  letter-spacing:-.08em;
-}
-
-.auth-logo-mark::after{
-  content:"";
-  position:absolute;
-  width:6px;
-  height:70px;
-  transform:rotate(24deg);
-  background:linear-gradient(var(--accent) 0 33%,var(--accent) 33% 66%,var(--danger) 66% 100%);
-  opacity:.78;
-}
-
-.auth-logo-b,
-.auth-logo-v{
-  position:relative;
-  z-index:2;
-}
-
-.auth-logo-b{transform:translateX(-2px);}
-.auth-logo-v{transform:translateX(2px);}
-
-.auth-logo-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:14px;
-  font-weight:600;
-  color:var(--text);
-}
-
-.auth-logo-subtitle{
-  margin-top:3px;
-  font-size:12px;
-  color:var(--text-muted);
-  text-transform:uppercase;
-  letter-spacing:.11em;
-}
-
 .auth-hero-copy{
   max-width:620px;
   margin-top:auto;
@@ -6245,88 +6192,8 @@ a{color:inherit;text-decoration:none}
 
 
 /* =========================================================
-   LOGIN — LOGO REAL + WATERMARK
-========================================================= */
-.auth-logo-lockup{
-  display:flex;
-  align-items:center;
-  width:max-content;
-}
-
-.auth-real-logo{
-  display:block;
-  width:210px;
-  max-width:100%;
-  height:auto;
-  object-fit:contain;
-  border-radius:10px;
-  filter:drop-shadow(0 12px 28px color-mix(in srgb,var(--bg) 22.0%,transparent));
-}
-
-.auth-background-logo{
-  position:absolute;
-  z-index:1;
-  width:min(68%,720px);
-  height:auto;
-  object-fit:contain;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%) rotate(-4deg);
-  opacity:.045;
-  filter:grayscale(1) brightness(1.4);
-  pointer-events:none;
-  user-select:none;
-}
-
-.auth-visual-content{
-  position:relative;
-  z-index:2;
-}
-
-.auth-mobile-brand{
-  display:none;
-  align-items:center;
-  justify-content:flex-start;
-}
-
-.auth-mobile-real-logo{
-  display:block;
-  width:170px;
-  max-width:70vw;
-  height:auto;
-  object-fit:contain;
-  border-radius:9px;
-}
-
-@media(max-width:980px){
-  .auth-mobile-brand{
-    display:flex !important;
-  }
-
-  .auth-background-logo{
-    display:none;
-  }
-}
-
-@media(max-width:520px){
-  .auth-mobile-real-logo{
-    width:155px;
-  }
-}
-
-
-/* =========================================================
    AJUSTE LOGIN — FORMULÁRIO VISÍVEL + LOGO DE FUNDO MAIS FORTE
 ========================================================= */
-.auth-background-logo{
-  width:min(72%,760px) !important;
-  left:50% !important;
-  top:54% !important;
-  transform:translate(-50%,-50%) rotate(-4deg) !important;
-  opacity:.105 !important;
-  filter:grayscale(.15) brightness(1.05) !important;
-}
-
 .auth-visual-overlay{
   background:
     linear-gradient(180deg,color-mix(in srgb,var(--bg) 2.0%,transparent),color-mix(in srgb,var(--bg) 18.0%,transparent)),
@@ -9044,38 +8911,6 @@ body{font-family:'IBM Plex Sans',sans-serif}
     ) !important;
 }
 
-/* Logo principal:
-   - dissolve o fundo azul-marinho no fundo da tela
-   - troca os detalhes azuis por oliva
-   - preserva branco/prata */
-#auth-gate .auth-real-logo,
-#password-reset-gate .auth-real-logo,
-#auth-gate .auth-mobile-real-logo,
-#password-reset-gate .auth-mobile-real-logo{
-  border-radius:0 !important;
-  box-shadow:none !important;
-  mix-blend-mode:lighten;
-  filter:
-    hue-rotate(214deg)
-    saturate(.72)
-    brightness(.96)
-    contrast(1.06)
-    drop-shadow(0 10px 24px rgba(0,0,0,.12)) !important;
-}
-
-/* Marca d'água:
-   mesma identidade da logo, porém bem discreta */
-#auth-gate .auth-background-logo,
-#password-reset-gate .auth-background-logo{
-  mix-blend-mode:lighten;
-  opacity:.075 !important;
-  filter:
-    hue-rotate(214deg)
-    saturate(.62)
-    brightness(.82)
-    contrast(1.03) !important;
-}
-
 /* Círculo decorativo em oliva, sem azul residual */
 #auth-gate .auth-visual::after,
 #password-reset-gate .auth-visual::after{
@@ -9094,14 +8929,6 @@ body{font-family:'IBM Plex Sans',sans-serif}
 #auth-gate .auth-kicker::before,
 #password-reset-gate .auth-kicker::before{
   background:#315A46;
-}
-
-/* Evita qualquer contorno/cartão em volta da logo */
-#auth-gate .auth-logo-lockup,
-#password-reset-gate .auth-logo-lockup{
-  background:transparent;
-  border:0;
-  box-shadow:none;
 }
 
 /* Mantém a composição responsiva.
@@ -9136,8 +8963,23 @@ body{font-family:'IBM Plex Sans',sans-serif}
   opacity:.9;
 }
 
-/* inline-refined-logo */
-/* Logo reformulada diretamente no HTML, sem fundo raster */
+
+/* ==========================================================
+   ISSUE 4 — IDENTIDADE / LOGO CANÔNICA
+   Arte SVG preservada. Esta é a única seção responsável
+   pelo tamanho, posição e comportamento das logos do login.
+   ========================================================== */
+
+#auth-gate .auth-logo-lockup,
+#password-reset-gate .auth-logo-lockup{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
 #auth-gate .auth-logo-svg,
 #password-reset-gate .auth-logo-svg{
   display:block;
@@ -9155,16 +8997,37 @@ body{font-family:'IBM Plex Sans',sans-serif}
 #auth-gate .auth-real-logo,
 #password-reset-gate .auth-real-logo{
   width:min(270px,72%);
+  max-width:100%;
   max-height:none;
+}
+
+#auth-gate .auth-mobile-brand,
+#password-reset-gate .auth-mobile-brand{
+  display:none;
+  align-items:center;
+  justify-content:flex-start;
 }
 
 #auth-gate .auth-mobile-real-logo,
 #password-reset-gate .auth-mobile-real-logo{
   width:min(230px,72%);
+  max-width:70vw;
   max-height:none;
 }
 
-/* Marca d'água vetorial, com oliva integrado ao fundo */
+#auth-gate .auth-background-logo,
+#password-reset-gate .auth-background-logo{
+  position:absolute;
+  z-index:1;
+  width:min(72%,760px);
+  height:auto;
+  left:50%;
+  top:54%;
+  transform:translate(-50%,-50%) rotate(-4deg);
+  pointer-events:none;
+  user-select:none;
+}
+
 #auth-gate .auth-watermark-svg,
 #password-reset-gate .auth-watermark-svg{
   opacity:.055 !important;
@@ -9172,12 +9035,16 @@ body{font-family:'IBM Plex Sans',sans-serif}
   mix-blend-mode:normal !important;
 }
 
-/* deixa o bloco superior mais leve, sem sensação de cartão */
-#auth-gate .auth-logo-lockup,
-#password-reset-gate .auth-logo-lockup{
-  background:transparent;
-  border:0;
-  box-shadow:none;
+@media(max-width:980px){
+  #auth-gate .auth-mobile-brand,
+  #password-reset-gate .auth-mobile-brand{
+    display:flex !important;
+  }
+
+  #auth-gate .auth-background-logo,
+  #password-reset-gate .auth-background-logo{
+    display:none;
+  }
 }
 
 /* seam-only-no-color-change */
