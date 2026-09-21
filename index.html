@@ -9334,6 +9334,25 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="bv-search-focus-fix">
+/* Corrige moldura duplicada ao focar a busca da sidebar */
+#protected-app-mount .bv-side-search input,
+#protected-app-mount .bv-side-search input:focus,
+#protected-app-mount .bv-side-search input:focus-visible{
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+
+#protected-app-mount .bv-side-search:focus-within{
+  outline:0 !important;
+  box-shadow:none !important;
+  border-color:var(--accent-soft) !important;
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
