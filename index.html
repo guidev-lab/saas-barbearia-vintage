@@ -8320,6 +8320,243 @@ body{font-family:'IBM Plex Sans',sans-serif}
 }
 </style>
 
+
+<style id="owner-panel-green-palette">
+/* ==========================================================
+   PAINEL DO DONO — NOVA IDENTIDADE VERDE / OLIVA
+   Escopo restrito ao conteúdo autenticado.
+   O login não é alterado por este bloco.
+   ========================================================== */
+
+#protected-app-mount{
+  /* superfícies */
+  --bg:#07100C;
+  --surface-1:#0B1711;
+  --surface-2:#101C15;
+  --surface-3:#17241B;
+
+  /* linhas */
+  --line:#223026;
+  --line-strong:#304336;
+
+  /* marca */
+  --accent:#737B3C;
+  --accent-press:#606832;
+  --accent-tint:rgba(115,123,60,.12);
+  --silver:#D8DDD4;
+
+  /* texto */
+  --text:#EEF1EB;
+  --text-muted:#A4AFA5;
+  --text-faint:#758177;
+
+  /* estados */
+  --ok:#6F9F76;
+  --warn:#C2A45A;
+  --danger:#C96F67;
+
+  color-scheme:dark;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* Garante que a estrutura principal use a nova base */
+#protected-app-mount .app,
+#protected-app-mount .main{
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* Sidebar */
+#protected-app-mount .sidebar{
+  background:var(--surface-1);
+  border-right-color:var(--line);
+  box-shadow:none;
+}
+
+/* navegação */
+#protected-app-mount .nav-item{
+  color:var(--silver);
+}
+
+#protected-app-mount .nav-item:hover{
+  background:rgba(238,241,235,.035);
+  color:var(--text);
+}
+
+#protected-app-mount .nav-item.active{
+  background:var(--accent-tint);
+  color:var(--silver);
+}
+
+#protected-app-mount .nav-item.active::before{
+  background:var(--accent);
+}
+
+/* Cards / blocos */
+#protected-app-mount .card,
+#protected-app-mount .kpi-card,
+#protected-app-mount .home-secondary-card,
+#protected-app-mount .agenda-kpi-card,
+#protected-app-mount .radar-kpi-card,
+#protected-app-mount .birthday-kpi-card,
+#protected-app-mount .loyalty-kpi-card,
+#protected-app-mount .finance-kpi-card,
+#protected-app-mount .rank-team-kpi,
+#protected-app-mount .finance-insight,
+#protected-app-mount .rank-team-insight,
+#protected-app-mount .opportunity-mini,
+#protected-app-mount .catalog-form-card,
+#protected-app-mount .catalog-list-card{
+  background:var(--surface-2);
+  border-color:var(--line);
+}
+
+/* inputs e filtros */
+#protected-app-mount input,
+#protected-app-mount select,
+#protected-app-mount textarea{
+  background:var(--surface-1);
+  color:var(--text);
+  border-color:var(--line);
+}
+
+#protected-app-mount input:focus,
+#protected-app-mount select:focus,
+#protected-app-mount textarea:focus{
+  border-color:var(--accent);
+}
+
+/* botões principais */
+#protected-app-mount .btn-primary-action,
+#protected-app-mount .period-pill.active,
+#protected-app-mount .finance-period-pill.active,
+#protected-app-mount .calendar-day.selected,
+#protected-app-mount .btn-birthday-ai{
+  background:var(--accent-press);
+  color:var(--text);
+  box-shadow:none;
+}
+
+#protected-app-mount .btn-primary-action:hover,
+#protected-app-mount .period-pill.active:hover,
+#protected-app-mount .finance-period-pill.active:hover{
+  background:var(--accent);
+}
+
+/* botões outline */
+#protected-app-mount .btn-outline,
+#protected-app-mount .catalog-btn,
+#protected-app-mount .radar-quick-btn,
+#protected-app-mount .birthday-quick-btn,
+#protected-app-mount .btn-radar-mark,
+#protected-app-mount .btn-birthday-mark{
+  border-color:var(--line-strong);
+  color:var(--silver);
+  background:var(--surface-1);
+}
+
+#protected-app-mount .btn-outline:hover,
+#protected-app-mount .catalog-btn:hover,
+#protected-app-mount .radar-quick-btn:hover,
+#protected-app-mount .birthday-quick-btn:hover{
+  border-color:var(--accent);
+  color:var(--text);
+}
+
+/* indicadores que ainda tinham visual azul forte */
+#protected-app-mount .kpi-icon.blue,
+#protected-app-mount .kpi-icon.violet{
+  background:var(--accent-tint);
+  color:var(--accent);
+}
+
+#protected-app-mount .appt-time,
+#protected-app-mount .agenda-hour,
+#protected-app-mount .see-all,
+#protected-app-mount .goal-pct,
+#protected-app-mount .opportunity-highlight,
+#protected-app-mount .rank-team-highlight,
+#protected-app-mount .priority-value,
+#protected-app-mount .birthday-priority-date,
+#protected-app-mount .loyalty-near-value,
+#protected-app-mount .catalog-count,
+#protected-app-mount .radar-count,
+#protected-app-mount .birthday-count,
+#protected-app-mount .loyalty-count{
+  color:var(--accent);
+}
+
+/* barras e progressos */
+#protected-app-mount .goal-bar-fill,
+#protected-app-mount .reason-fill,
+#protected-app-mount .loyalty-progress-fill,
+#protected-app-mount .loyalty-progress-value,
+#protected-app-mount .finance-goal-fill,
+#protected-app-mount .finance-bar-fill,
+#protected-app-mount .finance-share-fill,
+#protected-app-mount .recovery-funnel-fill,
+#protected-app-mount .birthday-funnel-fill{
+  background:var(--accent);
+}
+
+/* status que antes usavam azul */
+#protected-app-mount .status-finalizado,
+#protected-app-mount .loyalty-status.active,
+#protected-app-mount .birthday-status.generated,
+#protected-app-mount .birthday-status.contacted{
+  color:var(--accent);
+  background:var(--accent-tint);
+}
+
+/* oportunidades / inteligência — elimina azul/violeta decorativo */
+#protected-app-mount .opportunity-card,
+#protected-app-mount .birthday-opportunity-card,
+#protected-app-mount .loyalty-opportunity-card,
+#protected-app-mount .ai-context-box,
+#protected-app-mount .catalog-note{
+  background:rgba(115,123,60,.07);
+  border-color:rgba(115,123,60,.20);
+}
+
+/* modais e toast */
+#protected-app-mount .modal{
+  background:var(--surface-2);
+  border-color:var(--line-strong);
+}
+
+#protected-app-mount .modal-overlay{
+  background:rgba(7,16,12,.72);
+}
+
+#protected-app-mount .toast{
+  background:var(--surface-2);
+  border-color:var(--accent);
+  color:var(--text);
+}
+
+/* mobile */
+#protected-app-mount #mobile-menu-btn,
+#protected-app-mount #mobile-bottom-menu-btn,
+#protected-app-mount .mobile-menu-btn,
+#protected-app-mount .mobile-sidebar-close{
+  background:var(--surface-1);
+  color:var(--text);
+  border-color:var(--line);
+}
+
+#protected-app-mount .mobile-sidebar-overlay{
+  background:rgba(7,16,12,.72);
+}
+
+/* WhatsApp permanece verde, mas harmonizado */
+#protected-app-mount .whatsapp-support-btn{
+  color:var(--ok);
+  border-color:rgba(111,159,118,.28);
+  background:rgba(111,159,118,.08);
+}
+</style>
+
 </head>
 <body class="auth-locked">
 
